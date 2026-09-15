@@ -1,0 +1,90 @@
+.graphic-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    background-color: var(--color-surface);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: var(--border);
+}
+
+.graphic-header {
+    width: 100%;
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.graphic-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-medium);
+}
+
+.graphic-description {
+    font-size: var(--text-xs);
+    color: var(--color-gray);
+    margin-top: var(--space-xs);
+}
+
+
+.graphic-body {
+    width: 100%;
+    height: 200px;
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-light);
+}
+
+.graphic-group {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+}
+
+.graphic-tooltip {
+    position: absolute;
+    display: none;
+    bottom: 0;
+    left: 10px;
+    z-index: 10;
+    text-wrap: nowrap;
+    font-size: var(--text-xs);
+    color: var(--color-surface);
+    margin-bottom: var(--space-sm);
+    border-radius: var(--radius-md);
+    background-color: var(--color-dark);
+    padding: var(--space-xs) var(--space-md);
+}
+
+.graphic-group:hover .graphic-tooltip {
+    display: block;
+}
+
+.graphic-bar {
+    width: 100%;
+    transition: .3s ease all;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+}
+
+.graphic-bar:hover {
+    opacity: .8;
+}
+
+.graphic-labels {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--space-md);
+    justify-content: space-between;
+}
+
+.graphic-labels .label {
+    font-size: var(--text-xs);
+    color: var(--color-gray);
+    text-align: center;
+}

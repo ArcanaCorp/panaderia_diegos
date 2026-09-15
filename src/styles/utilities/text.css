@@ -1,0 +1,653 @@
+/* ==========================================================================
+   FONT SIZE
+   ========================================================================== */
+
+.text-2xs { font-size: var(--text-2xs); }
+.text-xs  { font-size: var(--text-xs); }
+.text-sm  { font-size: var(--text-sm); }
+.text-md  { font-size: var(--text-md); }
+.text-lg  { font-size: var(--text-lg); }
+.text-xl  { font-size: var(--text-xl); }
+.text-2xl { font-size: var(--text-2xl); }
+.text-3xl { font-size: var(--text-3xl); }
+.text-4xl { font-size: var(--text-4xl); }
+.text-5xl { font-size: var(--text-5xl); }
+.text-6xl { font-size: var(--text-6xl); }
+.text-7xl { font-size: var(--text-7xl); }
+.text-8xl { font-size: var(--text-8xl); }
+.text-9xl { font-size: var(--text-9xl); }
+
+
+/* ==========================================================================
+   FONT WEIGHT
+   ========================================================================== */
+
+.font-thin        { font-weight: var(--font-thin); }
+.font-extralight  { font-weight: var(--font-extralight); }
+.font-light       { font-weight: var(--font-light); }
+.font-normal      { font-weight: var(--font-normal); }
+.font-medium      { font-weight: var(--font-medium); }
+.font-semibold    { font-weight: var(--font-semibold); }
+.font-bold        { font-weight: var(--font-bold); }
+.font-extrabold   { font-weight: var(--font-extrabold); }
+.font-black       { font-weight: var(--font-black); }
+
+
+/* ==========================================================================
+   LINE HEIGHT
+   ========================================================================== */
+
+.leading-none     { line-height: var(--leading-none); }
+.leading-tight    { line-height: var(--leading-tight); }
+.leading-snug     { line-height: var(--leading-snug); }
+.leading-normal   { line-height: var(--leading-normal); }
+.leading-relaxed  { line-height: var(--leading-relaxed); }
+.leading-loose    { line-height: var(--leading-loose); }
+
+/* ==========================================================================
+   FONT STYLE
+   ========================================================================== */
+
+.italic { font-style: italic; }
+.not-italic { font-style: normal; }
+.oblique { font-style: oblique; }
+
+/* ==========================================================================
+   FONT VARIANT
+   ========================================================================== */
+
+.normal-case { font-variant: normal; }
+.small-caps { font-variant: small-caps; }
+
+/* ==========================================================================
+   LETTER SPACING
+   ========================================================================== */
+
+.tracking-tighter { letter-spacing: var(--tracking-tighter); }
+.tracking-tight { letter-spacing: var(--tracking-tight); }
+.tracking-normal { letter-spacing: var(--tracking-normal); }
+.tracking-wide { letter-spacing: var(--tracking-wide); }
+.tracking-wider { letter-spacing: var(--tracking-wider); }
+.tracking-widest { letter-spacing: var(--tracking-widest); }
+
+/* ==========================================================================
+   TEXT ALIGN
+   ========================================================================== */
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-justify { text-align: justify; }
+.text-start { text-align: start; }
+.text-end { text-align: end; }
+
+/* ==========================================================================
+   TEXT DECORATION
+   ========================================================================== */
+.underline {text-decoration-line: underline;}
+.overline {text-decoration-line: overline;}
+.line-through {text-decoration-line: line-through;}
+.no-underline {text-decoration-line: none;}
+
+
+/* ==========================================================================
+   TEXT DECORATION STYLE
+   ========================================================================== */
+
+.decoration-solid {
+    text-decoration-style: solid;
+}
+
+.decoration-double {
+    text-decoration-style: double;
+}
+
+.decoration-dotted {
+    text-decoration-style: dotted;
+}
+
+.decoration-dashed {
+    text-decoration-style: dashed;
+
+}
+
+.decoration-wavy {
+    text-decoration-style: wavy;
+}
+
+
+/* ==========================================================================
+   TEXT DECORATION THICKNESS
+   ========================================================================== */
+
+.decoration-auto {
+    text-decoration-thickness: auto;
+}
+
+.decoration-from-font {
+    text-decoration-thickness: from-font;
+}
+
+.decoration-1 {
+    text-decoration-thickness: 1px;
+}
+
+.decoration-2 {
+    text-decoration-thickness: 2px;
+}
+
+.decoration-4 {
+    text-decoration-thickness: 4px;
+}
+
+
+/* ==========================================================================
+   TEXT UNDERLINE OFFSET
+   ========================================================================== */
+
+.underline-offset-auto {
+    text-underline-offset: auto;
+}
+
+.underline-offset-1 {
+    text-underline-offset: 1px;
+}
+
+.underline-offset-2 {
+    text-underline-offset: 2px;
+}
+
+.underline-offset-4 {
+    text-underline-offset: 4px;
+}
+
+.underline-offset-8 {
+    text-underline-offset: 8px;
+}
+
+
+/* ==========================================================================
+   TEXT TRANSFORM
+   ========================================================================== */
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.lowercase {
+    text-transform: lowercase;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.normal-case {
+    text-transform: none;
+}
+
+
+/* ==========================================================================
+   TEXT WRAP
+   ========================================================================== */
+
+.text-wrap {
+    text-wrap: wrap;
+}
+
+.text-nowrap {
+    text-wrap: nowrap;
+}
+
+.text-balance {
+    text-wrap: balance;
+}
+
+.text-pretty {
+    text-wrap: pretty;
+}
+
+
+/* ==========================================================================
+   WHITE SPACE
+   ========================================================================== */
+
+.whitespace-normal {
+    white-space: normal;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+.whitespace-pre {
+    white-space: pre;
+}
+
+.whitespace-pre-line {
+    white-space: pre-line;
+}
+
+.whitespace-pre-wrap {
+    white-space: pre-wrap;
+}
+
+.whitespace-break-spaces {
+    white-space: break-spaces;
+}
+
+
+/* ==========================================================================
+   WORD BREAK
+   ========================================================================== */
+
+.break-normal {
+    overflow-wrap: normal;
+    word-break: normal;
+}
+
+.break-words {
+    overflow-wrap: break-word;
+}
+
+.break-all {
+    word-break: break-all;
+}
+
+.break-keep {
+    word-break: keep-all;
+}
+
+
+/* ==========================================================================
+   HYPHENS
+   ========================================================================== */
+
+.hyphens-none {
+    hyphens: none;
+}
+
+.hyphens-manual {
+    hyphens: manual;
+}
+
+.hyphens-auto {
+    hyphens: auto;
+}
+
+
+/* ==========================================================================
+   TEXT OVERFLOW
+   ========================================================================== */
+
+.truncate {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+}
+
+.text-clip {
+    text-overflow: clip;
+}
+
+
+/* ==========================================================================
+   MULTI-LINE TRUNCATION
+   ========================================================================== */
+
+.line-clamp-1 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+.line-clamp-4 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+
+}
+
+.line-clamp-5 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+}
+
+.line-clamp-6 {
+    display: -webkit-box;
+
+    overflow: hidden;
+
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+}
+
+
+/* ==========================================================================
+   VERTICAL ALIGN
+   ========================================================================== */
+
+.align-baseline {
+    vertical-align: baseline;
+}
+
+.align-top {
+    vertical-align: top;
+}
+
+.align-middle {
+    vertical-align: middle;
+}
+
+.align-bottom {
+    vertical-align: bottom;
+}
+
+.align-text-top {
+    vertical-align: text-top;
+}
+
+.align-text-bottom {
+    vertical-align: text-bottom;
+}
+
+
+/* ==========================================================================
+   TEXT RENDERING
+   ========================================================================== */
+
+.text-render-auto {
+    text-rendering: auto;
+}
+
+.text-render-optimize-speed {
+    text-rendering: optimizeSpeed;
+}
+
+.text-render-optimize-legibility {
+    text-rendering: optimizeLegibility;
+}
+
+.text-render-geometric {
+    text-rendering: geometricPrecision;
+}
+
+
+/* ==========================================================================
+   FONT SMOOTHING
+   ========================================================================== */
+
+.antialiased {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.subpixel-antialiased {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+}
+
+
+/* ==========================================================================
+   USER SELECT
+   ========================================================================== */
+
+.select-text {
+    user-select: text;
+}
+
+.select-none {
+    user-select: none;
+}
+
+.select-all {
+    user-select: all;
+}
+
+.select-auto {
+    user-select: auto;
+}
+
+
+/* ==========================================================================
+   POINTER EVENTS
+   ========================================================================== */
+
+.text-pointer-events-none {
+    pointer-events: none;
+}
+
+.text-pointer-events-auto {
+    pointer-events: auto;
+}
+
+
+/* ==========================================================================
+   CARET COLOR
+   ========================================================================== */
+
+.caret-primary {
+    caret-color: var(--color-primary);
+}
+
+.caret-danger {
+    caret-color: var(--color-danger-500);
+}
+
+.caret-success {
+    caret-color: var(--color-success-500);
+}
+
+.caret-warning {
+    caret-color: var(--color-warning-500);
+}
+
+.caret-info {
+    caret-color: var(--color-info-500);
+}
+
+.caret-transparent {
+    caret-color: transparent;
+}
+
+
+/* ==========================================================================
+   PLACEHOLDER
+   ========================================================================== */
+
+.placeholder-transparent::placeholder {
+    color: transparent;
+}
+
+.placeholder-current::placeholder {
+    color: currentColor;
+}
+
+.placeholder-gray::placeholder {
+    color: var(--color-gray);
+}
+
+.placeholder-primary::placeholder {
+    color: var(--color-primary);
+}
+
+.placeholder-danger::placeholder {
+    color: var(--color-danger-500);
+}
+
+.placeholder-success::placeholder {
+    color: var(--color-success-500);
+}
+
+.placeholder-warning::placeholder {
+    color: var(--color-warning-500);
+}
+
+.placeholder-info::placeholder {
+    color: var(--color-info-500);
+}
+
+
+/* ==========================================================================
+   TEXT SELECTION
+   ========================================================================== */
+
+.selection-primary::selection {
+   color: var(--color-surface);
+   background-color: var(--color-primary);
+}
+
+.selection-danger::selection {
+   color: var(--color-surface);
+   background-color: var(--color-danger-500);
+}
+
+.selection-success::selection {
+   color: var(--color-surface);
+   background-color: var(--color-success-500);
+}
+
+.selection-warning::selection {
+   color: var(--color-dark);
+   background-color: var(--color-warning-500);
+}
+
+.selection-info::selection {
+   color: var(--color-surface);
+   background-color: var(--color-info-500);
+}
+
+
+/* ==========================================================================
+   TEXT DIRECTION
+   ========================================================================== */
+
+.direction-ltr { direction: ltr; }
+.direction-rtl { direction: rtl; }
+
+/* ==========================================================================
+   WRITING MODE
+   ========================================================================== */
+
+.writing-horizontal { writing-mode: horizontal-tb; }
+.writing-vertical { writing-mode: vertical-rl; }
+
+
+/* ==========================================================================
+   CONTENT / ACCESSIBILITY
+   ========================================================================== */
+
+.sr-only {
+   position: absolute;
+
+   width: 1px;
+   height: 1px;
+
+   padding: 0;
+   margin: -1px;
+
+   overflow: hidden;
+
+   clip: rect(0, 0, 0, 0);
+
+   white-space: nowrap;
+
+   border: 0;
+}
+
+.not-sr-only {
+   position: static;
+
+   width: auto;
+   height: auto;
+
+   padding: 0;
+   margin: 0;
+
+   overflow: visible;
+
+   clip: auto;
+
+   white-space: normal;
+}
+
+
+/* ==========================================================================
+   RESPONSIVE TEXT
+   ========================================================================== */
+
+@media (min-width: 640px) {
+   .sm\:text-left { text-align: left; }
+   .sm\:text-center { text-align: center; }
+   .sm\:text-right { text-align: right; }
+   .sm\:text-xs { font-size: var(--text-xs); }
+   .sm\:text-sm { font-size: var(--text-sm); }
+   .sm\:text-md { font-size: var(--text-md); }
+   .sm\:text-lg { font-size: var(--text-lg); }
+   .sm\:text-xl { font-size: var(--text-xl); }
+   .sm\:text-2xl { font-size: var(--text-2xl); }
+   .sm\:text-3xl { font-size: var(--text-3xl); }
+}
+
+
+@media (min-width: 768px) {
+   .md\:text-left { text-align: left; }
+   .md\:text-center { text-align: center; }
+   .md\:text-right { text-align: right; }
+   .md\:text-xs { font-size: var(--text-xs); }
+   .md\:text-sm { font-size: var(--text-sm); }
+   .md\:text-md { font-size: var(--text-md); }
+   .md\:text-lg { font-size: var(--text-lg); }
+   .md\:text-xl { font-size: var(--text-xl); }
+   .md\:text-2xl { font-size: var(--text-2xl); }
+   .md\:text-3xl { font-size: var(--text-3xl); }
+   .md\:text-4xl { font-size: var(--text-4xl); }
+}
+
+
+@media (min-width: 1024px) {
+   .lg\:text-left { text-align: left; }
+   .lg\:text-center { text-align: center; }
+   .lg\:text-right { text-align: right; }
+   .lg\:text-sm { font-size: var(--text-sm); }
+   .lg\:text-md { font-size: var(--text-md); }
+   .lg\:text-lg { font-size: var(--text-lg); }
+   .lg\:text-xl { font-size: var(--text-xl); }
+   .lg\:text-2xl { font-size: var(--text-2xl); }
+   .lg\:text-3xl { font-size: var(--text-3xl); }
+   .lg\:text-4xl { font-size: var(--text-4xl); }
+   .lg\:text-5xl { font-size: var(--text-5xl); }
+}

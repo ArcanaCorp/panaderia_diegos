@@ -1,0 +1,65 @@
+.w { width: var(--w); min-width: var(--mnw); max-width: var(--mxw); }
+.h { height: var(--h); min-height: var(--mnh); max-height: var(--mxh); }
+
+.w-fit { width: fit-content; }
+.h-fit { height: fit-content; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+.screen { width: 100dvw; min-width: 100dvw; height: 100dvh; }
+.w-screen { width: 100dvw; }
+.h-screen { height: 100dvh; }
+
+.square { width: var(--sq); min-width: var(--sq); height: var(--sq); }
+
+@media (min-width: 768px) {
+    .md\:w { width: var(--w-md); min-width: var(--mnw-md); max-width: var(--mxw-md); }
+    .md\:h { height: var(--h-md); min-height: var(--mnh-md); max-height: var(--mxh-md); }
+
+    .md\:w-fit { width: fit-content; }
+    .md\:h-fit { height: fit-content; }
+
+    .md\:w-full { width: 100%; }
+    .md\:h-full { height: 100%; }
+
+    .md\:screen { width: 100dvw; min-width: 100dvw; height: 100dvh; }
+    .md\:w-screen { width: 100dvw; }
+    .md\:h-screen { height: 100dvh; }
+
+    .md\:square { width: var(--sq-md); min-width: var(--sq-md); height: var(--sq-md); }
+}
+
+@media (min-width: 768px) {
+    .lg\:w { width: var(--w-lg); min-width: var(--mnw-lg); max-width: var(--mxw-lg); }
+    .lg\:h { height: var(--h-lg); min-height: var(--mnh-lg); max-height: var(--mxh-lg); }
+
+    .lg\:w-fit { width: fit-content; }
+    .lg\:h-fit { height: fit-content; }
+
+    .lg\:w-full { width: 100%; }
+    .lg\:h-full { height: 100%; }
+
+    .lg\:screen { width: 100dvw; min-width: 100dvw; height: 100dvh; }
+    .lg\:w-screen { width: 100dvw; }
+    .lg\:h-screen { height: 100dvh; }
+
+    .lg\:square { width: var(--sq-lg); min-width: var(--sq-lg); height: var(--sq-lg); }
+}
+
+@media (min-width: 1440px) {
+    .xl\:w { width: var(--w-xl); min-width: var(--mnw-xl); max-width: var(--mxw-xl); }
+    .xl\:h { height: var(--h-xl); min-height: var(--mnh-xl); max-height: var(--mxh-xl); }
+
+    .xl\:w-fit { width: fit-content; }
+    .xl\:h-fit { height: fit-content; }
+
+    .xl\:w-full { width: 100%; }
+    .xl\:h-full { height: 100%; }
+
+    .xl\:screen { width: 100dvw; min-width: 100dvw; height: 100dvh; }
+    .xl\:w-screen { width: 100dvw; }
+    .xl\:h-screen { height: 100dvh; }
+
+    .xl\:square { width: var(--sq-xl); min-width: var(--sq-xl); height: var(--sq-xl); }
+}

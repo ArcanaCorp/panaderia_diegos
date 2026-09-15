@@ -1,0 +1,1478 @@
+/* ==========================================================================
+   DISPLAY.CSS
+   Display & Layout Utilities
+   Desktop + Mobile
+   ========================================================================== */
+
+
+/* ==========================================================================
+   DISPLAY
+   ========================================================================== */
+
+.block { display: block; }
+.inline { display: inline; }
+.inline-block { display: inline-block; }
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.grid { display: grid; }
+.inline-grid { display: inline-grid; }
+.table { display: table; }
+.inline-table { display: inline-table; }
+.table-row { display: table-row; }
+.table-cell { display: table-cell; }
+.contents { display: contents; }
+.flow-root { display: flow-root; }
+.hidden { display: none; }
+.center { display: grid; place-items: center; }
+
+/* ==========================================================================
+   FLEX DIRECTION
+   ========================================================================== */
+
+.flex-row { flex-direction: row; }
+.flex-row-reverse { flex-direction: row-reverse; }
+.flex-col { flex-direction: column; }
+.flex-col-reverse { flex-direction: column-reverse; }
+
+/* ==========================================================================
+   FLEX WRAP
+   ========================================================================== */
+
+.flex-wrap { flex-wrap: wrap; }
+.flex-wrap-reverse { flex-wrap: wrap-reverse; }
+.flex-nowrap { flex-wrap: nowrap; }
+
+/* ==========================================================================
+   FLEX FLOW
+   ========================================================================== */
+
+.flex-flow-row { flex-flow: row; }
+.flex-flow-col { flex-flow: column; }
+.flex-flow-row-wrap { flex-flow: row wrap; }
+.flex-flow-col-wrap { flex-flow: column wrap; }
+
+/* ==========================================================================
+   JUSTIFY CONTENT
+   ========================================================================== */
+
+.justify-normal { justify-content: normal; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.justify-evenly { justify-content: space-evenly; }
+.justify-stretch { justify-content: stretch; }
+
+/* ==========================================================================
+   ALIGN ITEMS
+   ========================================================================== */
+
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.items-center { align-items: center; }
+.items-baseline { align-items: baseline; }
+.items-stretch { align-items: stretch; }
+
+/* ==========================================================================
+   ALIGN CONTENT
+   ========================================================================== */
+
+.content-normal { align-content: normal; }
+.content-start { align-content: flex-start; }
+.content-end { align-content: flex-end; }
+.content-center { align-content: center; }
+.content-between { align-content: space-between; }
+.content-around { align-content: space-around; }
+.content-evenly { align-content: space-evenly; }
+.content-baseline { align-content: baseline; }
+.content-stretch { align-content: stretch; }
+
+/* ==========================================================================
+   ALIGN SELF
+   ========================================================================== */
+
+.self-auto { align-self: auto; }
+.self-start { align-self: flex-start; }
+.self-end { align-self: flex-end; }
+.self-center { align-self: center; }
+.self-stretch { align-self: stretch; }
+.self-baseline { align-self: baseline; }
+
+/* ==========================================================================
+   PLACE CONTENT
+   ========================================================================== */
+
+.place-content-center { place-content: center; }
+.place-content-start { place-content: start; }
+.place-content-end { place-content: end; }
+.place-content-between { place-content: space-between; }
+.place-content-around { place-content: space-around; }
+.place-content-evenly { place-content: space-evenly; }
+.place-content-stretch { place-content: stretch; }
+
+/* ==========================================================================
+   PLACE ITEMS
+   ========================================================================== */
+
+.place-items-start { place-items: start; }
+.place-items-end { place-items: end; }
+.place-items-center { place-items: center; }
+.place-items-stretch { place-items: stretch; }
+
+/* ==========================================================================
+   PLACE SELF
+   ========================================================================== */
+
+.place-self-auto { place-self: auto; }
+.place-self-start { place-self: start; }
+.place-self-end { place-self: end; }
+.place-self-center { place-self: center; }
+.place-self-stretch { place-self: stretch; }
+
+/* ==========================================================================
+   FLEX GROW
+   ========================================================================== */
+
+.grow { flex-grow: 1; }
+.grow-0 { flex-grow: 0; }
+
+/* ==========================================================================
+   FLEX SHRINK
+   ========================================================================== */
+
+.shrink { flex-shrink: 1; }
+.shrink-0 { flex-shrink: 0; }
+
+/* ==========================================================================
+   FLEX BASIS
+   ========================================================================== */
+
+.basis-auto { flex-basis: auto; }
+.basis-0 { flex-basis: 0; }
+.basis-full { flex-basis: 100%; }
+
+/* ==========================================================================
+   FLEX
+   ========================================================================== */
+
+.flex-1 { flex: 1 1 0%; }
+.flex-auto { flex: 1 1 auto; }
+.flex-initial { flex: 0 1 auto; }
+.flex-none { flex: none; }
+
+/* ==========================================================================
+   ORDER
+   ========================================================================== */
+
+.order-first { order: -9999; }
+.order-last { order: 9999; }
+.order-none { order: 0; }
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+.order-3 { order: 3; }
+.order-4 { order: 4; }
+.order-5 { order: 5; }
+.order-6 { order: 6; }
+.order-7 { order: 7; }
+.order-8 { order: 8; }
+.order-9 { order: 9; }
+
+/* ==========================================================================
+   GRID TEMPLATE COLUMNS
+   ========================================================================== */
+
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+.grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+.grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+.grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+.grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+.grid-cols-none { grid-template-columns: none; }
+
+/* ==========================================================================
+   SPECIAL GRID COLUMNS
+   ========================================================================== */
+
+.grid-cols-1-auto { grid-template-columns: minmax(0, 1fr) auto; }
+.grid-cols-auto-1 { grid-template-columns: auto minmax(0, 1fr); }
+.grid-cols-1-300 { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+.grid-cols-300-1 { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); }
+
+/* ==========================================================================
+   GRID TEMPLATE ROWS
+   ========================================================================== */
+
+.grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+.grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+.grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+.grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+.grid-rows-none { grid-template-rows: none; }
+
+.grid-rows-1-60 { grid-template-rows: minmax(0, 1fr) minmax(0, 60px); }
+
+/* ==========================================================================
+   GRID COLUMN SPAN
+   ========================================================================== */
+
+.col-auto { grid-column: auto; }
+.col-span-1 { grid-column: span 1 / span 1; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.col-span-3 { grid-column: span 3 / span 3; }
+.col-span-4 { grid-column: span 4 / span 4; }
+.col-span-5 { grid-column: span 5 / span 5; }
+.col-span-6 { grid-column: span 6 / span 6; }
+.col-span-7 { grid-column: span 7 / span 7; }
+.col-span-8 { grid-column: span 8 / span 8; }
+.col-span-9 { grid-column: span 9 / span 9; }
+.col-span-10 { grid-column: span 10 / span 10; }
+.col-span-11 { grid-column: span 11 / span 11; }
+.col-span-12 { grid-column: span 12 / span 12; }
+.col-span-full { grid-column: 1 / -1; }
+
+/* ==========================================================================
+   GRID ROW SPAN
+   ========================================================================== */
+
+.row-auto { grid-row: auto; }
+.row-span-1 { grid-row: span 1 / span 1; }
+.row-span-2 { grid-row: span 2 / span 2; }
+.row-span-3 { grid-row: span 3 / span 3; }
+.row-span-4 { grid-row: span 4 / span 4; }
+.row-span-5 { grid-row: span 5 / span 5; }
+.row-span-6 { grid-row: span 6 / span 6; }
+.row-span-full { grid-row: 1 / -1; }
+
+/* ==========================================================================
+   GRID AUTO FLOW
+   ========================================================================== */
+
+.grid-flow-row { grid-auto-flow: row; }
+.grid-flow-col { grid-auto-flow: column; }
+.grid-flow-dense { grid-auto-flow: dense; }
+.grid-flow-row-dense { grid-auto-flow: row dense; }
+.grid-flow-col-dense { grid-auto-flow: column dense; }
+
+/* ==========================================================================
+   OVERFLOW
+   ========================================================================== */
+
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-clip { overflow: clip; }
+.overflow-visible { overflow: visible; }
+.overflow-scroll { overflow: scroll; }
+
+/* Overflow X */
+
+.overflow-x-auto { overflow-x: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-x-clip { overflow-x: clip; }
+.overflow-x-visible { overflow-x: visible; }
+.overflow-x-scroll { overflow-x: scroll; }
+
+/* Overflow Y */
+
+.overflow-y-auto { overflow-y: auto; }
+.overflow-y-hidden { overflow-y: hidden; }
+.overflow-y-clip { overflow-y: clip; }
+.overflow-y-visible { overflow-y: visible; }
+.overflow-y-scroll { overflow-y: scroll; }
+
+/* ==========================================================================
+   POSITION
+   ========================================================================== */
+
+.static { position: static; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+
+/* ==========================================================================
+   INSET
+   ========================================================================== */
+
+.inset-0 { inset: 0; }
+.inset-auto { inset: auto; }
+.top-0 { top: 0; }
+.right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
+
+/* Logical positioning */
+
+.inset-inline-0 { inset-inline: 0; }
+.inset-block-0 { inset-block: 0; }
+.start-0 { inset-inline-start: 0; }
+.end-0 { inset-inline-end: 0; }
+
+/* ==========================================================================
+   Z-INDEX
+   ========================================================================== */
+
+.z-auto { z-index: auto; }
+.z-0 { z-index: 0; }
+.z-10 { z-index: 10; }
+.z-20 { z-index: 20; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
+.z-50 { z-index: 50; }
+
+/* ==========================================================================
+   VISIBILITY
+   ========================================================================== */
+
+.visible { visibility: visible; }
+.invisible { visibility: hidden; }
+.collapse { visibility: collapse; }
+
+/* ==========================================================================
+   OBJECT FIT
+   ========================================================================== */
+
+.object-contain { object-fit: contain; }
+.object-cover { object-fit: cover; }
+.object-fill { object-fit: fill; }
+.object-none { object-fit: none; }
+.object-scale-down { object-fit: scale-down; }
+
+/* ==========================================================================
+   OBJECT POSITION
+   ========================================================================== */
+
+.object-center { object-position: center; }
+.object-top { object-position: top; }
+.object-right { object-position: right; }
+.object-bottom { object-position: bottom; }
+.object-left { object-position: left; }
+
+/* ==========================================================================
+   BOX SIZING
+   ========================================================================== */
+
+.box-border { box-sizing: border-box; }
+.box-content { box-sizing: content-box; }
+
+/* ==========================================================================
+   ISOLATION
+   ========================================================================== */
+
+.isolate { isolation: isolate; }
+.isolation-auto { isolation: auto; }
+
+/* ==========================================================================
+   CURSOR
+   ========================================================================== */
+
+.pointer { cursor: pointer; }
+
+
+@media (min-width: 768px) {
+
+   .md\:block { display: block; }
+   .md\:inline { display: inline; }
+   .md\:inline-block { display: inline-block; }
+   .md\:flex { display: flex; }
+   .md\:inline-flex { display: inline-flex; }
+   .md\:grid { display: grid; }
+   .md\:inline-grid { display: inline-grid; }
+   .md\:table { display: table; }
+   .md\:inline-table { display: inline-table; }
+   .md\:table-row { display: table-row; }
+   .md\:table-cell { display: table-cell; }
+   .md\:contents { display: contents; }
+   .md\:flow-root { display: flow-root; }
+   .md\:hidden { display: none; }
+   .md\:center { display: grid; place-items: center; }
+
+   /* ==========================================================================
+      FLEX DIRECTION
+      ========================================================================== */
+
+   .md\:flex-row { flex-direction: row; }
+   .md\:flex-row-reverse { flex-direction: row-reverse; }
+   .md\:flex-col { flex-direction: column; }
+   .md\:flex-col-reverse { flex-direction: column-reverse; }
+
+   /* ==========================================================================
+      FLEX WRAP
+      ========================================================================== */
+
+   .md\:flex-wrap { flex-wrap: wrap; }
+   .md\:flex-wrap-reverse { flex-wrap: wrap-reverse; }
+   .md\:flex-nowrap { flex-wrap: nowrap; }
+
+   /* ==========================================================================
+      FLEX FLOW
+      ========================================================================== */
+
+   .md\:flex-flow-row { flex-flow: row; }
+   .md\:flex-flow-col { flex-flow: column; }
+   .md\:flex-flow-row-wrap { flex-flow: row wrap; }
+   .md\:flex-flow-col-wrap { flex-flow: column wrap; }
+
+   /* ==========================================================================
+      JUSTIFY CONTENT
+      ========================================================================== */
+
+   .md\:justify-normal { justify-content: normal; }
+   .md\:justify-start { justify-content: flex-start; }
+   .md\:justify-end { justify-content: flex-end; }
+   .md\:justify-center { justify-content: center; }
+   .md\:justify-between { justify-content: space-between; }
+   .md\:justify-around { justify-content: space-around; }
+   .md\:justify-evenly { justify-content: space-evenly; }
+   .md\:justify-stretch { justify-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN ITEMS
+      ========================================================================== */
+
+   .md\:items-start { align-items: flex-start; }
+   .md\:items-end { align-items: flex-end; }
+   .md\:items-center { align-items: center; }
+   .md\:items-baseline { align-items: baseline; }
+   .md\:items-stretch { align-items: stretch; }
+
+   /* ==========================================================================
+      ALIGN CONTENT
+      ========================================================================== */
+
+   .md\:content-normal { align-content: normal; }
+   .md\:content-start { align-content: flex-start; }
+   .md\:content-end { align-content: flex-end; }
+   .md\:content-center { align-content: center; }
+   .md\:content-between { align-content: space-between; }
+   .md\:content-around { align-content: space-around; }
+   .md\:content-evenly { align-content: space-evenly; }
+   .md\:content-baseline { align-content: baseline; }
+   .md\:content-stretch { align-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN SELF
+      ========================================================================== */
+
+   .md\:self-auto { align-self: auto; }
+   .md\:self-start { align-self: flex-start; }
+   .md\:self-end { align-self: flex-end; }
+   .md\:self-center { align-self: center; }
+   .md\:self-stretch { align-self: stretch; }
+   .md\:self-baseline { align-self: baseline; }
+
+   /* ==========================================================================
+      PLACE CONTENT
+      ========================================================================== */
+
+   .md\:place-content-center { place-content: center; }
+   .md\:place-content-start { place-content: start; }
+   .md\:place-content-end { place-content: end; }
+   .md\:place-content-between { place-content: space-between; }
+   .md\:place-content-around { place-content: space-around; }
+   .md\:place-content-evenly { place-content: space-evenly; }
+   .md\:place-content-stretch { place-content: stretch; }
+
+   /* ==========================================================================
+      PLACE ITEMS
+      ========================================================================== */
+
+   .md\:place-items-start { place-items: start; }
+   .md\:place-items-end { place-items: end; }
+   .md\:place-items-center { place-items: center; }
+   .md\:place-items-stretch { place-items: stretch; }
+
+   /* ==========================================================================
+      PLACE SELF
+      ========================================================================== */
+
+   .md\:place-self-auto { place-self: auto; }
+   .md\:place-self-start { place-self: start; }
+   .md\:place-self-end { place-self: end; }
+   .md\:place-self-center { place-self: center; }
+   .md\:place-self-stretch { place-self: stretch; }
+
+   /* ==========================================================================
+      FLEX GROW
+      ========================================================================== */
+
+   .md\:grow { flex-grow: 1; }
+   .md\:grow-0 { flex-grow: 0; }
+
+   /* ==========================================================================
+      FLEX SHRINK
+      ========================================================================== */
+
+   .md\:shrink { flex-shrink: 1; }
+   .md\:shrink-0 { flex-shrink: 0; }
+
+   /* ==========================================================================
+      FLEX BASIS
+      ========================================================================== */
+
+   .md\:basis-auto { flex-basis: auto; }
+   .md\:basis-0 { flex-basis: 0; }
+   .md\:basis-full { flex-basis: 100%; }
+
+   /* ==========================================================================
+      FLEX
+      ========================================================================== */
+
+   .md\:flex-1 { flex: 1 1 0%; }
+   .md\:flex-auto { flex: 1 1 auto; }
+   .md\:flex-initial { flex: 0 1 auto; }
+   .md\:flex-none { flex: none; }
+
+   /* ==========================================================================
+      ORDER
+      ========================================================================== */
+
+   .md\:order-first { order: -9999; }
+   .md\:order-last { order: 9999; }
+   .md\:order-none { order: 0; }
+   .md\:order-1 { order: 1; }
+   .md\:order-2 { order: 2; }
+   .md\:order-3 { order: 3; }
+   .md\:order-4 { order: 4; }
+   .md\:order-5 { order: 5; }
+   .md\:order-6 { order: 6; }
+   .md\:order-7 { order: 7; }
+   .md\:order-8 { order: 8; }
+   .md\:order-9 { order: 9; }
+
+   /* ==========================================================================
+      GRID TEMPLATE COLUMNS
+      ========================================================================== */
+
+   .md\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+   .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+   .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+   .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+   .md\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+   .md\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+   .md\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+   .md\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+   .md\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+   .md\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+   .md\:grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+   .md\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+   .md\:grid-cols-none { grid-template-columns: none; }
+
+   /* ==========================================================================
+      SPECIAL GRID COLUMNS
+      ========================================================================== */
+
+   .md\:grid-cols-1-auto { grid-template-columns: minmax(0, 1fr) auto; }
+   .md\:grid-cols-auto-1 { grid-template-columns: auto minmax(0, 1fr); }
+   .md\:grid-cols-1-300 { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+   .md\:grid-cols-300-1 { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); }
+
+   /* ==========================================================================
+      GRID TEMPLATE ROWS
+      ========================================================================== */
+
+   .md\:grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+   .md\:grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+   .md\:grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+   .md\:grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+   .md\:grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+   .md\:grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+   .md\:grid-rows-none { grid-template-rows: none; }
+
+   /* ==========================================================================
+      GRID COLUMN SPAN
+      ========================================================================== */
+
+   .md\:col-auto { grid-column: auto; }
+   .md\:col-span-1 { grid-column: span 1 / span 1; }
+   .md\:col-span-2 { grid-column: span 2 / span 2; }
+   .md\:col-span-3 { grid-column: span 3 / span 3; }
+   .md\:col-span-4 { grid-column: span 4 / span 4; }
+   .md\:col-span-5 { grid-column: span 5 / span 5; }
+   .md\:col-span-6 { grid-column: span 6 / span 6; }
+   .md\:col-span-7 { grid-column: span 7 / span 7; }
+   .md\:col-span-8 { grid-column: span 8 / span 8; }
+   .md\:col-span-9 { grid-column: span 9 / span 9; }
+   .md\:col-span-10 { grid-column: span 10 / span 10; }
+   .md\:col-span-11 { grid-column: span 11 / span 11; }
+   .md\:col-span-12 { grid-column: span 12 / span 12; }
+   .md\:col-span-full { grid-column: 1 / -1; }
+
+   /* ==========================================================================
+      GRID ROW SPAN
+      ========================================================================== */
+
+   .md\:row-auto { grid-row: auto; }
+   .md\:row-span-1 { grid-row: span 1 / span 1; }
+   .md\:row-span-2 { grid-row: span 2 / span 2; }
+   .md\:row-span-3 { grid-row: span 3 / span 3; }
+   .md\:row-span-4 { grid-row: span 4 / span 4; }
+   .md\:row-span-5 { grid-row: span 5 / span 5; }
+   .md\:row-span-6 { grid-row: span 6 / span 6; }
+   .md\:row-span-full { grid-row: 1 / -1; }
+
+   /* ==========================================================================
+      GRID AUTO FLOW
+      ========================================================================== */
+
+   .md\:grid-flow-row { grid-auto-flow: row; }
+   .md\:grid-flow-col { grid-auto-flow: column; }
+   .md\:grid-flow-dense { grid-auto-flow: dense; }
+   .md\:grid-flow-row-dense { grid-auto-flow: row dense; }
+   .md\:grid-flow-col-dense { grid-auto-flow: column dense; }
+
+   /* ==========================================================================
+      OVERFLOW
+      ========================================================================== */
+
+   .md\:overflow-auto { overflow: auto; }
+   .md\:overflow-hidden { overflow: hidden; }
+   .md\:overflow-clip { overflow: clip; }
+   .md\:overflow-visible { overflow: visible; }
+   .md\:overflow-scroll { overflow: scroll; }
+
+   /* Overflow X */
+
+   .md\:overflow-x-auto { overflow-x: auto; }
+   .md\:overflow-x-hidden { overflow-x: hidden; }
+   .md\:overflow-x-clip { overflow-x: clip; }
+   .md\:overflow-x-visible { overflow-x: visible; }
+   .md\:overflow-x-scroll { overflow-x: scroll; }
+
+   /* Overflow Y */
+
+   .md\:overflow-y-auto { overflow-y: auto; }
+   .md\:overflow-y-hidden { overflow-y: hidden; }
+   .md\:overflow-y-clip { overflow-y: clip; }
+   .md\:overflow-y-visible { overflow-y: visible; }
+   .md\:overflow-y-scroll { overflow-y: scroll; }
+
+   /* ==========================================================================
+      POSITION
+      ========================================================================== */
+
+   .md\:static { position: static; }
+   .md\:relative { position: relative; }
+   .md\:absolute { position: absolute; }
+   .md\:fixed { position: fixed; }
+   .md\:sticky { position: sticky; }
+
+   /* ==========================================================================
+      INSET
+      ========================================================================== */
+
+   .md\:inset-0 { inset: 0; }
+   .md\:inset-auto { inset: auto; }
+   .md\:top-0 { top: 0; }
+   .md\:right-0 { right: 0; }
+   .md\:bottom-0 { bottom: 0; }
+   .md\:left-0 { left: 0; }
+
+   /* Logical positioning */
+
+   .md\:inset-inline-0 { inset-inline: 0; }
+   .md\:inset-block-0 { inset-block: 0; }
+   .md\:start-0 { inset-inline-start: 0; }
+   .md\:end-0 { inset-inline-end: 0; }
+
+   /* ==========================================================================
+      Z-INDEX
+      ========================================================================== */
+
+   .md\:z-auto { z-index: auto; }
+   .md\:z-0 { z-index: 0; }
+   .md\:z-10 { z-index: 10; }
+   .md\:z-20 { z-index: 20; }
+   .md\:z-30 { z-index: 30; }
+   .md\:z-40 { z-index: 40; }
+   .md\:z-50 { z-index: 50; }
+
+   /* ==========================================================================
+      VISIBILITY
+      ========================================================================== */
+
+   .md\:visible { visibility: visible; }
+   .md\:invisible { visibility: hidden; }
+   .md\:collapse { visibility: collapse; }
+
+   /* ==========================================================================
+      OBJECT FIT
+      ========================================================================== */
+
+   .md\:object-contain { object-fit: contain; }
+   .md\:object-cover { object-fit: cover; }
+   .md\:object-fill { object-fit: fill; }
+   .md\:object-none { object-fit: none; }
+   .md\:object-scale-down { object-fit: scale-down; }
+
+   /* ==========================================================================
+      OBJECT POSITION
+      ========================================================================== */
+
+   .md\:object-center { object-position: center; }
+   .md\:object-top { object-position: top; }
+   .md\:object-right { object-position: right; }
+   .md\:object-bottom { object-position: bottom; }
+   .md\:object-left { object-position: left; }
+
+   /* ==========================================================================
+      BOX SIZING
+      ========================================================================== */
+
+   .md\:box-border { box-sizing: border-box; }
+   .md\:box-content { box-sizing: content-box; }
+
+   /* ==========================================================================
+      ISOLATION
+      ========================================================================== */
+
+   .md\:isolate { isolation: isolate; }
+   .md\:isolation-auto { isolation: auto; }
+
+   /* ==========================================================================
+      CURSOR
+      ========================================================================== */
+
+   .md\:pointer { cursor: pointer; }
+}
+
+@media (min-width: 1024px) {
+
+   .lg\:block { display: block; }
+   .lg\:inline { display: inline; }
+   .lg\:inline-block { display: inline-block; }
+   .lg\:flex { display: flex; }
+   .lg\:inline-flex { display: inline-flex; }
+   .lg\:grid { display: grid; }
+   .lg\:inline-grid { display: inline-grid; }
+   .lg\:table { display: table; }
+   .lg\:inline-table { display: inline-table; }
+   .lg\:table-row { display: table-row; }
+   .lg\:table-cell { display: table-cell; }
+   .lg\:contents { display: contents; }
+   .lg\:flow-root { display: flow-root; }
+   .lg\:hidden { display: none; }
+   .lg\:center { display: grid; place-items: center; }
+
+   /* ==========================================================================
+      FLEX DIRECTION
+      ========================================================================== */
+
+   .lg\:flex-row { flex-direction: row; }
+   .lg\:flex-row-reverse { flex-direction: row-reverse; }
+   .lg\:flex-col { flex-direction: column; }
+   .lg\:flex-col-reverse { flex-direction: column-reverse; }
+
+   /* ==========================================================================
+      FLEX WRAP
+      ========================================================================== */
+
+   .lg\:flex-wrap { flex-wrap: wrap; }
+   .lg\:flex-wrap-reverse { flex-wrap: wrap-reverse; }
+   .lg\:flex-nowrap { flex-wrap: nowrap; }
+
+   /* ==========================================================================
+      FLEX FLOW
+      ========================================================================== */
+
+   .lg\:flex-flow-row { flex-flow: row; }
+   .lg\:flex-flow-col { flex-flow: column; }
+   .lg\:flex-flow-row-wrap { flex-flow: row wrap; }
+   .lg\:flex-flow-col-wrap { flex-flow: column wrap; }
+
+   /* ==========================================================================
+      JUSTIFY CONTENT
+      ========================================================================== */
+
+   .lg\:justify-normal { justify-content: normal; }
+   .lg\:justify-start { justify-content: flex-start; }
+   .lg\:justify-end { justify-content: flex-end; }
+   .lg\:justify-center { justify-content: center; }
+   .lg\:justify-between { justify-content: space-between; }
+   .lg\:justify-around { justify-content: space-around; }
+   .lg\:justify-evenly { justify-content: space-evenly; }
+   .lg\:justify-stretch { justify-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN ITEMS
+      ========================================================================== */
+
+   .lg\:items-start { align-items: flex-start; }
+   .lg\:items-end { align-items: flex-end; }
+   .lg\:items-center { align-items: center; }
+   .lg\:items-baseline { align-items: baseline; }
+   .lg\:items-stretch { align-items: stretch; }
+
+   /* ==========================================================================
+      ALIGN CONTENT
+      ========================================================================== */
+
+   .lg\:content-normal { align-content: normal; }
+   .lg\:content-start { align-content: flex-start; }
+   .lg\:content-end { align-content: flex-end; }
+   .lg\:content-center { align-content: center; }
+   .lg\:content-between { align-content: space-between; }
+   .lg\:content-around { align-content: space-around; }
+   .lg\:content-evenly { align-content: space-evenly; }
+   .lg\:content-baseline { align-content: baseline; }
+   .lg\:content-stretch { align-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN SELF
+      ========================================================================== */
+
+   .lg\:self-auto { align-self: auto; }
+   .lg\:self-start { align-self: flex-start; }
+   .lg\:self-end { align-self: flex-end; }
+   .lg\:self-center { align-self: center; }
+   .lg\:self-stretch { align-self: stretch; }
+   .lg\:self-baseline { align-self: baseline; }
+
+   /* ==========================================================================
+      PLACE CONTENT
+      ========================================================================== */
+
+   .lg\:place-content-center { place-content: center; }
+   .lg\:place-content-start { place-content: start; }
+   .lg\:place-content-end { place-content: end; }
+   .lg\:place-content-between { place-content: space-between; }
+   .lg\:place-content-around { place-content: space-around; }
+   .lg\:place-content-evenly { place-content: space-evenly; }
+   .lg\:place-content-stretch { place-content: stretch; }
+
+   /* ==========================================================================
+      PLACE ITEMS
+      ========================================================================== */
+
+   .lg\:place-items-start { place-items: start; }
+   .lg\:place-items-end { place-items: end; }
+   .lg\:place-items-center { place-items: center; }
+   .lg\:place-items-stretch { place-items: stretch; }
+
+   /* ==========================================================================
+      PLACE SELF
+      ========================================================================== */
+
+   .lg\:place-self-auto { place-self: auto; }
+   .lg\:place-self-start { place-self: start; }
+   .lg\:place-self-end { place-self: end; }
+   .lg\:place-self-center { place-self: center; }
+   .lg\:place-self-stretch { place-self: stretch; }
+
+   /* ==========================================================================
+      FLEX GROW
+      ========================================================================== */
+
+   .lg\:grow { flex-grow: 1; }
+   .lg\:grow-0 { flex-grow: 0; }
+
+   /* ==========================================================================
+      FLEX SHRINK
+      ========================================================================== */
+
+   .lg\:shrink { flex-shrink: 1; }
+   .lg\:shrink-0 { flex-shrink: 0; }
+
+   /* ==========================================================================
+      FLEX BASIS
+      ========================================================================== */
+
+   .lg\:basis-auto { flex-basis: auto; }
+   .lg\:basis-0 { flex-basis: 0; }
+   .lg\:basis-full { flex-basis: 100%; }
+
+   /* ==========================================================================
+      FLEX
+      ========================================================================== */
+
+   .lg\:flex-1 { flex: 1 1 0%; }
+   .lg\:flex-auto { flex: 1 1 auto; }
+   .lg\:flex-initial { flex: 0 1 auto; }
+   .lg\:flex-none { flex: none; }
+
+   /* ==========================================================================
+      ORDER
+      ========================================================================== */
+
+   .lg\:order-first { order: -9999; }
+   .lg\:order-last { order: 9999; }
+   .lg\:order-none { order: 0; }
+   .lg\:order-1 { order: 1; }
+   .lg\:order-2 { order: 2; }
+   .lg\:order-3 { order: 3; }
+   .lg\:order-4 { order: 4; }
+   .lg\:order-5 { order: 5; }
+   .lg\:order-6 { order: 6; }
+   .lg\:order-7 { order: 7; }
+   .lg\:order-8 { order: 8; }
+   .lg\:order-9 { order: 9; }
+
+   /* ==========================================================================
+      GRID TEMPLATE COLUMNS
+      ========================================================================== */
+
+   .lg\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+   .lg\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+   .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+   .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+   .lg\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+   .lg\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+   .lg\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+   .lg\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+   .lg\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+   .lg\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+   .lg\:grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+   .lg\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+   .lg\:grid-cols-none { grid-template-columns: none; }
+
+   /* ==========================================================================
+      SPECIAL GRID COLUMNS
+      ========================================================================== */
+
+   .lg\:grid-cols-1-auto { grid-template-columns: minmax(0, 1fr) auto; }
+   .lg\:grid-cols-auto-1 { grid-template-columns: auto minmax(0, 1fr); }
+   .lg\:grid-cols-1-300 { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+   .lg\:grid-cols-300-1 { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); }
+
+   /* ==========================================================================
+      GRID TEMPLATE ROWS
+      ========================================================================== */
+
+   .lg\:grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+   .lg\:grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+   .lg\:grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+   .lg\:grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+   .lg\:grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+   .lg\:grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+   .lg\:grid-rows-none { grid-template-rows: none; }
+
+   /* ==========================================================================
+      GRID COLUMN SPAN
+      ========================================================================== */
+
+   .lg\:col-auto { grid-column: auto; }
+   .lg\:col-span-1 { grid-column: span 1 / span 1; }
+   .lg\:col-span-2 { grid-column: span 2 / span 2; }
+   .lg\:col-span-3 { grid-column: span 3 / span 3; }
+   .lg\:col-span-4 { grid-column: span 4 / span 4; }
+   .lg\:col-span-5 { grid-column: span 5 / span 5; }
+   .lg\:col-span-6 { grid-column: span 6 / span 6; }
+   .lg\:col-span-7 { grid-column: span 7 / span 7; }
+   .lg\:col-span-8 { grid-column: span 8 / span 8; }
+   .lg\:col-span-9 { grid-column: span 9 / span 9; }
+   .lg\:col-span-10 { grid-column: span 10 / span 10; }
+   .lg\:col-span-11 { grid-column: span 11 / span 11; }
+   .lg\:col-span-12 { grid-column: span 12 / span 12; }
+   .lg\:col-span-full { grid-column: 1 / -1; }
+
+   /* ==========================================================================
+      GRID ROW SPAN
+      ========================================================================== */
+
+   .lg\:row-auto { grid-row: auto; }
+   .lg\:row-span-1 { grid-row: span 1 / span 1; }
+   .lg\:row-span-2 { grid-row: span 2 / span 2; }
+   .lg\:row-span-3 { grid-row: span 3 / span 3; }
+   .lg\:row-span-4 { grid-row: span 4 / span 4; }
+   .lg\:row-span-5 { grid-row: span 5 / span 5; }
+   .lg\:row-span-6 { grid-row: span 6 / span 6; }
+   .lg\:row-span-full { grid-row: 1 / -1; }
+
+   /* ==========================================================================
+      GRID AUTO FLOW
+      ========================================================================== */
+
+   .lg\:grid-flow-row { grid-auto-flow: row; }
+   .lg\:grid-flow-col { grid-auto-flow: column; }
+   .lg\:grid-flow-dense { grid-auto-flow: dense; }
+   .lg\:grid-flow-row-dense { grid-auto-flow: row dense; }
+   .lg\:grid-flow-col-dense { grid-auto-flow: column dense; }
+
+   /* ==========================================================================
+      OVERFLOW
+      ========================================================================== */
+
+   .lg\:overflow-auto { overflow: auto; }
+   .lg\:overflow-hidden { overflow: hidden; }
+   .lg\:overflow-clip { overflow: clip; }
+   .lg\:overflow-visible { overflow: visible; }
+   .lg\:overflow-scroll { overflow: scroll; }
+
+   /* Overflow X */
+
+   .lg\:overflow-x-auto { overflow-x: auto; }
+   .lg\:overflow-x-hidden { overflow-x: hidden; }
+   .lg\:overflow-x-clip { overflow-x: clip; }
+   .lg\:overflow-x-visible { overflow-x: visible; }
+   .lg\:overflow-x-scroll { overflow-x: scroll; }
+
+   /* Overflow Y */
+
+   .lg\:overflow-y-auto { overflow-y: auto; }
+   .lg\:overflow-y-hidden { overflow-y: hidden; }
+   .lg\:overflow-y-clip { overflow-y: clip; }
+   .lg\:overflow-y-visible { overflow-y: visible; }
+   .lg\:overflow-y-scroll { overflow-y: scroll; }
+
+   /* ==========================================================================
+      POSITION
+      ========================================================================== */
+
+   .lg\:static { position: static; }
+   .lg\:relative { position: relative; }
+   .lg\:absolute { position: absolute; }
+   .lg\:fixed { position: fixed; }
+   .lg\:sticky { position: sticky; }
+
+   /* ==========================================================================
+      INSET
+      ========================================================================== */
+
+   .lg\:inset-0 { inset: 0; }
+   .lg\:inset-auto { inset: auto; }
+   .lg\:top-0 { top: 0; }
+   .lg\:right-0 { right: 0; }
+   .lg\:bottom-0 { bottom: 0; }
+   .lg\:left-0 { left: 0; }
+
+   /* Logical positioning */
+
+   .lg\:inset-inline-0 { inset-inline: 0; }
+   .lg\:inset-block-0 { inset-block: 0; }
+   .lg\:start-0 { inset-inline-start: 0; }
+   .lg\:end-0 { inset-inline-end: 0; }
+
+   /* ==========================================================================
+      Z-INDEX
+      ========================================================================== */
+
+   .lg\:z-auto { z-index: auto; }
+   .lg\:z-0 { z-index: 0; }
+   .lg\:z-10 { z-index: 10; }
+   .lg\:z-20 { z-index: 20; }
+   .lg\:z-30 { z-index: 30; }
+   .lg\:z-40 { z-index: 40; }
+   .lg\:z-50 { z-index: 50; }
+
+   /* ==========================================================================
+      VISIBILITY
+      ========================================================================== */
+
+   .lg\:visible { visibility: visible; }
+   .lg\:invisible { visibility: hidden; }
+   .lg\:collapse { visibility: collapse; }
+
+   /* ==========================================================================
+      OBJECT FIT
+      ========================================================================== */
+
+   .lg\:object-contain { object-fit: contain; }
+   .lg\:object-cover { object-fit: cover; }
+   .lg\:object-fill { object-fit: fill; }
+   .lg\:object-none { object-fit: none; }
+   .lg\:object-scale-down { object-fit: scale-down; }
+
+   /* ==========================================================================
+      OBJECT POSITION
+      ========================================================================== */
+
+   .lg\:object-center { object-position: center; }
+   .lg\:object-top { object-position: top; }
+   .lg\:object-right { object-position: right; }
+   .lg\:object-bottom { object-position: bottom; }
+   .lg\:object-left { object-position: left; }
+
+   /* ==========================================================================
+      BOX SIZING
+      ========================================================================== */
+
+   .lg\:box-border { box-sizing: border-box; }
+   .lg\:box-content { box-sizing: content-box; }
+
+   /* ==========================================================================
+      ISOLATION
+      ========================================================================== */
+
+   .lg\:isolate { isolation: isolate; }
+   .lg\:isolation-auto { isolation: auto; }
+
+   /* ==========================================================================
+      CURSOR
+      ========================================================================== */
+
+   .lg\:pointer { cursor: pointer; }
+}
+
+@media (min-width: 1440px) {
+
+   .xl\:block { display: block; }
+   .xl\:inline { display: inline; }
+   .xl\:inline-block { display: inline-block; }
+   .xl\:flex { display: flex; }
+   .xl\:inline-flex { display: inline-flex; }
+   .xl\:grid { display: grid; }
+   .xl\:inline-grid { display: inline-grid; }
+   .xl\:table { display: table; }
+   .xl\:inline-table { display: inline-table; }
+   .xl\:table-row { display: table-row; }
+   .xl\:table-cell { display: table-cell; }
+   .xl\:contents { display: contents; }
+   .xl\:flow-root { display: flow-root; }
+   .xl\:hidden { display: none; }
+   .xl\:center { display: grid; place-items: center; }
+
+   /* ==========================================================================
+      FLEX DIRECTION
+      ========================================================================== */
+
+   .xl\:flex-row { flex-direction: row; }
+   .xl\:flex-row-reverse { flex-direction: row-reverse; }
+   .xl\:flex-col { flex-direction: column; }
+   .xl\:flex-col-reverse { flex-direction: column-reverse; }
+
+   /* ==========================================================================
+      FLEX WRAP
+      ========================================================================== */
+
+   .xl\:flex-wrap { flex-wrap: wrap; }
+   .xl\:flex-wrap-reverse { flex-wrap: wrap-reverse; }
+   .xl\:flex-nowrap { flex-wrap: nowrap; }
+
+   /* ==========================================================================
+      FLEX FLOW
+      ========================================================================== */
+
+   .xl\:flex-flow-row { flex-flow: row; }
+   .xl\:flex-flow-col { flex-flow: column; }
+   .xl\:flex-flow-row-wrap { flex-flow: row wrap; }
+   .xl\:flex-flow-col-wrap { flex-flow: column wrap; }
+
+   /* ==========================================================================
+      JUSTIFY CONTENT
+      ========================================================================== */
+
+   .xl\:justify-normal { justify-content: normal; }
+   .xl\:justify-start { justify-content: flex-start; }
+   .xl\:justify-end { justify-content: flex-end; }
+   .xl\:justify-center { justify-content: center; }
+   .xl\:justify-between { justify-content: space-between; }
+   .xl\:justify-around { justify-content: space-around; }
+   .xl\:justify-evenly { justify-content: space-evenly; }
+   .xl\:justify-stretch { justify-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN ITEMS
+      ========================================================================== */
+
+   .xl\:items-start { align-items: flex-start; }
+   .xl\:items-end { align-items: flex-end; }
+   .xl\:items-center { align-items: center; }
+   .xl\:items-baseline { align-items: baseline; }
+   .xl\:items-stretch { align-items: stretch; }
+
+   /* ==========================================================================
+      ALIGN CONTENT
+      ========================================================================== */
+
+   .xl\:content-normal { align-content: normal; }
+   .xl\:content-start { align-content: flex-start; }
+   .xl\:content-end { align-content: flex-end; }
+   .xl\:content-center { align-content: center; }
+   .xl\:content-between { align-content: space-between; }
+   .xl\:content-around { align-content: space-around; }
+   .xl\:content-evenly { align-content: space-evenly; }
+   .xl\:content-baseline { align-content: baseline; }
+   .xl\:content-stretch { align-content: stretch; }
+
+   /* ==========================================================================
+      ALIGN SELF
+      ========================================================================== */
+
+   .xl\:self-auto { align-self: auto; }
+   .xl\:self-start { align-self: flex-start; }
+   .xl\:self-end { align-self: flex-end; }
+   .xl\:self-center { align-self: center; }
+   .xl\:self-stretch { align-self: stretch; }
+   .xl\:self-baseline { align-self: baseline; }
+
+   /* ==========================================================================
+      PLACE CONTENT
+      ========================================================================== */
+
+   .xl\:place-content-center { place-content: center; }
+   .xl\:place-content-start { place-content: start; }
+   .xl\:place-content-end { place-content: end; }
+   .xl\:place-content-between { place-content: space-between; }
+   .xl\:place-content-around { place-content: space-around; }
+   .xl\:place-content-evenly { place-content: space-evenly; }
+   .xl\:place-content-stretch { place-content: stretch; }
+
+   /* ==========================================================================
+      PLACE ITEMS
+      ========================================================================== */
+
+   .xl\:place-items-start { place-items: start; }
+   .xl\:place-items-end { place-items: end; }
+   .xl\:place-items-center { place-items: center; }
+   .xl\:place-items-stretch { place-items: stretch; }
+
+   /* ==========================================================================
+      PLACE SELF
+      ========================================================================== */
+
+   .xl\:place-self-auto { place-self: auto; }
+   .xl\:place-self-start { place-self: start; }
+   .xl\:place-self-end { place-self: end; }
+   .xl\:place-self-center { place-self: center; }
+   .xl\:place-self-stretch { place-self: stretch; }
+
+   /* ==========================================================================
+      FLEX GROW
+      ========================================================================== */
+
+   .xl\:grow { flex-grow: 1; }
+   .xl\:grow-0 { flex-grow: 0; }
+
+   /* ==========================================================================
+      FLEX SHRINK
+      ========================================================================== */
+
+   .xl\:shrink { flex-shrink: 1; }
+   .xl\:shrink-0 { flex-shrink: 0; }
+
+   /* ==========================================================================
+      FLEX BASIS
+      ========================================================================== */
+
+   .xl\:basis-auto { flex-basis: auto; }
+   .xl\:basis-0 { flex-basis: 0; }
+   .xl\:basis-full { flex-basis: 100%; }
+
+   /* ==========================================================================
+      FLEX
+      ========================================================================== */
+
+   .xl\:flex-1 { flex: 1 1 0%; }
+   .xl\:flex-auto { flex: 1 1 auto; }
+   .xl\:flex-initial { flex: 0 1 auto; }
+   .xl\:flex-none { flex: none; }
+
+   /* ==========================================================================
+      ORDER
+      ========================================================================== */
+
+   .xl\:order-first { order: -9999; }
+   .xl\:order-last { order: 9999; }
+   .xl\:order-none { order: 0; }
+   .xl\:order-1 { order: 1; }
+   .xl\:order-2 { order: 2; }
+   .xl\:order-3 { order: 3; }
+   .xl\:order-4 { order: 4; }
+   .xl\:order-5 { order: 5; }
+   .xl\:order-6 { order: 6; }
+   .xl\:order-7 { order: 7; }
+   .xl\:order-8 { order: 8; }
+   .xl\:order-9 { order: 9; }
+
+   /* ==========================================================================
+      GRID TEMPLATE COLUMNS
+      ========================================================================== */
+
+   .xl\:grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+   .xl\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+   .xl\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+   .xl\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+   .xl\:grid-cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+   .xl\:grid-cols-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+   .xl\:grid-cols-7 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+   .xl\:grid-cols-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+   .xl\:grid-cols-9 { grid-template-columns: repeat(9, minmax(0, 1fr)); }
+   .xl\:grid-cols-10 { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+   .xl\:grid-cols-11 { grid-template-columns: repeat(11, minmax(0, 1fr)); }
+   .xl\:grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+   .xl\:grid-cols-none { grid-template-columns: none; }
+
+   /* ==========================================================================
+      SPECIAL GRID COLUMNS
+      ========================================================================== */
+
+   .xl\:grid-cols-1-auto { grid-template-columns: minmax(0, 1fr) auto; }
+   .xl\:grid-cols-auto-1 { grid-template-columns: auto minmax(0, 1fr); }
+   .xl\:grid-cols-1-300 { grid-template-columns: minmax(0, 1fr) minmax(0, 300px); }
+   .xl\:grid-cols-300-1 { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); }
+
+   /* ==========================================================================
+      GRID TEMPLATE ROWS
+      ========================================================================== */
+
+   .xl\:grid-rows-1 { grid-template-rows: repeat(1, minmax(0, 1fr)); }
+   .xl\:grid-rows-2 { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+   .xl\:grid-rows-3 { grid-template-rows: repeat(3, minmax(0, 1fr)); }
+   .xl\:grid-rows-4 { grid-template-rows: repeat(4, minmax(0, 1fr)); }
+   .xl\:grid-rows-5 { grid-template-rows: repeat(5, minmax(0, 1fr)); }
+   .xl\:grid-rows-6 { grid-template-rows: repeat(6, minmax(0, 1fr)); }
+   .xl\:grid-rows-none { grid-template-rows: none; }
+
+   /* ==========================================================================
+      GRID COLUMN SPAN
+      ========================================================================== */
+
+   .xl\:col-auto { grid-column: auto; }
+   .xl\:col-span-1 { grid-column: span 1 / span 1; }
+   .xl\:col-span-2 { grid-column: span 2 / span 2; }
+   .xl\:col-span-3 { grid-column: span 3 / span 3; }
+   .xl\:col-span-4 { grid-column: span 4 / span 4; }
+   .xl\:col-span-5 { grid-column: span 5 / span 5; }
+   .xl\:col-span-6 { grid-column: span 6 / span 6; }
+   .xl\:col-span-7 { grid-column: span 7 / span 7; }
+   .xl\:col-span-8 { grid-column: span 8 / span 8; }
+   .xl\:col-span-9 { grid-column: span 9 / span 9; }
+   .xl\:col-span-10 { grid-column: span 10 / span 10; }
+   .xl\:col-span-11 { grid-column: span 11 / span 11; }
+   .xl\:col-span-12 { grid-column: span 12 / span 12; }
+   .xl\:col-span-full { grid-column: 1 / -1; }
+
+   /* ==========================================================================
+      GRID ROW SPAN
+      ========================================================================== */
+
+   .xl\:row-auto { grid-row: auto; }
+   .xl\:row-span-1 { grid-row: span 1 / span 1; }
+   .xl\:row-span-2 { grid-row: span 2 / span 2; }
+   .xl\:row-span-3 { grid-row: span 3 / span 3; }
+   .xl\:row-span-4 { grid-row: span 4 / span 4; }
+   .xl\:row-span-5 { grid-row: span 5 / span 5; }
+   .xl\:row-span-6 { grid-row: span 6 / span 6; }
+   .xl\:row-span-full { grid-row: 1 / -1; }
+
+   /* ==========================================================================
+      GRID AUTO FLOW
+      ========================================================================== */
+
+   .xl\:grid-flow-row { grid-auto-flow: row; }
+   .xl\:grid-flow-col { grid-auto-flow: column; }
+   .xl\:grid-flow-dense { grid-auto-flow: dense; }
+   .xl\:grid-flow-row-dense { grid-auto-flow: row dense; }
+   .xl\:grid-flow-col-dense { grid-auto-flow: column dense; }
+
+   /* ==========================================================================
+      OVERFLOW
+      ========================================================================== */
+
+   .xl\:overflow-auto { overflow: auto; }
+   .xl\:overflow-hidden { overflow: hidden; }
+   .xl\:overflow-clip { overflow: clip; }
+   .xl\:overflow-visible { overflow: visible; }
+   .xl\:overflow-scroll { overflow: scroll; }
+
+   /* Overflow X */
+
+   .xl\:overflow-x-auto { overflow-x: auto; }
+   .xl\:overflow-x-hidden { overflow-x: hidden; }
+   .xl\:overflow-x-clip { overflow-x: clip; }
+   .xl\:overflow-x-visible { overflow-x: visible; }
+   .xl\:overflow-x-scroll { overflow-x: scroll; }
+
+   /* Overflow Y */
+
+   .xl\:overflow-y-auto { overflow-y: auto; }
+   .xl\:overflow-y-hidden { overflow-y: hidden; }
+   .xl\:overflow-y-clip { overflow-y: clip; }
+   .xl\:overflow-y-visible { overflow-y: visible; }
+   .xl\:overflow-y-scroll { overflow-y: scroll; }
+
+   /* ==========================================================================
+      POSITION
+      ========================================================================== */
+
+   .xl\:static { position: static; }
+   .xl\:relative { position: relative; }
+   .xl\:absolute { position: absolute; }
+   .xl\:fixed { position: fixed; }
+   .xl\:sticky { position: sticky; }
+
+   /* ==========================================================================
+      INSET
+      ========================================================================== */
+
+   .xl\:inset-0 { inset: 0; }
+   .xl\:inset-auto { inset: auto; }
+   .xl\:top-0 { top: 0; }
+   .xl\:right-0 { right: 0; }
+   .xl\:bottom-0 { bottom: 0; }
+   .xl\:left-0 { left: 0; }
+
+   /* Logical positioning */
+
+   .xl\:inset-inline-0 { inset-inline: 0; }
+   .xl\:inset-block-0 { inset-block: 0; }
+   .xl\:start-0 { inset-inline-start: 0; }
+   .xl\:end-0 { inset-inline-end: 0; }
+
+   /* ==========================================================================
+      Z-INDEX
+      ========================================================================== */
+
+   .xl\:z-auto { z-index: auto; }
+   .xl\:z-0 { z-index: 0; }
+   .xl\:z-10 { z-index: 10; }
+   .xl\:z-20 { z-index: 20; }
+   .xl\:z-30 { z-index: 30; }
+   .xl\:z-40 { z-index: 40; }
+   .xl\:z-50 { z-index: 50; }
+
+   /* ==========================================================================
+      VISIBILITY
+      ========================================================================== */
+
+   .xl\:visible { visibility: visible; }
+   .xl\:invisible { visibility: hidden; }
+   .xl\:collapse { visibility: collapse; }
+
+   /* ==========================================================================
+      OBJECT FIT
+      ========================================================================== */
+
+   .xl\:object-contain { object-fit: contain; }
+   .xl\:object-cover { object-fit: cover; }
+   .xl\:object-fill { object-fit: fill; }
+   .xl\:object-none { object-fit: none; }
+   .xl\:object-scale-down { object-fit: scale-down; }
+
+   /* ==========================================================================
+      OBJECT POSITION
+      ========================================================================== */
+
+   .xl\:object-center { object-position: center; }
+   .xl\:object-top { object-position: top; }
+   .xl\:object-right { object-position: right; }
+   .xl\:object-bottom { object-position: bottom; }
+   .xl\:object-left { object-position: left; }
+
+   /* ==========================================================================
+      BOX SIZING
+      ========================================================================== */
+
+   .xl\:box-border { box-sizing: border-box; }
+   .xl\:box-content { box-sizing: content-box; }
+
+   /* ==========================================================================
+      ISOLATION
+      ========================================================================== */
+
+   .xl\:isolate { isolation: isolate; }
+   .xl\:isolation-auto { isolation: auto; }
+
+   /* ==========================================================================
+      CURSOR
+      ========================================================================== */
+
+   .xl\:pointer { cursor: pointer; }
+}

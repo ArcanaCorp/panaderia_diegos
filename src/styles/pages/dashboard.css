@@ -1,0 +1,290 @@
+/* ==========================================================================
+   DASHBOARD
+   ========================================================================== */
+
+.dashboard {
+    width: 100%;
+    padding: var(--space-2xl);
+}
+
+
+/* HEADER */
+
+.dashboard__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-2xl);
+}
+
+.dashboard__eyebrow {
+    margin: 0 0 var(--space-xs);
+    color: var(--color-primary);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+}
+
+.dashboard__title {
+    margin: 0;
+    color: var(--color-neutral-900);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-semibold);
+    line-height: var(--leading-tight);
+}
+
+.dashboard__description {
+    margin: var(--space-xs) 0 0;
+    color: var(--color-neutral-500);
+    font-size: var(--text-sm);
+}
+
+.dashboard__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+
+/* STATS */
+
+.dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+
+/* TREND */
+
+.card__trend {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.card__trend svg {
+    flex-shrink: 0;
+}
+
+
+/* MAIN GRID */
+
+.dashboard__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(320px, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+}
+
+
+/* CHART */
+
+.dashboard__chart {
+    min-height: 280px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dashboard__chart-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-neutral-400);
+    font-size: var(--text-sm);
+}
+
+
+/* ACTIVITY */
+
+.dashboard__activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard__activity-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) 0;
+    border-bottom: var(--border);
+}
+
+.dashboard__activity-item:last-child {
+    border-bottom: 0;
+}
+
+.dashboard__activity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+}
+
+.dashboard__activity-icon--positive {
+    color: var(--color-success-600);
+    background: var(--color-success-transparent-10);
+}
+
+.dashboard__activity-icon--negative {
+    color: var(--color-danger-600);
+    background: var(--color-danger-transparent-10);
+}
+
+.dashboard__activity-icon--neutral {
+    color: var(--color-neutral-600);
+    background: var(--color-neutral-100);
+}
+
+.dashboard__activity-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.dashboard__activity-title {
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.dashboard__activity-description {
+    margin: 2px 0 0;
+    color: var(--color-neutral-500);
+    font-size: var(--text-xs);
+}
+
+.dashboard__activity-amount {
+    color: var(--color-neutral-700);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+    white-space: nowrap;
+}
+
+
+/* STOCK */
+
+.dashboard__stock {
+    margin-bottom: var(--space-xl);
+}
+
+.dashboard__stock-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard__stock-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: var(--space-lg);
+    padding: var(--space-md) 0;
+    border-bottom: var(--border);
+}
+
+.dashboard__stock-item:last-child {
+    border-bottom: 0;
+}
+
+.dashboard__stock-info {
+    min-width: 0;
+}
+
+.dashboard__stock-name {
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+.dashboard__stock-category {
+    margin: 2px 0 0;
+    color: var(--color-neutral-500);
+    font-size: var(--text-xs);
+}
+
+.dashboard__stock-quantity {
+    color: var(--color-neutral-700);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .dashboard__stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard__header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard__actions {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .dashboard {
+        padding: var(--space-lg);
+    }
+
+    .dashboard__grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .dashboard {
+        padding: var(--space-md);
+    }
+
+    .dashboard__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard__actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard__actions .btn {
+        width: 100%;
+    }
+
+    .dashboard__title {
+        font-size: var(--text-xl);
+    }
+
+    .dashboard__stock-item {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .dashboard__stock-item .badge {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .dashboard__stock-quantity {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+}

@@ -1,0 +1,220 @@
+.settings {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-2xl);
+}
+
+.settings__header {
+    margin-bottom: var(--space-xl);
+}
+
+.settings__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.settings__title-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-transparent-10);
+    color: var(--color-primary);
+}
+
+.settings__title {
+    margin: 0;
+    font-size: var(--text-xl);
+    font-weight: var(--font-semibold);
+    color: var(--color-dark);
+}
+
+.settings__description {
+    margin: 3px 0 0;
+    color: var(--color-gray);
+    font-size: var(--text-sm);
+}
+
+/* Perfil */
+
+.settings__profile {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-lg);
+}
+
+.settings__avatar {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: white;
+    font-size: var(--text-md);
+    font-weight: var(--font-semibold);
+}
+
+.settings__profile-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.settings__profile-info h2 {
+    margin: 0;
+    font-size: var(--text-md);
+    font-weight: var(--font-semibold);
+    color: var(--color-dark);
+}
+
+.settings__profile-info p {
+    margin: 2px 0 0;
+    font-size: var(--text-xs);
+    color: var(--color-gray);
+}
+
+/* Grupos */
+
+.settings__groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.settings__group-header {
+    margin-bottom: var(--space-sm);
+}
+
+.settings__group-header h2 {
+    margin: 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-dark);
+}
+
+/* Lista */
+
+.settings__list {
+    padding: 0;
+    overflow: hidden;
+}
+
+.settings__item {
+    width: 100%;
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
+    border: 0;
+    border-bottom: var(--border);
+    background: var(--color-surface);
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        background-color 150ms ease,
+        color 150ms ease;
+}
+
+.settings__item:last-child {
+    border-bottom: 0;
+}
+
+.settings__item:hover {
+    background: var(--color-neutral-50);
+}
+
+.settings__item:active {
+    background: var(--color-primary-transparent-5);
+}
+
+.settings__item:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+}
+
+.settings__item-icon {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    background: var(--color-primary-transparent-10);
+    color: var(--color-primary);
+}
+
+.settings__item-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.settings__item-title {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    color: var(--color-dark);
+}
+
+.settings__item-description {
+    font-size: var(--text-xs);
+    color: var(--color-gray);
+}
+
+.settings__item-arrow {
+    flex: 0 0 auto;
+    color: var(--color-neutral-400);
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+    .settings {
+        padding: var(--space-lg);
+    }
+
+    .settings__profile {
+        padding: var(--space-md);
+    }
+
+    .settings__item {
+        min-height: 64px;
+        padding: var(--space-md);
+    }
+
+    .settings__item-description {
+        line-height: var(--leading-normal);
+    }
+}
+
+@media (max-width: 480px) {
+    .settings {
+        padding: var(--space-md);
+    }
+
+    .settings__profile .badge {
+        display: none;
+    }
+
+    .settings__item-description {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .settings__item {
+        transition: none;
+    }
+}

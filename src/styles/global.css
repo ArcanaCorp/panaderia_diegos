@@ -1,0 +1,36 @@
+@import './token/tokens.css';
+
+/* BASE */
+@import './base/reset.css';
+
+/* LAYOUT */
+@import './layout/layout.css';
+@import './layout/display.css';
+@import './layout/spacing.css';
+
+/* UTILITIES */
+@import './utilities/colors.css';
+@import './utilities/text.css';
+@import './utilities/border.css';
+
+/* COMPONENTS */
+@import './components/button.css';
+@import './components/input.css';
+@import './components/badge.css';
+@import './components/card.css';
+@import './components/dialog.css';
+@import './components/table.css';
+@import './components/graphic.css';
+@import './components/sidebar.css';
+
+@import './pages/login.css';
+@import './pages/dashboard.css';
+@import './pages/pos.css';
+@import './pages/inventary.css';
+@import './pages/produccion.css';
+@import './pages/produccion-panel.css';
+@import './pages/products.css';
+@import './pages/settings.css';
+@import './pages/stores.css';
+@import './pages/alerts.css';
+@import './pages/suppliers.css';

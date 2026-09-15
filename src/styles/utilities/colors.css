@@ -1,0 +1,396 @@
+/* ==========================================================================
+   BACKGROUND UTILITIES
+   bg-*
+   ========================================================================== */
+
+.bg-primary { background-color: var(--color-primary); }
+.bg-primary-light { background-color: var(--color-primary-light); }
+.bg-dark { background-color: var(--color-dark); }
+.bg-gray { background-color: var(--color-gray); }
+.bg-background { background-color: var(--color-background); }
+.bg-surface { background-color: var(--color-surface); }
+
+/* States */
+
+.bg-success { background-color: var(--color-success-500); }
+.bg-success-light { background-color: var(--color-success-transparent-10); }
+.bg-warning { background-color: var(--color-warning-500); }
+.bg-warning-light { background-color: var(--color-warning-transparent-10); }
+.bg-danger { background-color: var(--color-danger-500); }
+.bg-danger-light { background-color: var(--color-danger-transparent-10); }
+.bg-info { background-color: var(--color-info-500); }
+.bg-info-light { background-color: var(--color-info-transparent-10); }
+
+/* Taupe */
+
+.bg-taupe-50 { background-color: var(--color-taupe-50); }
+.bg-taupe-100 { background-color: var(--color-taupe-100); }
+.bg-taupe-200 { background-color: var(--color-taupe-200); }
+.bg-taupe-300 { background-color: var(--color-taupe-300); }
+.bg-taupe-400 { background-color: var(--color-taupe-400); }
+.bg-taupe-500 { background-color: var(--color-taupe-500); }
+.bg-taupe-600 { background-color: var(--color-taupe-600); }
+.bg-taupe-700 { background-color: var(--color-taupe-700); }
+.bg-taupe-800 { background-color: var(--color-taupe-800); }
+.bg-taupe-900 { background-color: var(--color-taupe-900); }
+.bg-taupe-950 { background-color: var(--color-taupe-950); }
+
+
+/* Neutral */
+
+.bg-neutral-50 { background-color: var(--color-neutral-50); }
+.bg-neutral-100 { background-color: var(--color-neutral-100); }
+.bg-neutral-200 { background-color: var(--color-neutral-200); }
+.bg-neutral-300 { background-color: var(--color-neutral-300); }
+.bg-neutral-400 { background-color: var(--color-neutral-400); }
+.bg-neutral-500 { background-color: var(--color-neutral-500); }
+.bg-neutral-600 { background-color: var(--color-neutral-600); }
+.bg-neutral-700 { background-color: var(--color-neutral-700); }
+.bg-neutral-800 { background-color: var(--color-neutral-800); }
+.bg-neutral-900 { background-color: var(--color-neutral-900); }
+.bg-neutral-950 { background-color: var(--color-neutral-950); }
+
+
+/* ==========================================================================
+   TEXT UTILITIES
+   text-*
+   ========================================================================== */
+
+.text-primary { color: var(--color-primary); }
+.text-dark { color: var(--color-dark); }
+.text-gray { color: var(--color-gray); }
+.text-success { color: var(--color-success-600); }
+.text-warning { color: var(--color-warning-600); }
+.text-danger { color: var(--color-danger-600); }
+.text-info { color: var(--color-info-600); }
+
+/* Taupe */
+
+.text-taupe-50 { color: var(--color-taupe-50); }
+.text-taupe-100 { color: var(--color-taupe-100); }
+.text-taupe-200 { color: var(--color-taupe-200); }
+.text-taupe-300 { color: var(--color-taupe-300); }
+.text-taupe-400 { color: var(--color-taupe-400); }
+.text-taupe-500 { color: var(--color-taupe-500); }
+.text-taupe-600 { color: var(--color-taupe-600); }
+.text-taupe-700 { color: var(--color-taupe-700); }
+.text-taupe-800 { color: var(--color-taupe-800); }
+.text-taupe-900 { color: var(--color-taupe-900); }
+.text-taupe-950 { color: var(--color-taupe-950); }
+
+
+/* Neutral */
+
+.text-neutral-50 { color: var(--color-neutral-50); }
+.text-neutral-100 { color: var(--color-neutral-100); }
+.text-neutral-200 { color: var(--color-neutral-200); }
+.text-neutral-300 { color: var(--color-neutral-300); }
+.text-neutral-400 { color: var(--color-neutral-400); }
+.text-neutral-500 { color: var(--color-neutral-500); }
+.text-neutral-600 { color: var(--color-neutral-600); }
+.text-neutral-700 { color: var(--color-neutral-700); }
+.text-neutral-800 { color: var(--color-neutral-800); }
+.text-neutral-900 { color: var(--color-neutral-900); }
+.text-neutral-950 { color: var(--color-neutral-950); }
+
+
+/* ==========================================================================
+   BORDER UTILITIES
+   border-*
+   ========================================================================== */
+
+.border-primary { border-color: var(--color-primary); }
+.border-dark { border-color: var(--color-dark); }
+.border-gray { border-color: var(--color-gray); }
+.border-success { border-color: var(--color-success-500); }
+.border-warning { border-color: var(--color-warning-500); }
+.border-danger { border-color: var(--color-danger-500); }
+.border-info { border-color: var(--color-info-500); }
+
+/* Taupe */
+
+.border-taupe-50 { border-color: var(--color-taupe-50); }
+.border-taupe-100 { border-color: var(--color-taupe-100); }
+.border-taupe-200 { border-color: var(--color-taupe-200); }
+.border-taupe-300 { border-color: var(--color-taupe-300); }
+.border-taupe-400 { border-color: var(--color-taupe-400); }
+.border-taupe-500 { border-color: var(--color-taupe-500); }
+.border-taupe-600 { border-color: var(--color-taupe-600); }
+.border-taupe-700 { border-color: var(--color-taupe-700); }
+.border-taupe-800 { border-color: var(--color-taupe-800); }
+.border-taupe-900 { border-color: var(--color-taupe-900); }
+.border-taupe-950 { border-color: var(--color-taupe-950); }
+
+
+/* Neutral */
+
+.border-neutral-50 { border-color: var(--color-neutral-50); }
+.border-neutral-100 { border-color: var(--color-neutral-100); }
+.border-neutral-200 { border-color: var(--color-neutral-200); }
+.border-neutral-300 { border-color: var(--color-neutral-300); }
+.border-neutral-400 { border-color: var(--color-neutral-400); }
+.border-neutral-500 { border-color: var(--color-neutral-500); }
+.border-neutral-600 { border-color: var(--color-neutral-600); }
+.border-neutral-700 { border-color: var(--color-neutral-700); }
+.border-neutral-800 { border-color: var(--color-neutral-800); }
+.border-neutral-900 { border-color: var(--color-neutral-900); }
+.border-neutral-950 { border-color: var(--color-neutral-950); }
+
+
+/* ==========================================================================
+   TRANSPARENT BACKGROUND UTILITIES
+   ========================================================================== */
+
+.bg-primary-transparent { background-color: var(--color-primary-transparent);}
+.bg-success-transparent { background-color: var(--color-success-transparent);}
+.bg-warning-transparent { background-color: var(--color-warning-transparent);}
+.bg-danger-transparent { background-color: var(--color-danger-transparent);}
+.bg-info-transparent { background-color: var(--color-info-transparent);}
+
+/* Opacity variants */
+
+.bg-success-5 { background-color: var(--color-success-transparent-5); }
+.bg-success-10 { background-color: var(--color-success-transparent-10); }
+.bg-success-20 { background-color: var(--color-success-transparent-20); }
+
+.bg-warning-5 { background-color: var(--color-warning-transparent-5); }
+.bg-warning-10 { background-color: var(--color-warning-transparent-10); }
+.bg-warning-20 { background-color: var(--color-warning-transparent-20); }
+
+.bg-danger-5 { background-color: var(--color-danger-transparent-5); }
+.bg-danger-10 { background-color: var(--color-danger-transparent-10); }
+.bg-danger-20 { background-color: var(--color-danger-transparent-20); }
+
+.bg-info-5 { background-color: var(--color-info-transparent-5); }
+.bg-info-10 { background-color: var(--color-info-transparent-10); }
+.bg-info-20 { background-color: var(--color-info-transparent-20); }
+
+/* ==========================================================================
+   INTERACTION STATES
+   hover:*
+   focus:*
+   active:*
+   disabled:*
+   ========================================================================== */
+
+
+/* ==========================================================================
+   HOVER — BACKGROUNDS
+   ========================================================================== */
+
+.hover\:bg-primary:hover { background-color: var(--color-primary-hover); }
+.hover\:bg-dark:hover { background-color: var(--color-neutral-900); }
+.hover\:bg-success:hover { background-color: var(--color-success-600); }
+.hover\:bg-warning:hover { background-color: var(--color-warning-600); }
+.hover\:bg-danger:hover { background-color: var(--color-danger-600); }
+.hover\:bg-info:hover { background-color: var(--color-info-600); }
+
+/* Transparent backgrounds */
+
+.hover\:bg-primary-light:hover { background-color: var(--color-primary-transparent-20); }
+.hover\:bg-success-light:hover { background-color: var(--color-success-transparent-20); }
+.hover\:bg-warning-light:hover { background-color: var(--color-warning-transparent-20); }
+.hover\:bg-danger-light:hover { background-color: var(--color-danger-transparent-20); }
+.hover\:bg-info-light:hover { background-color: var(--color-info-transparent-20); }
+
+/* ==========================================================================
+    HOVER — TEXT
+    ========================================================================== */
+
+.hover\:text-primary:hover { color: var(--color-primary-hover); }
+.hover\:text-dark:hover { color: var(--color-neutral-950); }
+.hover\:text-success:hover { color: var(--color-success-700); }
+.hover\:text-warning:hover { color: var(--color-warning-700); }
+.hover\:text-danger:hover { color: var(--color-danger-700); }
+.hover\:text-info:hover { color: var(--color-info-700); }
+
+/* ==========================================================================
+    HOVER — BORDERS========================================================================== */
+
+.hover\:border-primary:hover { border-color: var(--color-primary-hover); }
+.hover\:border-success:hover { border-color: var(--color-success-600); }
+.hover\:border-warning:hover { border-color: var(--color-warning-600); }
+.hover\:border-danger:hover { border-color: var(--color-danger-600); }
+.hover\:border-info:hover { border-color: var(--color-info-600); }
+
+/* ==========================================================================
+    FOCUS — BACKGROUNDS========================================================================== */
+
+.focus\:bg-primary:focus { background-color: var(--color-primary-hover); }
+.focus\:bg-success:focus { background-color: var(--color-success-600); }
+.focus\:bg-warning:focus { background-color: var(--color-warning-600); }
+.focus\:bg-danger:focus { background-color: var(--color-danger-600); }
+.focus\:bg-info:focus { background-color: var(--color-info-600); }
+
+/* ==========================================================================
+   FOCUS — TEXT
+   ========================================================================== */
+
+.focus\:text-primary:focus {
+    color: var(--color-primary-hover);
+}
+
+.focus\:text-success:focus {
+    color: var(--color-success-700);
+}
+
+.focus\:text-warning:focus {
+    color: var(--color-warning-700);
+}
+
+.focus\:text-danger:focus {
+    color: var(--color-danger-700);
+}
+
+.focus\:text-info:focus {
+    color: var(--color-info-700);
+}
+
+
+/* ==========================================================================
+   FOCUS — BORDERS
+   ========================================================================== */
+
+.focus\:border-primary:focus {
+    border-color: var(--color-primary);
+}
+
+.focus\:border-success:focus {
+    border-color: var(--color-success-500);
+}
+
+.focus\:border-warning:focus {
+    border-color: var(--color-warning-500);
+}
+
+.focus\:border-danger:focus {
+    border-color: var(--color-danger-500);
+}
+
+.focus\:border-info:focus {
+    border-color: var(--color-info-500);
+}
+
+
+/* ==========================================================================
+   ACTIVE — BACKGROUNDS
+   ========================================================================== */
+
+.active\:bg-primary:active {
+    background-color: var(--color-primary-active);
+}
+
+.active\:bg-success:active {
+    background-color: var(--color-success-700);
+}
+
+.active\:bg-warning:active {
+    background-color: var(--color-warning-700);
+}
+
+.active\:bg-danger:active {
+    background-color: var(--color-danger-700);
+}
+
+.active\:bg-info:active {
+    background-color: var(--color-info-700);
+}
+
+
+/* ==========================================================================
+   ACTIVE — TEXT
+   ========================================================================== */
+
+.active\:text-primary:active {
+    color: var(--color-primary-active);
+}
+
+.active\:text-success:active {
+    color: var(--color-success-800);
+}
+
+.active\:text-warning:active {
+    color: var(--color-warning-800);
+}
+
+.active\:text-danger:active {
+    color: var(--color-danger-800);
+}
+
+.active\:text-info:active {
+    color: var(--color-info-800);
+}
+
+
+/* ==========================================================================
+   ACTIVE — BORDERS
+   ========================================================================== */
+
+.active\:border-primary:active {
+    border-color: var(--color-primary-active);
+}
+
+.active\:border-success:active {
+    border-color: var(--color-success-700);
+}
+
+.active\:border-warning:active {
+    border-color: var(--color-warning-700);
+}
+
+.active\:border-danger:active {
+    border-color: var(--color-danger-700);
+}
+
+.active\:border-info:active {
+    border-color: var(--color-info-700);
+}
+
+
+/* ==========================================================================
+   DISABLED
+   ========================================================================== */
+
+.disabled\:bg-primary:disabled {
+    background-color: var(--color-taupe-300);
+}
+
+.disabled\:bg-success:disabled {
+    background-color: var(--color-success-300);
+}
+
+.disabled\:bg-warning:disabled {
+    background-color: var(--color-warning-300);
+}
+
+.disabled\:bg-danger:disabled {
+    background-color: var(--color-danger-300);
+}
+
+.disabled\:bg-info:disabled {
+    background-color: var(--color-info-300);
+}
+
+.disabled\:text-primary:disabled,
+.disabled\:text-success:disabled,
+.disabled\:text-warning:disabled,
+.disabled\:text-danger:disabled,
+.disabled\:text-info:disabled {
+    color: var(--color-neutral-400);
+}
+
+.disabled\:border-primary:disabled,
+.disabled\:border-success:disabled,
+.disabled\:border-warning:disabled,
+.disabled\:border-danger:disabled,
+.disabled\:border-info:disabled {
+    border-color: var(--color-neutral-300);
+}
+
+.disabled\:opacity-50:disabled {
+    opacity: 0.5;
+}
+
+.disabled\:cursor-not-allowed:disabled {
+    cursor: not-allowed;
+}

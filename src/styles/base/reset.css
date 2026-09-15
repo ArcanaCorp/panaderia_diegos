@@ -1,0 +1,561 @@
+/* ==========================================================================
+   RESET.CSS
+   Modern CSS Reset for Web Applications
+   Desktop + Mobile
+   ========================================================================== */
+
+
+/* ==========================================================================
+   ROOT
+   ========================================================================== */
+
+html {
+    width: 100%;
+    min-height: 100%;
+    font-size: 16px;
+
+    /* Mejor experiencia en mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+
+    /* Scroll suave */
+    scroll-behavior: smooth;
+
+    /* Evita highlights extraños en mobile */
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ==========================================================================
+   GLOBAL RESET
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   DOCUMENT & BODY
+   ========================================================================== */
+
+html,
+body {
+    width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100dvh;
+
+    background-color: var(--color-background);
+    color: var(--color-dark);
+
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+
+    /* Mejor renderizado de fuentes */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Evita overflow horizontal accidental */
+    overflow-x: hidden;
+}
+
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font: inherit;
+    font-weight: inherit;
+}
+
+p {
+    text-wrap: pretty;
+}
+
+small {
+    font-size: 0.875em;
+}
+
+strong,
+b {
+    font-weight: 700;
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+
+/* ==========================================================================
+   LINKS
+   ========================================================================== */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:not([href]) {
+    cursor: default;
+}
+
+
+/* ==========================================================================
+   LISTS
+   ========================================================================== */
+
+ul,
+ol {
+    list-style: none;
+}
+
+
+/* ==========================================================================
+   MEDIA
+   ========================================================================== */
+
+img,
+picture,
+svg,
+video,
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+img,
+picture {
+    height: auto;
+}
+
+svg {
+    overflow: visible;
+}
+
+
+/* ==========================================================================
+   FORM ELEMENTS
+   ========================================================================== */
+
+button,
+input,
+textarea,
+select,
+option {
+    color: inherit;
+    font: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    margin: 0;
+}
+
+
+/* ==========================================================================
+   BUTTON
+   ========================================================================== */
+
+button {
+    border: none;
+    outline: none;
+
+    background: none;
+
+    cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled {
+    cursor: not-allowed;
+}
+
+
+/* ==========================================================================
+   INPUTS
+   ========================================================================== */
+
+input,
+textarea,
+select {
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+}
+
+
+/* ==========================================================================
+   TEXTAREA
+   ========================================================================== */
+
+textarea {
+    resize: vertical;
+}
+
+
+/* ==========================================================================
+   INPUT TYPES
+   ========================================================================== */
+
+/* Search */
+
+input[type="search"] {
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+    appearance: none;
+}
+
+
+/* Number */
+
+input[type="number"] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    margin: 0;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+
+/* ==========================================================================
+   PLACEHOLDER
+   ========================================================================== */
+
+::placeholder {
+    color: var(--color-neutral-400);
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   LABEL
+   ========================================================================== */
+
+label {
+    display: block;
+    cursor: pointer;
+}
+
+
+/* ==========================================================================
+   FIELDSET
+   ========================================================================== */
+
+fieldset {
+    min-width: 0;
+}
+
+legend {
+    padding: 0;
+}
+
+
+/* ==========================================================================
+   TABLES
+   ========================================================================== */
+
+table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0;
+    text-align: left;
+}
+
+
+/* ==========================================================================
+   QUOTES
+   ========================================================================== */
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
+    content: "";
+}
+
+
+/* ==========================================================================
+   HORIZONTAL RULE
+   ========================================================================== */
+
+hr {
+    height: 1px;
+    border: 0;
+}
+
+
+/* ==========================================================================
+   DIALOG
+   ========================================================================== */
+
+dialog {
+    padding: 0;
+    border: none;
+
+    color: inherit;
+    background: transparent;
+}
+
+dialog::backdrop {
+    background-color: rgb(0 0 0 / 0.5);
+}
+
+
+/* ==========================================================================
+   DETAILS
+   ========================================================================== */
+
+summary {
+    cursor: pointer;
+}
+
+
+/* ==========================================================================
+   SELECTION
+   ========================================================================== */
+
+::selection {
+    color: var(--color-surface);
+    background-color: var(--color-primary);
+}
+
+
+/* ==========================================================================
+   FOCUS
+   Accessibility
+   ========================================================================== */
+
+/*
+ * No eliminamos completamente el focus visual.
+ * Solo mostramos el indicador cuando se navega con teclado.
+ */
+
+:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================================
+   INTERACTIVE ELEMENTS
+   ========================================================================== */
+
+button,
+a,
+input,
+select,
+textarea,
+label,
+summary {
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* ==========================================================================
+   USER SELECTION
+   ========================================================================== */
+
+/*
+ * Por defecto permitimos seleccionar texto.
+ * Es mejor para UX y accesibilidad.
+ */
+
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+td,
+th,
+label,
+input,
+textarea {
+    user-select: text;
+}
+
+/*
+ * Elementos interactivos no necesitan selección.
+ */
+
+button,
+a,
+img,
+svg,
+.icon,
+.tabler-icon {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* ==========================================================================
+   SCROLLBAR
+   Modern browsers
+   ========================================================================== */
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background-color: var(--color-neutral-300);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-neutral-400);
+}
+
+
+/* ==========================================================================
+   APP ROOT
+   ========================================================================== */
+
+#app,
+#root {
+    width: 100%;
+    min-height: 100dvh;
+}
+
+
+/* ==========================================================================
+   ICONS
+   ========================================================================== */
+
+.tabler-icon {
+    flex-shrink: 0;
+    stroke-width: 1.2;
+}
+
+
+/* ==========================================================================
+   MOBILE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+    input,
+    select,
+    textarea {
+        font-size: 16px;
+    }
+}
+
+
+/* ==========================================================================
+   REDUCED MOTION
+   Accessibility
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* ==========================================================================
+   PRINT
+   ========================================================================== */
+
+@media print {
+    *,
+    *::before,
+    *::after {
+        color: #000 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    body {
+        min-height: auto;
+    }
+}
