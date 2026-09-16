@@ -6,118 +6,148 @@ import {
     IconLoader,
     IconCircleCheck,
     IconAlertTriangle,
-    IconPlayerPlay,
     IconPackage,
 } from '@tabler/icons-react'
 
 import { useAuth } from '@/context/AuthContext'
+import { useProductionDashboard } from '@/hooks/useProductionDashboard'
 
 export default function DashboardProduccion() {
 
     const { profile } = useAuth()
 
-    const storeName = profile?.store?.name || 'mi tienda'
-    const userName = profile?.full_name?.split(' ')[0] || 'Usuario'
+    const {
+        stats,
+        productionOrders,
+        loading,
+        error,
+        reload,
+    } = useProductionDashboard()
 
-    const stats = [
+    const userName =
+        profile?.full_name?.split(' ')[0] || 'Usuario'
+
+    const statCards = [
         {
             label: 'Pendientes',
-            value: '12',
+            value: stats.pending,
             icon: IconClock,
             modifier: 'warning',
         },
         {
             label: 'En producción',
-            value: '8',
+            value: stats.in_production,
             icon: IconLoader,
             modifier: 'info',
         },
         {
             label: 'Completadas hoy',
-            value: '34',
+            value: stats.completed_today,
             icon: IconCircleCheck,
             modifier: 'success',
         },
         {
             label: 'Urgentes',
-            value: '3',
+            value: stats.urgent,
             icon: IconAlertTriangle,
             modifier: 'danger',
         },
     ]
 
-    const productionOrders = [
-        {
-            id: 'PRD-00042',
-            product: 'Pan francés',
-            quantity: 100,
-            priority: 'Alta',
-            status: 'En producción',
-        },
-        {
-            id: 'PRD-00041',
-            product: 'Pan integral',
-            quantity: 60,
-            priority: 'Normal',
-            status: 'Pendiente',
-        },
-        {
-            id: 'PRD-00040',
-            product: 'Croissant',
-            quantity: 30,
-            priority: 'Alta',
-            status: 'En producción',
-        },
-        {
-            id: 'PRD-00039',
-            product: 'Empanada de carne',
-            quantity: 40,
-            priority: 'Normal',
-            status: 'Completado',
-        },
-        {
-            id: 'PRD-00038',
-            product: 'Torta personal',
-            quantity: 15,
-            priority: 'Urgente',
-            status: 'Pendiente',
-        },
-    ]
+    function getPriorityClass(priority) {
+        if (priority === 'urgente') return 'badge--danger'
+        if (priority === 'alta') return 'badge--warning'
 
-    const stockProducts = [
-        {
-            name: 'Pan francés',
-            category: 'Panadería',
-            quantity: '25 unidades',
-            status: 'Bajo',
-        },
-        {
-            name: 'Pan integral',
-            category: 'Panadería',
-            quantity: '12 unidades',
-            status: 'Bajo',
-        },
-        {
-            name: 'Croissant',
-            category: 'Pastelería',
-            quantity: '8 unidades',
-            status: 'Crítico',
-        },
-        {
-            name: 'Empanada de carne',
-            category: 'Panadería',
-            quantity: '42 unidades',
-            status: 'Disponible',
-        },
-    ]
+        return 'badge--neutral'
+    }
+
+    function getPriorityLabel(priority) {
+        if (priority === 'urgente') return 'Urgente'
+        if (priority === 'alta') return 'Alta'
+
+        return 'Normal'
+    }
+
+    function getStatusClass(status) {
+        if (status === 'completado') return 'badge--success'
+        if (status === 'en_produccion') return 'badge--info'
+
+        return 'badge--warning'
+    }
+
+    function getStatusLabel(status) {
+        if (status === 'completado') return 'Completado'
+        if (status === 'en_produccion') return 'En producción'
+
+        return 'Pendiente'
+    }
+
+    function getProductsSummary(order) {
+
+        if (!order.items?.length) {
+            return 'Sin productos registrados'
+        }
+
+        if (order.items.length === 1) {
+            const item = order.items[0]
+
+            return `${item.product_name} · ${item.quantity} ${item.unit || 'unidades'}`
+        }
+
+        const totalQuantity = order.items.reduce(
+            (total, item) => total + Number(item.quantity || 0),
+            0
+        )
+
+        return `${order.items.length} productos · ${totalQuantity} unidades`
+    }
+
+    if (loading) {
+        return (
+            <main className="dashboard">
+                <div className="card">
+                    <div className="card__content">
+                        <p className="card__description">
+                            Cargando producción...
+                        </p>
+                    </div>
+                </div>
+            </main>
+        )
+    }
+
+    if (error) {
+        return (
+            <main className="dashboard">
+                <div className="card">
+                    <div className="card__content">
+                        <p className="card__description">
+                            {error}
+                        </p>
+
+                        <button
+                            className="btn btn--primary"
+                            onClick={reload}
+                        >
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+            </main>
+        )
+    }
 
     return (
         <main className="dashboard">
 
+            {/* HEADER */}
+
             <header className="dashboard__header">
+
                 <div>
+
                     <p className="dashboard__eyebrow">
-                        Producción · {storeName}
+                        Área de producción
                     </p>
 
                     <h1 className="dashboard__title">
@@ -125,25 +155,28 @@ export default function DashboardProduccion() {
                     </h1>
 
                     <p className="dashboard__description">
-                        Supervisa las órdenes y el avance de producción de tu tienda.
+                        Supervisa las órdenes y el avance de producción.
                     </p>
+
                 </div>
 
-                <div className="dashboard__actions">
-                    <button className="btn btn--primary">
-                        <IconPlayerPlay size={16} />
-                        Nueva producción
-                    </button>
-                </div>
             </header>
+
+
+            {/* STATS */}
 
             <section className="dashboard__stats">
 
-                {stats.map((stat) => {
+                {statCards.map((stat) => {
+
                     const Icon = stat.icon
 
                     return (
-                        <article className="card card--stat" key={stat.label}>
+                        <article
+                            className="card card--stat"
+                            key={stat.label}
+                        >
+
                             <div className="card__content">
 
                                 <div className="card__icon">
@@ -151,6 +184,7 @@ export default function DashboardProduccion() {
                                 </div>
 
                                 <div>
+
                                     <p className="card__label">
                                         {stat.label}
                                     </p>
@@ -158,21 +192,30 @@ export default function DashboardProduccion() {
                                     <strong className="card__value">
                                         {stat.value}
                                     </strong>
+
                                 </div>
 
                             </div>
+
                         </article>
                     )
                 })}
 
             </section>
 
+
+            {/* MAIN GRID */}
+
             <section className="dashboard__grid">
+
+                {/* ÓRDENES */}
 
                 <article className="card dashboard__activity">
 
                     <div className="card__header">
+
                         <div>
+
                             <h2 className="card__title">
                                 Órdenes de producción
                             </h2>
@@ -180,128 +223,176 @@ export default function DashboardProduccion() {
                             <p className="card__description">
                                 Producción pendiente y en proceso
                             </p>
+
                         </div>
 
-                        <button className="btn btn--ghost btn--sm">
-                            Ver todas
+                        <button
+                            className="btn btn--ghost btn--sm"
+                            onClick={reload}
+                        >
+                            Actualizar
                         </button>
+
                     </div>
+
 
                     <div className="dashboard__activity-list">
 
-                        {productionOrders.map((order) => (
-                            <div
-                                className="dashboard__activity-item"
-                                key={order.id}
-                            >
+                        {productionOrders.length === 0 ? (
 
-                                <div className="dashboard__activity-icon dashboard__activity-icon--neutral">
-                                    <IconClipboardList size={17} />
-                                </div>
+                            <div className="dashboard__empty">
 
-                                <div className="dashboard__activity-content">
+                                <IconClipboardList size={28} />
 
-                                    <p className="dashboard__activity-title">
-                                        {order.product}
-                                    </p>
-
-                                    <p className="dashboard__activity-description">
-                                        {order.id} · {order.quantity} unidades
-                                    </p>
-
-                                </div>
-
-                                <span
-                                    className={`badge ${
-                                        order.priority === 'Urgente'
-                                            ? 'badge--danger'
-                                            : order.priority === 'Alta'
-                                                ? 'badge--warning'
-                                                : 'badge--neutral'
-                                    }`}
-                                >
-                                    {order.priority}
-                                </span>
-
-                                <span
-                                    className={`badge ${
-                                        order.status === 'Completado'
-                                            ? 'badge--success'
-                                            : order.status === 'En producción'
-                                                ? 'badge--info'
-                                                : 'badge--warning'
-                                    }`}
-                                >
-                                    {order.status}
-                                </span>
+                                <p>
+                                    No hay órdenes de producción.
+                                </p>
 
                             </div>
-                        ))}
+
+                        ) : (
+
+                            productionOrders.map((order) => (
+
+                                <div
+                                    className="dashboard__activity-item"
+                                    key={order.id}
+                                >
+
+                                    <div className="dashboard__activity-icon dashboard__activity-icon--neutral">
+                                        <IconClipboardList size={17} />
+                                    </div>
+
+
+                                    <div className="dashboard__activity-content">
+
+                                        <p className="dashboard__activity-title">
+                                            {getProductsSummary(order)}
+                                        </p>
+
+                                        <p className="dashboard__activity-description">
+                                            {order.code}
+                                            {order.store_name
+                                                ? ` · ${order.store_name}`
+                                                : ''}
+                                        </p>
+
+                                    </div>
+
+
+                                    <span
+                                        className={`badge ${getPriorityClass(
+                                            order.priority
+                                        )}`}
+                                    >
+                                        {getPriorityLabel(order.priority)}
+                                    </span>
+
+
+                                    <span
+                                        className={`badge ${getStatusClass(
+                                            order.status
+                                        )}`}
+                                    >
+                                        {getStatusLabel(order.status)}
+                                    </span>
+
+                                </div>
+
+                            ))
+
+                        )}
 
                     </div>
 
                 </article>
 
+
+                {/* TRABAJO PENDIENTE */}
+
                 <article className="card dashboard__stock">
 
                     <div className="card__header">
+
                         <div>
+
                             <h2 className="card__title">
-                                Productos a producir
+                                Trabajo pendiente
                             </h2>
 
                             <p className="card__description">
-                                Stock que requiere reposición
+                                Órdenes que requieren atención
                             </p>
+
                         </div>
+
                     </div>
+
 
                     <div className="dashboard__stock-list">
 
-                        {stockProducts.map((product) => (
-                            <div
-                                className="dashboard__stock-item"
-                                key={product.name}
-                            >
+                        {productionOrders
+                            .filter(
+                                (order) =>
+                                    order.status === 'pendiente' ||
+                                    order.status === 'en_produccion'
+                            )
+                            .slice(0, 5)
+                            .map((order) => (
 
-                                <div className="dashboard__stock-info">
+                                <div
+                                    className="dashboard__stock-item"
+                                    key={order.id}
+                                >
 
-                                    <div className="dashboard__activity-icon dashboard__activity-icon--neutral">
-                                        <IconPackage size={16} />
+                                    <div className="dashboard__stock-info">
+
+                                        <div className="dashboard__activity-icon dashboard__activity-icon--neutral">
+                                            <IconPackage size={16} />
+                                        </div>
+
+                                        <div>
+
+                                            <p className="dashboard__stock-name">
+                                                {order.code}
+                                            </p>
+
+                                            <p className="dashboard__stock-category">
+                                                {order.store_name ||
+                                                    'Sin tienda'}
+                                            </p>
+
+                                        </div>
+
                                     </div>
 
-                                    <div>
-                                        <p className="dashboard__stock-name">
-                                            {product.name}
-                                        </p>
 
-                                        <p className="dashboard__stock-category">
-                                            {product.category}
-                                        </p>
+                                    <div className="dashboard__stock-quantity">
+
+                                        <strong>
+                                            {order.items?.reduce(
+                                                (total, item) =>
+                                                    total +
+                                                    Number(
+                                                        item.quantity || 0
+                                                    ),
+                                                0
+                                            ) || 0}
+                                        </strong>
+
+                                        <span
+                                            className={`badge ${getStatusClass(
+                                                order.status
+                                            )}`}
+                                        >
+                                            {getStatusLabel(order.status)}
+                                        </span>
+
                                     </div>
 
                                 </div>
 
-                                <div className="dashboard__stock-quantity">
-                                    <strong>
-                                        {product.quantity}
-                                    </strong>
-
-                                    <span
-                                        className={`badge ${
-                                            product.status === 'Crítico'
-                                                ? 'badge--danger'
-                                                : product.status === 'Bajo'
-                                                    ? 'badge--warning'
-                                                    : 'badge--success'
-                                        }`}
-                                    >
-                                        {product.status}
-                                    </span>
-                                </div>
-
-                            </div>
-                        ))}
+                            ))}
 
                     </div>
 
@@ -309,32 +400,44 @@ export default function DashboardProduccion() {
 
             </section>
 
+
+            {/* RESUMEN */}
+
             <section className="card">
 
                 <div className="card__header">
+
                     <div>
+
                         <h2 className="card__title">
                             Resumen de producción
                         </h2>
 
                         <p className="card__description">
-                            Actividad de producción de {storeName}
+                            Actividad reciente del área de producción
                         </p>
+
                     </div>
+
                 </div>
 
+
                 <div className="dashboard__chart">
+
                     <div className="dashboard__chart-placeholder">
+
                         <IconClipboardList size={28} />
 
                         <p>
-                            Aquí se mostrará el gráfico de producción
+                            Producción completada por día
                         </p>
 
                         <span>
-                            Producción completada por día
+                            Aquí se mostrará el gráfico de producción
                         </span>
+
                     </div>
+
                 </div>
 
             </section>

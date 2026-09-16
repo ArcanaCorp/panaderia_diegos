@@ -1,90 +1,154 @@
 'use client'
 
 import {
-    IconPlus,
     IconClock,
     IconPlayerPlay,
-    IconPalette,
     IconCheck,
     IconDots,
-    IconChevronRight,
     IconChevronLeft,
     IconAlertTriangle,
     IconPackage,
 } from '@tabler/icons-react'
 
-import { useAuth } from '@/context/AuthContext'
-
-const orders = [
-    {
-        id: 'PRD-00042',
-        product: 'Pan francés',
-        quantity: 100,
-        priority: 'Alta',
-        requestedBy: 'Ventas',
-        time: 'Hace 15 min',
-    },
-    {
-        id: 'PRD-00043',
-        product: 'Pan integral',
-        quantity: 60,
-        priority: 'Normal',
-        requestedBy: 'Ventas',
-        time: 'Hace 32 min',
-    },
-    {
-        id: 'PRD-00044',
-        product: 'Croissant',
-        quantity: 30,
-        priority: 'Urgente',
-        requestedBy: 'Ventas',
-        time: 'Hace 45 min',
-    },
-    {
-        id: 'PRD-00045',
-        product: 'Torta personal',
-        quantity: 15,
-        priority: 'Normal',
-        requestedBy: 'Diseño',
-        time: 'Hace 1 h',
-    },
-]
-
-const columns = [
-    {
-        id: 'pendiente',
-        title: 'Pendientes',
-        icon: IconClock,
-    },
-    {
-        id: 'proceso',
-        title: 'En proceso',
-        icon: IconPlayerPlay,
-    },
-    {
-        id: 'diseno',
-        title: 'Diseño',
-        icon: IconPalette,
-    },
-    {
-        id: 'completado',
-        title: 'Completado',
-        icon: IconCheck,
-    },
-]
+import { useProductionDashboard } from '@/hooks/useProductionDashboard'
 
 export default function ProduccionView() {
 
-    const { profile } = useAuth()
+    const { productionOrders, stats, loading, updating, error, reload, changeOrderStatus } = useProductionDashboard()
 
-    const storeName = profile?.store?.name || 'Mi tienda'
+    const columns = [
+        {
+            id: 'pendiente',
+            title: 'Pendientes',
+            icon: IconClock,
+        },
+        {
+            id: 'en_produccion',
+            title: 'En producción',
+            icon: IconPlayerPlay,
+        },
+        {
+            id: 'completado',
+            title: 'Completado',
+            icon: IconCheck,
+        },
+    ]
 
-    function handleMove(order, nextStatus) {
-        console.log('Mover orden:', order.id, 'a:', nextStatus)
+    function getPriorityClass(priority) {
+        if (priority === 'urgente') return 'production-card__priority--urgente'
+        if (priority === 'alta') return 'production-card__priority--alta'
+
+        return 'production-card__priority--normal'
     }
 
-    function handleCreate() {
-        console.log('Nueva orden de producción')
+    function getPriorityLabel(priority) {
+        if (priority === 'urgente') return 'Urgente'
+        if (priority === 'alta') return 'Alta'
+
+        return 'Normal'
+    }
+
+    function getProducts(order) {
+        if (!order.items?.length) {
+            return 'Sin productos'
+        }
+
+        if (order.items.length === 1) {
+            return order.items[0].product_name
+        }
+
+        return `${order.items.length} productos`
+    }
+
+    function getQuantity(order) {
+        return order.items?.reduce(
+            (total, item) =>
+                total + Number(item.quantity || 0),
+            0
+        ) || 0
+    }
+
+    function getTime(date) {
+
+        if (!date) return ''
+
+        const created = new Date(date)
+        const now = new Date()
+
+        const diff = Math.floor(
+            (now - created) / 60000
+        )
+
+        if (diff < 1) return 'Ahora'
+
+        if (diff < 60) {
+            return `Hace ${diff} min`
+        }
+
+        const hours = Math.floor(diff / 60)
+
+        if (hours < 24) {
+            return `Hace ${hours} h`
+        }
+
+        const days = Math.floor(hours / 24)
+
+        return `Hace ${days} d`
+    }
+
+    async function handleMove(order, nextStatus) {
+        try {
+            await changeOrderStatus(order.id, nextStatus)
+        } catch (error) {
+            console.error('handleMove:', error)
+        }
+    }
+
+    if (loading) {
+        return (
+            <main className="production">
+
+                <div className="card">
+
+                    <div className="card__content">
+
+                        <p className="card__description">
+                            Cargando órdenes de producción...
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </main>
+        )
+    }
+
+    if (error) {
+        return (
+            <main className="production">
+
+                <div className="card">
+
+                    <div className="card__content">
+
+                        <p className="card__description">
+                            {error}
+                        </p>
+
+                        <button
+                            className="btn btn--primary"
+                            onClick={reload}
+                        >
+                            Reintentar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </main>
+        )
     }
 
     return (
@@ -101,8 +165,9 @@ export default function ProduccionView() {
                     </div>
 
                     <div>
+
                         <p className="production__eyebrow">
-                            Producción · {storeName}
+                            Área de producción
                         </p>
 
                         <h1 className="production__title">
@@ -112,50 +177,78 @@ export default function ProduccionView() {
                         <p className="production__description">
                             Gestiona y controla el avance de producción.
                         </p>
+
                     </div>
 
                 </div>
 
                 <button
-                    className="btn btn--primary"
-                    onClick={handleCreate}
+                    className="btn btn--ghost btn--sm"
+                    onClick={reload}
                 >
-                    <IconPlus size={16} />
-                    Nueva producción
+                    Actualizar
                 </button>
 
             </header>
+
 
             {/* RESUMEN */}
 
             <div className="production__summary">
 
                 <div className="production__summary-item">
-                    <span>Pendientes</span>
-                    <strong>12</strong>
+
+                    <span>
+                        Pendientes
+                    </span>
+
+                    <strong>
+                        {stats.pending}
+                    </strong>
+
                 </div>
 
-                <div className="production__summary-item">
-                    <span>En proceso</span>
-                    <strong>8</strong>
-                </div>
 
                 <div className="production__summary-item">
-                    <span>Diseño</span>
-                    <strong>4</strong>
+
+                    <span>
+                        En producción
+                    </span>
+
+                    <strong>
+                        {stats.in_production}
+                    </strong>
+
                 </div>
 
+
                 <div className="production__summary-item">
-                    <span>Completadas hoy</span>
-                    <strong>34</strong>
+
+                    <span>
+                        Completadas hoy
+                    </span>
+
+                    <strong>
+                        {stats.completed_today}
+                    </strong>
+
                 </div>
+
 
                 <div className="production__summary-item production__summary-item--danger">
-                    <span>Urgentes</span>
-                    <strong>3</strong>
+
+                    <span>
+                        Urgentes
+                    </span>
+
+                    <strong>
+                        {stats.urgent}
+                    </strong>
+
                 </div>
 
             </div>
+
 
             {/* KANBAN */}
 
@@ -165,7 +258,14 @@ export default function ProduccionView() {
 
                     const ColumnIcon = column.icon
 
+                    const columnOrders =
+                        productionOrders.filter(
+                            (order) =>
+                                order.status === column.id
+                        )
+
                     return (
+
                         <div
                             className="production__column"
                             key={column.id}
@@ -184,15 +284,7 @@ export default function ProduccionView() {
                                     </h2>
 
                                     <span>
-                                        {
-                                            column.id === 'pendiente'
-                                                ? 2
-                                                : column.id === 'proceso'
-                                                    ? 1
-                                                    : column.id === 'diseno'
-                                                        ? 1
-                                                        : 2
-                                        }
+                                        {columnOrders.length}
                                     </span>
 
                                 </div>
@@ -206,153 +298,183 @@ export default function ProduccionView() {
 
                             </div>
 
+
                             {/* CARDS */}
 
                             <div className="production__cards">
 
-                                {orders
-                                    .filter((order, index) => {
+                                {columnOrders.length === 0 ? (
 
-                                        if (column.id === 'pendiente') {
-                                            return index < 2
-                                        }
+                                    <div className="production__empty">
 
-                                        if (column.id === 'proceso') {
-                                            return index === 2
-                                        }
+                                        <IconCheck size={22} />
 
-                                        if (column.id === 'diseno') {
-                                            return index === 3
-                                        }
+                                        <span>
+                                            No hay órdenes
+                                        </span>
 
-                                        return false
-                                    })
-                                    .map((order) => (
+                                    </div>
+
+                                ) : (
+
+                                    columnOrders.map((order) => (
 
                                         <article
                                             className="production-card"
                                             key={order.id}
                                         >
 
+                                            {/* TOP */}
+
                                             <div className="production-card__top">
 
                                                 <span className="production-card__id">
-                                                    {order.id}
+                                                    {order.code}
                                                 </span>
 
                                                 <span
-                                                    className={`production-card__priority production-card__priority--${order.priority.toLowerCase()}`}
+                                                    className={`production-card__priority ${getPriorityClass(
+                                                        order.priority
+                                                    )}`}
                                                 >
-                                                    {order.priority === 'Urgente' && (
-                                                        <IconAlertTriangle size={13} />
+
+                                                    {order.priority === 'urgente' && (
+                                                        <IconAlertTriangle
+                                                            size={13}
+                                                        />
                                                     )}
 
-                                                    {order.priority}
+                                                    {getPriorityLabel(
+                                                        order.priority
+                                                    )}
+
                                                 </span>
 
                                             </div>
 
+
+                                            {/* PRODUCT */}
+
                                             <h3 className="production-card__title">
-                                                {order.product}
+                                                {getProducts(order)}
                                             </h3>
 
+
+                                            {/* QUANTITY */}
+
                                             <div className="production-card__quantity">
+
                                                 <IconPackage size={15} />
+
                                                 <strong>
-                                                    {order.quantity}
+                                                    {getQuantity(order)}
                                                 </strong>
-                                                <span>unidades</span>
+
+                                                <span>
+                                                    unidades
+                                                </span>
+
                                             </div>
+
+
+                                            {/* META */}
 
                                             <div className="production-card__meta">
 
                                                 <span>
-                                                    Solicitado por {order.requestedBy}
+                                                    {order.store_name
+                                                        ? `Destino: ${order.store_name}`
+                                                        : 'Sin tienda de destino'}
                                                 </span>
 
                                                 <span>
-                                                    {order.time}
+                                                    {getTime(order.created_at)}
                                                 </span>
 
                                             </div>
 
-                                            {/* QUICK ACTIONS */}
+
+                                            {/* ACTIONS */}
 
                                             <div className="production-card__actions">
 
-                                                {column.id !== 'pendiente' &&
-                                                    column.id !== 'completado' && (
-                                                        <button
-                                                            className="btn btn--icon btn--ghost btn--sm"
-                                                            title="Retroceder"
-                                                            onClick={() =>
-                                                                handleMove(
-                                                                    order,
-                                                                    column.id === 'proceso'
-                                                                        ? 'pendiente'
-                                                                        : 'proceso'
-                                                                )
-                                                            }
-                                                        >
-                                                            <IconChevronLeft size={16} />
-                                                        </button>
-                                                    )}
+                                                {/* VOLVER A PENDIENTE */}
 
-                                                {column.id !== 'completado' && (
+                                                {column.id === 'en_produccion' && (
+
+                                                    <button
+                                                        className="btn btn--icon btn--ghost btn--sm"
+                                                        title="Volver a pendiente"
+                                                        disabled={updating}
+                                                        onClick={() => handleMove(order, 'pendiente')}
+                                                    >
+                                                        <IconChevronLeft
+                                                            size={16}
+                                                        />
+                                                    </button>
+
+                                                )}
+
+
+                                                {/* INICIAR */}
+
+                                                {column.id === 'pendiente' && (
+
                                                     <button
                                                         className="btn btn--primary btn--sm"
+                                                        disabled={updating}
                                                         onClick={() =>
                                                             handleMove(
                                                                 order,
-                                                                column.id === 'pendiente'
-                                                                    ? 'proceso'
-                                                                    : column.id === 'proceso'
-                                                                        ? 'diseno'
-                                                                        : 'completado'
+                                                                'en_produccion'
                                                             )
                                                         }
                                                     >
-                                                        {column.id === 'pendiente' && (
-                                                            <>
-                                                                <IconPlayerPlay size={15} />
-                                                                Iniciar
-                                                            </>
-                                                        )}
+                                                        <IconPlayerPlay
+                                                            size={15}
+                                                        />
 
-                                                        {column.id === 'proceso' && (
-                                                            <>
-                                                                <IconPalette size={15} />
-                                                                Diseño
-                                                            </>
-                                                        )}
-
-                                                        {column.id === 'diseno' && (
-                                                            <>
-                                                                <IconCheck size={15} />
-                                                                Completar
-                                                            </>
-                                                        )}
+                                                        Iniciar
                                                     </button>
+
+                                                )}
+
+
+                                                {/* COMPLETAR */}
+
+                                                {column.id === 'en_produccion' && (
+
+                                                    <button
+                                                        className="btn btn--primary btn--sm"
+                                                        disabled={updating}
+                                                        onClick={() =>
+                                                            handleMove(
+                                                                order,
+                                                                'completado'
+                                                            )
+                                                        }
+                                                    >
+                                                        <IconCheck
+                                                            size={15}
+                                                        />
+
+                                                        Completar
+                                                    </button>
+
                                                 )}
 
                                             </div>
 
                                         </article>
 
-                                    ))}
+                                    ))
 
-                                {column.id === 'completado' && (
-                                    <div className="production__empty">
-                                        <IconCheck size={22} />
-                                        <span>
-                                            Producción completada
-                                        </span>
-                                    </div>
                                 )}
 
                             </div>
 
                         </div>
+
                     )
                 })}
 
