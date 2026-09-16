@@ -1,5 +1,6 @@
 'use client';
 
+import { useAdminProduction } from '@/hooks/useAdminProduccion';
 import {
     IconPlus,
     IconSearch,
@@ -8,74 +9,246 @@ import {
     IconClock,
     IconChefHat,
     IconCheck,
-    IconPlayerPause,
     IconAlertTriangle,
     IconPackage,
 } from '@tabler/icons-react';
 
+import { useMemo, useState } from 'react';
+
 export default function ProduccionAdmin() {
 
-    const orders = [
-        {
-            id: 'PRD-00024',
-            product: 'Pan francés',
-            quantity: 120,
-            unit: 'unidades',
-            priority: 'Normal',
-            status: 'Pendiente',
-            requestedBy: 'Ventas',
-            date: 'Hoy, 09:30',
-        },
-        {
-            id: 'PRD-00023',
-            product: 'Croissant',
-            quantity: 40,
-            unit: 'unidades',
-            priority: 'Alta',
-            status: 'En producción',
-            requestedBy: 'Ventas',
-            date: 'Hoy, 08:45',
-        },
-        {
-            id: 'PRD-00022',
-            product: 'Pan integral',
-            quantity: 60,
-            unit: 'unidades',
-            priority: 'Normal',
-            status: 'Pendiente',
-            requestedBy: 'Administrador',
-            date: 'Hoy, 08:20',
-        },
-        {
-            id: 'PRD-00021',
-            product: 'Empanada de carne',
-            quantity: 30,
-            unit: 'unidades',
-            priority: 'Urgente',
-            status: 'En producción',
-            requestedBy: 'Ventas',
-            date: 'Hoy, 07:50',
-        },
-        {
-            id: 'PRD-00020',
-            product: 'Torta personal',
-            quantity: 15,
-            unit: 'unidades',
-            priority: 'Normal',
-            status: 'Completado',
-            requestedBy: 'Ventas',
-            date: 'Ayer, 17:30',
-        },
-    ];
+    const {
+        orders,
+        loading,
+        error,
+        refresh,
+    } = useAdminProduction();
+
+    const [search, setSearch] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all');
+
+    /*
+     * ============================================================
+     * ESTADÍSTICAS
+     * ============================================================
+     */
+
+    const stats = useMemo(() => {
+
+        const today = new Date();
+
+        const isToday = (date) => {
+
+            if (!date) return false;
+
+            const value = new Date(date);
+
+            return (
+                value.getDate() === today.getDate() &&
+                value.getMonth() === today.getMonth() &&
+                value.getFullYear() === today.getFullYear()
+            );
+
+        };
+
+        return {
+
+            pending: orders.filter(
+                order => order.status === 'pendiente'
+            ).length,
+
+            processing: orders.filter(
+                order => order.status === 'proceso'
+            ).length,
+
+            completedToday: orders.filter(
+                order =>
+                    (
+                        order.status === 'terminado' ||
+                        order.status === 'finalizado'
+                    ) &&
+                    isToday(
+                        order.completed_at ||
+                        order.updated_at
+                    )
+            ).length,
+
+            urgent: orders.filter(
+                order =>
+                    order.priority === 'urgente' &&
+                    order.status !== 'finalizado'
+            ).length,
+
+        };
+
+    }, [orders]);
+
+
+    /*
+     * ============================================================
+     * FILTRO
+     * ============================================================
+     */
+
+    const filteredOrders = useMemo(() => {
+
+        const query = search.trim().toLowerCase();
+
+        return orders.filter((order) => {
+
+            const matchesSearch =
+                !query ||
+                order.code?.toLowerCase().includes(query) ||
+                order.items?.some(item =>
+                    item.product?.toLowerCase().includes(query) ||
+                    item.sku?.toLowerCase().includes(query)
+                );
+
+            const matchesStatus =
+                statusFilter === 'all' ||
+                order.status === statusFilter;
+
+            return matchesSearch && matchesStatus;
+
+        });
+
+    }, [
+        orders,
+        search,
+        statusFilter,
+    ]);
+
+
+    /*
+     * ============================================================
+     * HELPERS
+     * ============================================================
+     */
+
+    const formatDate = (date) => {
+
+        if (!date) return '-';
+
+        return new Date(date).toLocaleString('es-PE', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
+
+    };
+
+    const getStatusLabel = (status) => {
+
+        const labels = {
+            pendiente: 'Pendiente',
+            proceso: 'En producción',
+            terminado: 'Terminado',
+            diseño: 'Diseño',
+            finalizado: 'Finalizado',
+        };
+
+        return labels[status] || status;
+
+    };
+
+    const getPriorityLabel = (priority) => {
+
+        const labels = {
+            baja: 'Baja',
+            normal: 'Normal',
+            alta: 'Alta',
+            urgente: 'Urgente',
+        };
+
+        return labels[priority] || priority;
+
+    };
+
+    const getPriorityClass = (priority) => {
+
+        if (priority === 'urgente') {
+            return 'badge badge--danger';
+        }
+
+        if (priority === 'alta') {
+            return 'badge badge--warning';
+        }
+
+        return 'badge badge--neutral';
+
+    };
+
+    const getStatusClass = (status) => {
+
+        if (
+            status === 'terminado' ||
+            status === 'finalizado'
+        ) {
+            return 'badge badge--success';
+        }
+
+        if (status === 'proceso') {
+            return 'badge badge--info';
+        }
+
+        if (status === 'diseño') {
+            return 'badge badge--neutral';
+        }
+
+        return 'badge badge--warning';
+
+    };
+
+
+    /*
+     * ============================================================
+     * LOADING
+     * ============================================================
+     */
+
+    if (loading) {
+
+        return (
+            <main className="production">
+
+                <header className="production__header">
+
+                    <div>
+
+                        <p className="production__eyebrow">
+                            Operaciones
+                        </p>
+
+                        <h1 className="production__title">
+                            Producción
+                        </h1>
+
+                        <p className="production__description">
+                            Cargando órdenes de producción...
+                        </p>
+
+                    </div>
+
+                </header>
+
+            </main>
+        );
+
+    }
+
 
     return (
         <main className="production">
 
-            {/* HEADER */}
+            {/* ==================================================
+                HEADER
+            ================================================== */}
 
             <header className="production__header">
 
                 <div>
+
                     <p className="production__eyebrow">
                         Operaciones
                     </p>
@@ -85,18 +258,25 @@ export default function ProduccionAdmin() {
                     </h1>
 
                     <p className="production__description">
-                        Gestiona los pedidos y productos que deben fabricarse.
+                        Gestiona las órdenes y productos que deben fabricarse.
                     </p>
+
                 </div>
 
                 <div className="production__actions">
 
-                    <button className="btn btn--outline">
+                    <button
+                        className="btn btn--outline"
+                        type="button"
+                    >
                         <IconFilter size={16} />
                         Filtrar
                     </button>
 
-                    <button className="btn btn--primary">
+                    <button
+                        className="btn btn--primary"
+                        type="button"
+                    >
                         <IconPlus size={16} />
                         Nueva orden
                     </button>
@@ -106,7 +286,22 @@ export default function ProduccionAdmin() {
             </header>
 
 
-            {/* SUMMARY */}
+            {/* ==================================================
+                ERROR
+            ================================================== */}
+
+            {error && (
+
+                <div className="alert alert--danger">
+                    {error}
+                </div>
+
+            )}
+
+
+            {/* ==================================================
+                SUMMARY
+            ================================================== */}
 
             <section className="production__stats">
 
@@ -117,13 +312,15 @@ export default function ProduccionAdmin() {
                     </div>
 
                     <div>
+
                         <p className="production__stat-label">
                             Pendientes
                         </p>
 
                         <strong className="production__stat-value">
-                            8
+                            {stats.pending}
                         </strong>
+
                     </div>
 
                 </div>
@@ -136,13 +333,15 @@ export default function ProduccionAdmin() {
                     </div>
 
                     <div>
+
                         <p className="production__stat-label">
                             En producción
                         </p>
 
                         <strong className="production__stat-value">
-                            4
+                            {stats.processing}
                         </strong>
+
                     </div>
 
                 </div>
@@ -155,13 +354,15 @@ export default function ProduccionAdmin() {
                     </div>
 
                     <div>
+
                         <p className="production__stat-label">
                             Completadas hoy
                         </p>
 
                         <strong className="production__stat-value">
-                            16
+                            {stats.completedToday}
                         </strong>
+
                     </div>
 
                 </div>
@@ -174,13 +375,15 @@ export default function ProduccionAdmin() {
                     </div>
 
                     <div>
+
                         <p className="production__stat-label">
                             Urgentes
                         </p>
 
                         <strong className="production__stat-value">
-                            2
+                            {stats.urgent}
                         </strong>
+
                     </div>
 
                 </div>
@@ -188,7 +391,9 @@ export default function ProduccionAdmin() {
             </section>
 
 
-            {/* ORDERS */}
+            {/* ==================================================
+                ORDERS
+            ================================================== */}
 
             <section className="card production__content">
 
@@ -207,6 +412,10 @@ export default function ProduccionAdmin() {
                             <input
                                 className="input"
                                 placeholder="Buscar orden o producto..."
+                                value={search}
+                                onChange={(event) =>
+                                    setSearch(event.target.value)
+                                }
                             />
 
                         </div>
@@ -216,19 +425,59 @@ export default function ProduccionAdmin() {
 
                     <div className="production__filters">
 
-                        <button className="btn btn--outline btn--sm">
+                        <button
+                            type="button"
+                            className={`btn btn--outline btn--sm ${
+                                statusFilter === 'all'
+                                    ? 'btn--primary'
+                                    : ''
+                            }`}
+                            onClick={() =>
+                                setStatusFilter('all')
+                            }
+                        >
                             Todas
                         </button>
 
-                        <button className="btn btn--outline btn--sm">
+                        <button
+                            type="button"
+                            className={`btn btn--outline btn--sm ${
+                                statusFilter === 'pendiente'
+                                    ? 'btn--primary'
+                                    : ''
+                            }`}
+                            onClick={() =>
+                                setStatusFilter('pendiente')
+                            }
+                        >
                             Pendientes
                         </button>
 
-                        <button className="btn btn--outline btn--sm">
+                        <button
+                            type="button"
+                            className={`btn btn--outline btn--sm ${
+                                statusFilter === 'proceso'
+                                    ? 'btn--primary'
+                                    : ''
+                            }`}
+                            onClick={() =>
+                                setStatusFilter('proceso')
+                            }
+                        >
                             En producción
                         </button>
 
-                        <button className="btn btn--outline btn--sm">
+                        <button
+                            type="button"
+                            className={`btn btn--outline btn--sm ${
+                                statusFilter === 'finalizado'
+                                    ? 'btn--primary'
+                                    : ''
+                            }`}
+                            onClick={() =>
+                                setStatusFilter('finalizado')
+                            }
+                        >
                             Completadas
                         </button>
 
@@ -246,6 +495,7 @@ export default function ProduccionAdmin() {
                         <thead>
 
                             <tr>
+
                                 <th>Orden</th>
                                 <th>Producto</th>
                                 <th>Cantidad</th>
@@ -254,6 +504,7 @@ export default function ProduccionAdmin() {
                                 <th>Fecha</th>
                                 <th>Estado</th>
                                 <th></th>
+
                             </tr>
 
                         </thead>
@@ -261,108 +512,190 @@ export default function ProduccionAdmin() {
 
                         <tbody>
 
-                            {orders.map((order) => (
+                            {filteredOrders.length === 0 ? (
 
-                                <tr key={order.id}>
+                                <tr>
 
-                                    <td>
-                                        <span className="production__order-id">
-                                            {order.id}
-                                        </span>
-                                    </td>
-
-
-                                    <td>
-
-                                        <div className="production__product">
-
-                                            <div className="production__product-icon">
-                                                <IconPackage size={16} />
-                                            </div>
-
-                                            <div>
-                                                <p className="production__product-name">
-                                                    {order.product}
-                                                </p>
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <strong className="production__quantity">
-                                            {order.quantity}
-                                        </strong>
-
-                                        <span className="production__unit">
-                                            {order.unit}
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <span
-                                            className={`badge ${
-                                                order.priority === 'Urgente'
-                                                    ? 'badge--danger'
-                                                    : order.priority === 'Alta'
-                                                        ? 'badge--warning'
-                                                        : 'badge--neutral'
-                                            }`}
-                                        >
-                                            {order.priority}
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-                                        <span className="production__requested">
-                                            {order.requestedBy}
-                                        </span>
-                                    </td>
-
-
-                                    <td>
-                                        <span className="production__date">
-                                            {order.date}
-                                        </span>
-                                    </td>
-
-
-                                    <td>
-
-                                        <span
-                                            className={`badge ${
-                                                order.status === 'Completado'
-                                                    ? 'badge--success'
-                                                    : order.status === 'En producción'
-                                                        ? 'badge--info'
-                                                        : 'badge--warning'
-                                            }`}
-                                        >
-                                            {order.status}
-                                        </span>
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <button className="btn btn--ghost btn--icon">
-                                            <IconDotsVertical size={17} />
-                                        </button>
-
+                                    <td
+                                        colSpan="8"
+                                        style={{
+                                            textAlign: 'center',
+                                            padding: '40px',
+                                        }}
+                                    >
+                                        No hay órdenes de producción.
                                     </td>
 
                                 </tr>
 
-                            ))}
+                            ) : (
+
+                                filteredOrders.map((order) => {
+
+                                    const firstItem =
+                                        order.items?.[0];
+
+                                    const totalItems =
+                                        order.items?.length || 0;
+
+                                    const quantity =
+                                        order.items?.reduce(
+                                            (
+                                                total,
+                                                item
+                                            ) =>
+                                                total +
+                                                Number(
+                                                    item.quantity || 0
+                                                ),
+                                            0
+                                        ) || 0;
+
+                                    return (
+
+                                        <tr key={order.id}>
+
+                                            {/* ORDEN */}
+
+                                            <td>
+
+                                                <span className="production__order-id">
+                                                    {order.code || order.id}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* PRODUCTO */}
+
+                                            <td>
+
+                                                <div className="production__product">
+
+                                                    <div className="production__product-icon">
+                                                        <IconPackage size={16} />
+                                                    </div>
+
+                                                    <div>
+
+                                                        <p className="production__product-name">
+                                                            {firstItem?.product ||
+                                                                'Producto'}
+                                                        </p>
+
+                                                        {totalItems > 1 && (
+
+                                                            <span className="production__unit">
+                                                                + {totalItems - 1} productos
+                                                            </span>
+
+                                                        )}
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            {/* CANTIDAD */}
+
+                                            <td>
+
+                                                <strong className="production__quantity">
+                                                    {quantity}
+                                                </strong>
+
+                                                <span className="production__unit">
+                                                    {firstItem?.unit_type ||
+                                                        'unidades'}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* PRIORIDAD */}
+
+                                            <td>
+
+                                                <span
+                                                    className={getPriorityClass(
+                                                        order.priority
+                                                    )}
+                                                >
+                                                    {getPriorityLabel(
+                                                        order.priority
+                                                    )}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* SOLICITADO */}
+
+                                            <td>
+
+                                                <span className="production__requested">
+                                                    {order.user_id
+                                                        ? 'Usuario'
+                                                        : '-'}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* FECHA */}
+
+                                            <td>
+
+                                                <span className="production__date">
+                                                    {formatDate(
+                                                        order.created_at
+                                                    )}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* ESTADO */}
+
+                                            <td>
+
+                                                <span
+                                                    className={getStatusClass(
+                                                        order.status
+                                                    )}
+                                                >
+                                                    {getStatusLabel(
+                                                        order.status
+                                                    )}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* ACTIONS */}
+
+                                            <td>
+
+                                                <button
+                                                    type="button"
+                                                    className="btn btn--ghost btn--icon"
+                                                >
+                                                    <IconDotsVertical
+                                                        size={17}
+                                                    />
+                                                </button>
+
+                                            </td>
+
+                                        </tr>
+
+                                    );
+
+                                })
+
+                            )}
 
                         </tbody>
 
@@ -376,25 +709,17 @@ export default function ProduccionAdmin() {
                 <div className="production__footer">
 
                     <span>
-                        Mostrando 5 órdenes
+                        Mostrando {filteredOrders.length} órdenes
                     </span>
 
                     <div className="production__pagination">
 
-                        <button className="btn btn--outline btn--sm">
-                            Anterior
-                        </button>
-
-                        <button className="btn btn--primary btn--sm">
-                            1
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            2
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            Siguiente
+                        <button
+                            type="button"
+                            className="btn btn--outline btn--sm"
+                            onClick={refresh}
+                        >
+                            Actualizar
                         </button>
 
                     </div>

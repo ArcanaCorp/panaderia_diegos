@@ -1,116 +1,230 @@
 'use client';
 
-import {
-    IconPlus,
-    IconSearch,
-    IconFilter,
-    IconDownload,
-    IconDotsVertical,
-    IconEdit,
-    IconTrash,
-    IconPackage,
-    IconBox,
-    IconRefresh,
-    IconChevronDown,
-} from '@tabler/icons-react';
+import RowsProduct from '@/components/Table/RowsProduct';
+import { useAdminProducts } from '@/hooks/useAdminProducts';
+import { IconPlus, IconSearch, IconFilter, IconDownload, IconDotsVertical, IconEdit, IconTrash, IconPackage, IconBox, IconRefresh, IconChevronDown } from '@tabler/icons-react';
+import { useMemo, useState } from 'react';
 
-const products = [
-    {
-        id: 1,
-        name: 'Pan francés',
-        sku: 'PAN-001',
-        category: 'Panadería',
-        unit: 'Unidad',
-        price: 0.30,
-        stock: 120,
-        minStock: 50,
-        status: 'Disponible',
-        active: true,
-    },
-    {
-        id: 2,
-        name: 'Pan integral',
-        sku: 'PAN-002',
-        category: 'Panadería',
-        unit: 'Unidad',
-        price: 0.50,
-        stock: 80,
-        minStock: 30,
-        status: 'Disponible',
-        active: true,
-    },
-    {
-        id: 3,
-        name: 'Croissant',
-        sku: 'CRO-001',
-        category: 'Pastelería',
-        unit: 'Unidad',
-        price: 3.50,
-        stock: 24,
-        minStock: 10,
-        status: 'Disponible',
-        active: true,
-    },
-    {
-        id: 4,
-        name: 'Mantequilla',
-        sku: 'MAN-001',
-        category: 'Insumos',
-        unit: 'Kg',
-        price: 18.00,
-        stock: 4,
-        minStock: 10,
-        status: 'Stock bajo',
-        active: true,
-    },
-    {
-        id: 5,
-        name: 'Harina de trigo',
-        sku: 'HAR-001',
-        category: 'Insumos',
-        unit: 'Kg',
-        price: 4.50,
-        stock: 0,
-        minStock: 20,
-        status: 'Sin stock',
-        active: true,
-    },
-    {
-        id: 6,
-        name: 'Torta personal',
-        sku: 'TOR-001',
-        category: 'Pastelería',
-        unit: 'Unidad',
-        price: 8.00,
-        stock: 12,
-        minStock: 5,
-        status: 'Disponible',
-        active: true,
-    },
-];
 
 export default function ProductsAdmin() {
 
+    const { products, loading, error, refresh } = useAdminProducts();
+
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('all');
+    const [status, setStatus] = useState('all');
+
+    const categories = useMemo(() => {
+
+        return [
+            ...new Set(
+                products
+                    .map(product => product.category)
+                    .filter(Boolean)
+            )
+        ];
+
+    }, [products]);
+
+
+    const filteredProducts = useMemo(() => {
+
+        return products.filter(product => {
+
+            const searchValue = search
+                .toLowerCase()
+                .trim();
+
+            const matchesSearch =
+                !searchValue ||
+                product.name
+                    ?.toLowerCase()
+                    .includes(searchValue) ||
+                product.sku
+                    ?.toLowerCase()
+                    .includes(searchValue);
+
+
+            const matchesCategory =
+                category === 'all' ||
+                product.category === category;
+
+
+            const matchesStatus =
+                status === 'all' ||
+                product.status === status;
+
+
+            return (
+                matchesSearch &&
+                matchesCategory &&
+                matchesStatus
+            );
+
+        });
+
+    }, [
+        products,
+        search,
+        category,
+        status
+    ]);
+
+
+    /* =========================================================
+       ESTADÍSTICAS
+       ========================================================= */
+
+    const totalProducts = products.length;
+
+    const availableProducts =
+        products.filter(
+            product => product.status === 'Disponible'
+        ).length;
+
+    const lowStockProducts =
+        products.filter(
+            product => product.status === 'Stock bajo'
+        ).length;
+
+    const outOfStockProducts =
+        products.filter(
+            product => product.status === 'Sin stock'
+        ).length;
+
+
+    /* =========================================================
+       ACCIONES
+       ========================================================= */
+
     function handleNewProduct() {
+
         console.log('Nuevo producto');
+
     }
+
 
     function handleEdit(product) {
+
         console.log('Editar:', product);
+
     }
 
+
     function handleDelete(product) {
+
         console.log('Eliminar:', product);
+
     }
 
     function handleStock(product) {
+
         console.log('Rellenar stock:', product);
+
+    }
+
+
+    /* =========================================================
+       LOADING
+       ========================================================= */
+
+    if (loading) {
+
+        return (
+
+            <main className="products">
+
+                <header className="products__header">
+
+                    <div>
+
+                        <div className="products__title-row">
+
+                            <div className="products__title-icon">
+                                <IconPackage size={18} />
+                            </div>
+
+                            <div>
+
+                                <h1 className="products__title">
+                                    Productos
+                                </h1>
+
+                                <p className="products__description">
+                                    Cargando catálogo...
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+            </main>
+
+        );
+
+    }
+
+
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    if (error) {
+
+        return (
+
+            <main className="products">
+
+                <header className="products__header">
+
+                    <div>
+
+                        <div className="products__title-row">
+
+                            <div className="products__title-icon">
+                                <IconPackage size={18} />
+                            </div>
+
+                            <div>
+
+                                <h1 className="products__title">
+                                    Productos
+                                </h1>
+
+                                <p className="products__description">
+                                    {error}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        className="btn btn--primary"
+                        onClick={refresh}
+                    >
+                        <IconRefresh size={16} />
+                        Reintentar
+                    </button>
+
+                </header>
+
+            </main>
+
+        );
+
     }
 
     return (
         <main className="products">
 
-            {/* Header */}
             <header className="products__header">
                 <div>
                     <div className="products__title-row">
@@ -119,13 +233,9 @@ export default function ProductsAdmin() {
                         </div>
 
                         <div>
-                            <h1 className="products__title">
-                                Productos
-                            </h1>
+                            <h1 className="products__title">Productos</h1>
 
-                            <p className="products__description">
-                                Administra el catálogo, precios y stock de tus productos.
-                            </p>
+                            <p className="products__description">Administra el catálogo, precios y stock de tus productos.</p>
                         </div>
                     </div>
                 </div>
@@ -139,14 +249,12 @@ export default function ProductsAdmin() {
                 </button>
             </header>
 
-            {/* Stats */}
             <section className="products__stats">
 
                 <div className="card products__stat">
                     <div className="products__stat-icon">
                         <IconPackage size={17} />
                     </div>
-
                     <div>
                         <span>Total productos</span>
                         <strong>{products.length}</strong>
@@ -157,12 +265,9 @@ export default function ProductsAdmin() {
                     <div className="products__stat-icon products__stat-icon--success">
                         <IconBox size={17} />
                     </div>
-
                     <div>
                         <span>Disponibles</span>
-                        <strong>
-                            {products.filter(p => p.status === 'Disponible').length}
-                        </strong>
+                        <strong>{availableProducts}</strong>
                     </div>
                 </div>
 
@@ -170,12 +275,9 @@ export default function ProductsAdmin() {
                     <div className="products__stat-icon products__stat-icon--warning">
                         <IconRefresh size={17} />
                     </div>
-
                     <div>
                         <span>Stock bajo</span>
-                        <strong>
-                            {products.filter(p => p.status === 'Stock bajo').length}
-                        </strong>
+                        <strong>{lowStockProducts}</strong>
                     </div>
                 </div>
 
@@ -183,55 +285,44 @@ export default function ProductsAdmin() {
                     <div className="products__stat-icon products__stat-icon--danger">
                         <IconPackage size={17} />
                     </div>
-
                     <div>
                         <span>Sin stock</span>
-                        <strong>
-                            {products.filter(p => p.status === 'Sin stock').length}
-                        </strong>
+                        <strong>{outOfStockProducts}</strong>
                     </div>
                 </div>
 
             </section>
 
-            {/* Table */}
             <section className="card products__panel">
 
                 <div className="products__toolbar">
-
                     <div className="products__search">
                         <IconSearch size={16} />
-
-                        <input
-                            type="text"
-                            placeholder="Buscar producto, SKU..."
-                        />
+                        <input type="text" value={search} placeholder="Buscar producto, SKU..." onChange={(event) => setSearch(event.target.value)}/>
                     </div>
-
                     <div className="products__filters">
-
-                        <button className="btn btn--outline btn--sm">
-                            Todas las categorías
-                            <IconChevronDown size={14} />
+                        <select className="btn btn--outline btn--sm" value={category} onChange={(event) => setCategory(event.target.value)}>
+                            <option value="all">Todas las categorías</option>
+                            {categories.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
+                        </select>
+                        <select className="btn btn--outline btn--sm" value={status} onChange={(event) => setStatus(event.target.value)}>
+                            <option value="all">Todos los estados</option>
+                            <option value="Disponible">Disponible</option>
+                            <option value="Stock bajo">Stock bajo</option>
+                            <option value="Sin stock">Sin stock</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                        <button className="btn btn--ghost btn--sm" onClick={refresh}>
+                            <IconRefresh size={15} />
+                            Actualizar
                         </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            Estado
-                            <IconChevronDown size={14} />
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            <IconFilter size={15} />
-                            Filtros
-                        </button>
-
                         <button className="btn btn--ghost btn--sm">
                             <IconDownload size={15} />
                             Exportar
                         </button>
-
                     </div>
-
                 </div>
 
                 <div className="products__table-wrapper">
@@ -250,143 +341,25 @@ export default function ProductsAdmin() {
                         </thead>
 
                         <tbody>
-                            {products.map((product) => (
-
-                                <tr key={product.id}>
-
-                                    <td>
-                                        <div className="products__product">
-
-                                            <div className="products__product-icon">
-                                                <IconPackage size={16} />
-                                            </div>
-
-                                            <div>
-                                                <strong>
-                                                    {product.name}
-                                                </strong>
-
-                                                <span>
-                                                    {product.unit}
-                                                </span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <span className="products__sku">
-                                            {product.sku}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        {product.category}
-                                    </td>
-
-                                    <td>
-                                        <strong>
-                                            S/ {product.price.toFixed(2)}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        <div className="products__stock">
-
-                                            <strong>
-                                                {product.stock}
-                                            </strong>
-
-                                            <span>
-                                                mín. {product.minStock}
-                                            </span>
-
-                                        </div>
-                                    </td>
-
-                                    <td>
-
-                                        <span
-                                            className={`badge ${
-                                                product.status === 'Disponible'
-                                                    ? 'badge--success'
-                                                    : product.status === 'Stock bajo'
-                                                        ? 'badge--warning'
-                                                        : 'badge--danger'
-                                            }`}
-                                        >
-                                            {product.status}
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-                                        <div className="products__actions">
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Rellenar stock"
-                                                onClick={() => handleStock(product)}
-                                            >
-                                                <IconRefresh size={16} />
-                                            </button>
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Editar"
-                                                onClick={() => handleEdit(product)}
-                                            >
-                                                <IconEdit size={16} />
-                                            </button>
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm products__delete"
-                                                title="Eliminar"
-                                                onClick={() => handleDelete(product)}
-                                            >
-                                                <IconTrash size={16} />
-                                            </button>
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Más opciones"
-                                            >
-                                                <IconDotsVertical size={16} />
-                                            </button>
-
-                                        </div>
-                                    </td>
-
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map(product => (
+                                    <RowsProduct key={product.id} product={product} handleDelete={handleDelete} handleEdit={handleEdit} handleStock={handleStock}/>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="7" style={{ textAlign: 'center', padding: '40px'}}>No se encontraron productos.</td>
                                 </tr>
-
-                            ))}
+                            )}
                         </tbody>
-
                     </table>
                 </div>
 
-                {/* Pagination */}
                 <div className="products__pagination">
-
-                    <span>
-                        Mostrando 1–6 de 6 productos
-                    </span>
-
+                    <span>Mostrando {filteredProducts.length} de{' '} {totalProducts} productos </span>
                     <div>
-                        <button
-                            className="btn btn--outline btn--sm"
-                            disabled
-                        >
-                            Anterior
-                        </button>
-
-                        <button
-                            className="btn btn--outline btn--sm"
-                        >
-                            Siguiente
-                        </button>
+                        <button className="btn btn--outline btn--sm" disabled>Anterior</button>
+                        <button className="btn btn--outline btn--sm">Siguiente</button>
                     </div>
-
                 </div>
 
             </section>

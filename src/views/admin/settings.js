@@ -11,6 +11,7 @@ import {
     IconShield,
     IconSettings,
     IconLogout,
+    IconBuildingCommunity,
 } from '@tabler/icons-react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -36,6 +37,12 @@ const settingsGroups = [
     {
         title: 'Empresa',
         items: [
+            {
+                icon: IconBuildingCommunity,
+                title: 'Datos de la empresa',
+                description: 'Actualiza datos de la empresa y contacto',
+                path: 'company',
+            },
             {
                 icon: IconUsers,
                 title: 'Usuarios y roles',

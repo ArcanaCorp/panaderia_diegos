@@ -63,7 +63,7 @@ export const SIDEBAR = {
         },
         {
             path: "/dashboard/settings",
-            label: "Administración",
+            label: "Configuración",
             icon: <IconSettings />,
             view: <SettingsAdmin/>
         }

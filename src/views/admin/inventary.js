@@ -1,91 +1,231 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import {
-    IconSearch,
-    IconPlus,
-    IconDownload,
     IconPackage,
     IconAlertTriangle,
-    IconArchive,
-    IconDotsVertical,
-    IconChevronDown,
-    IconArrowUp,
-    IconArrowDown,
+    IconX,
+    IconRefresh,
 } from '@tabler/icons-react';
 
-export default function InventaryAdmin() {
+import { useAdminInventory } from '@/hooks/useAdminInventory';
 
-    const products = [
-        {
-            id: 1,
-            name: 'Harina de trigo',
-            sku: 'HAR-001',
-            category: 'Insumos',
-            unit: 'kg',
-            stock: 8,
-            minStock: 20,
-            status: 'Bajo',
-        },
-        {
-            id: 2,
-            name: 'Azúcar',
-            sku: 'AZU-001',
-            category: 'Insumos',
-            unit: 'kg',
-            stock: 12,
-            minStock: 20,
-            status: 'Bajo',
-        },
-        {
-            id: 3,
-            name: 'Mantequilla',
-            sku: 'MAN-001',
-            category: 'Insumos',
-            unit: 'kg',
-            stock: 4,
-            minStock: 10,
-            status: 'Crítico',
-        },
-        {
-            id: 4,
-            name: 'Pan francés',
-            sku: 'PAN-001',
-            category: 'Panadería',
-            unit: 'unidad',
-            stock: 120,
-            minStock: 50,
-            status: 'Disponible',
-        },
-        {
-            id: 5,
-            name: 'Croissant',
-            sku: 'CRO-001',
-            category: 'Pastelería',
-            unit: 'unidad',
-            stock: 24,
-            minStock: 10,
-            status: 'Disponible',
-        },
-        {
-            id: 6,
-            name: 'Café americano',
-            sku: 'CAF-001',
-            category: 'Bebidas',
-            unit: 'unidad',
-            stock: 30,
-            minStock: 10,
-            status: 'Disponible',
-        },
-    ];
+export default function InventoryAdmin() {
+
+    const {
+        purchases,
+        purchaseItems,
+        lots,
+        movements,
+        loading,
+        error,
+        refresh,
+    } = useAdminInventory();
+
+    const [search, setSearch] = useState('');
+    const [category, setCategory] = useState('all');
+
+    /*
+     * ============================================================
+     * INVENTARIO ACTUAL
+     * ============================================================
+     *
+     * Los lotes son la fuente del stock.
+     *
+     * Agrupamos por product_id porque un ingrediente
+     * puede tener varios lotes.
+     */
+
+    const inventory = useMemo(() => {
+
+        const map = new Map();
+
+        lots.forEach((lot) => {
+
+            if (!lot.product_id) return;
+
+            if (!map.has(lot.product_id)) {
+
+                map.set(lot.product_id, {
+                    product_id: lot.product_id,
+                    name: lot.name || 'Ingrediente sin nombre',
+                    sku: lot.sku || '-',
+                    unit_type: lot.unit_type || 'unidad',
+                    category: lot.category || 'Sin categoría',
+                    stock: 0,
+                    lot_count: 0,
+                    expiration_dates: [],
+                });
+
+            }
+
+            const item = map.get(lot.product_id);
+
+            item.stock += Number(
+                lot.quantity_remaining || 0
+            );
+
+            item.lot_count += 1;
+
+            if (lot.expiration_date) {
+                item.expiration_dates.push(
+                    lot.expiration_date
+                );
+            }
+
+        });
+
+        return Array.from(map.values());
+
+    }, [lots]);
+
+    /*
+     * ============================================================
+     * FILTROS
+     * ============================================================
+     */
+
+    const categories = useMemo(() => {
+
+        return [
+            ...new Set(
+                inventory
+                    .map(item => item.category)
+                    .filter(Boolean)
+            ),
+        ].sort();
+
+    }, [inventory]);
+
+    const filteredInventory = useMemo(() => {
+
+        const query = search.trim().toLowerCase();
+
+        return inventory.filter((item) => {
+
+            const matchesSearch =
+                !query ||
+                item.name.toLowerCase().includes(query) ||
+                item.sku.toLowerCase().includes(query);
+
+            const matchesCategory =
+                category === 'all' ||
+                item.category === category;
+
+            return matchesSearch && matchesCategory;
+
+        });
+
+    }, [
+        inventory,
+        search,
+        category,
+    ]);
+
+    /*
+     * ============================================================
+     * ESTADÍSTICAS
+     * ============================================================
+     */
+
+    const stats = useMemo(() => {
+
+        const total = inventory.length;
+
+        const lowStock = inventory.filter(
+            item => item.stock > 0 && item.stock <= 5
+        ).length;
+
+        const noStock = inventory.filter(
+            item => item.stock <= 0
+        ).length;
+
+        const totalPurchases = purchases.reduce(
+            (sum, purchase) =>
+                sum + Number(purchase.total || 0),
+            0
+        );
+
+        return {
+            total,
+            lowStock,
+            noStock,
+            totalPurchases,
+        };
+
+    }, [
+        inventory,
+        purchases,
+    ]);
+
+    /*
+     * ============================================================
+     * HELPERS
+     * ============================================================
+     */
+
+    const formatCurrency = (value) => {
+
+        return new Intl.NumberFormat('es-PE', {
+            style: 'currency',
+            currency: 'PEN',
+        }).format(Number(value || 0));
+
+    };
+
+    const getStockClass = (stock) => {
+
+        if (stock <= 0) {
+            return 'inventory__stock inventory__stock--danger';
+        }
+
+        if (stock <= 5) {
+            return 'inventory__stock inventory__stock--warning';
+        }
+
+        return 'inventory__stock';
+
+    };
+
+    if (loading) {
+
+        return (
+            <main className="inventory">
+
+                <div className="inventory__header">
+
+                    <div>
+                        <p className="inventory__eyebrow">
+                            Almacén
+                        </p>
+
+                        <h1 className="inventory__title">
+                            Inventario
+                        </h1>
+
+                        <p className="inventory__description">
+                            Cargando ingredientes...
+                        </p>
+                    </div>
+
+                </div>
+
+            </main>
+        );
+
+    }
 
     return (
         <main className="inventory">
 
-            {/* HEADER */}
+            {/* ==================================================
+                HEADER
+            ================================================== */}
 
             <header className="inventory__header">
 
                 <div>
+
                     <p className="inventory__eyebrow">
                         Almacén
                     </p>
@@ -95,20 +235,22 @@ export default function InventaryAdmin() {
                     </h1>
 
                     <p className="inventory__description">
-                        Controla tus productos y niveles de stock.
+                        Control de materias primas e ingredientes.
                     </p>
+
                 </div>
 
                 <div className="inventory__actions">
 
-                    <button className="btn btn--outline">
-                        <IconDownload size={16} />
-                        Exportar
-                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-secondary"
+                        onClick={refresh}
+                        disabled={loading}
+                    >
+                        <IconRefresh size={16} />
 
-                    <button className="btn btn--primary">
-                        <IconPlus size={16} />
-                        Nuevo producto
+                        Actualizar
                     </button>
 
                 </div>
@@ -116,24 +258,41 @@ export default function InventaryAdmin() {
             </header>
 
 
-            {/* SUMMARY */}
+            {/* ==================================================
+                ERROR
+            ================================================== */}
+
+            {error && (
+
+                <div className="alert alert--danger">
+                    {error}
+                </div>
+
+            )}
+
+
+            {/* ==================================================
+                STATS
+            ================================================== */}
 
             <section className="inventory__stats">
 
                 <div className="card inventory__stat">
 
                     <div className="inventory__stat-icon">
-                        <IconPackage size={17} />
+                        <IconPackage size={18} />
                     </div>
 
                     <div>
+
                         <p className="inventory__stat-label">
-                            Total productos
+                            Ingredientes
                         </p>
 
                         <strong className="inventory__stat-value">
-                            248
+                            {stats.total}
                         </strong>
+
                     </div>
 
                 </div>
@@ -142,17 +301,19 @@ export default function InventaryAdmin() {
                 <div className="card inventory__stat">
 
                     <div className="inventory__stat-icon inventory__stat-icon--warning">
-                        <IconAlertTriangle size={17} />
+                        <IconAlertTriangle size={18} />
                     </div>
 
                     <div>
+
                         <p className="inventory__stat-label">
                             Stock bajo
                         </p>
 
                         <strong className="inventory__stat-value">
-                            6
+                            {stats.lowStock}
                         </strong>
+
                     </div>
 
                 </div>
@@ -161,17 +322,19 @@ export default function InventaryAdmin() {
                 <div className="card inventory__stat">
 
                     <div className="inventory__stat-icon inventory__stat-icon--danger">
-                        <IconArchive size={17} />
+                        <IconX size={18} />
                     </div>
 
                     <div>
+
                         <p className="inventory__stat-label">
                             Sin stock
                         </p>
 
                         <strong className="inventory__stat-value">
-                            2
+                            {stats.noStock}
                         </strong>
+
                     </div>
 
                 </div>
@@ -180,17 +343,19 @@ export default function InventaryAdmin() {
                 <div className="card inventory__stat">
 
                     <div className="inventory__stat-icon">
-                        <IconArrowUp size={17} />
+                        <IconPackage size={18} />
                     </div>
 
                     <div>
+
                         <p className="inventory__stat-label">
-                            Ingresos este mes
+                            Compras registradas
                         </p>
 
                         <strong className="inventory__stat-value">
-                            42
+                            {formatCurrency(stats.totalPurchases)}
                         </strong>
+
                     </div>
 
                 </div>
@@ -198,7 +363,9 @@ export default function InventaryAdmin() {
             </section>
 
 
-            {/* INVENTORY TABLE */}
+            {/* ==================================================
+                CONTENT
+            ================================================== */}
 
             <section className="card inventory__content">
 
@@ -206,35 +373,48 @@ export default function InventaryAdmin() {
 
                 <div className="inventory__toolbar">
 
-                    <div className="inventory__search">
-
-                        <div className="input-group input-group--left">
-
-                            <span className="input-group__icon--left">
-                                <IconSearch size={17} />
-                            </span>
-
-                            <input
-                                className="input"
-                                placeholder="Buscar producto, SKU..."
-                            />
-
-                        </div>
-
-                    </div>
-
+                    <input
+                        type="search"
+                        className="input inventory__search"
+                        placeholder="Buscar ingrediente o SKU..."
+                        value={search}
+                        onChange={(event) =>
+                            setSearch(event.target.value)
+                        }
+                    />
 
                     <div className="inventory__filters">
 
-                        <button className="btn btn--outline">
-                            Todas las categorías
-                            <IconChevronDown size={15} />
+                        <button
+                            type="button"
+                            className={
+                                category === 'all'
+                                    ? 'btn btn-primary'
+                                    : 'btn btn-secondary'
+                            }
+                            onClick={() => setCategory('all')}
+                        >
+                            Todos
                         </button>
 
-                        <button className="btn btn--outline">
-                            Todos los estados
-                            <IconChevronDown size={15} />
-                        </button>
+                        {categories.map((item) => (
+
+                            <button
+                                key={item}
+                                type="button"
+                                className={
+                                    category === item
+                                        ? 'btn btn-primary'
+                                        : 'btn btn-secondary'
+                                }
+                                onClick={() =>
+                                    setCategory(item)
+                                }
+                            >
+                                {item}
+                            </button>
+
+                        ))}
 
                     </div>
 
@@ -248,92 +428,180 @@ export default function InventaryAdmin() {
                     <table className="inventory__table">
 
                         <thead>
+
                             <tr>
-                                <th>Producto</th>
-                                <th>SKU</th>
-                                <th>Categoría</th>
-                                <th>Stock</th>
-                                <th>Mínimo</th>
-                                <th>Estado</th>
-                                <th></th>
+
+                                <th>
+                                    Ingrediente
+                                </th>
+
+                                <th>
+                                    SKU
+                                </th>
+
+                                <th>
+                                    Categoría
+                                </th>
+
+                                <th>
+                                    Stock
+                                </th>
+
+                                <th>
+                                    Lotes
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
                             </tr>
+
                         </thead>
 
                         <tbody>
 
-                            {products.map((product) => (
+                            {filteredInventory.length === 0 ? (
 
-                                <tr key={product.id}>
+                                <tr>
 
-                                    <td>
-                                        <div className="inventory__product">
-
-                                            <div className="inventory__product-icon">
-                                                <IconPackage size={16} />
-                                            </div>
-
-                                            <div>
-                                                <p className="inventory__product-name">
-                                                    {product.name}
-                                                </p>
-
-                                                <span className="inventory__product-unit">
-                                                    {product.unit}
-                                                </span>
-                                            </div>
-
-                                        </div>
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__sku">
-                                            {product.sku}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__category">
-                                            {product.category}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <strong className="inventory__stock">
-                                            {product.stock}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__minimum">
-                                            {product.minStock}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span
-                                            className={`badge ${
-                                                product.status === 'Crítico'
-                                                    ? 'badge--danger'
-                                                    : product.status === 'Bajo'
-                                                        ? 'badge--warning'
-                                                        : 'badge--success'
-                                            }`}
-                                        >
-                                            {product.status}
-                                        </span>
-                                    </td>
-
-                                    <td>
-
-                                        <button className="btn btn--ghost btn--icon">
-                                            <IconDotsVertical size={17} />
-                                        </button>
-
+                                    <td
+                                        colSpan="6"
+                                        style={{
+                                            textAlign: 'center',
+                                            padding: '40px',
+                                        }}
+                                    >
+                                        No se encontraron ingredientes.
                                     </td>
 
                                 </tr>
 
-                            ))}
+                            ) : (
+
+                                filteredInventory.map((item) => {
+
+                                    const stock =
+                                        Number(item.stock || 0);
+
+                                    return (
+
+                                        <tr key={item.product_id}>
+
+                                            {/* INGREDIENTE */}
+
+                                            <td>
+
+                                                <div className="inventory__product">
+
+                                                    <div className="inventory__product-icon">
+                                                        <IconPackage size={16} />
+                                                    </div>
+
+                                                    <div>
+
+                                                        <p className="inventory__product-name">
+                                                            {item.name}
+                                                        </p>
+
+                                                        <span className="inventory__product-unit">
+                                                            {item.unit_type}
+                                                        </span>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+
+                                            {/* SKU */}
+
+                                            <td>
+
+                                                <span className="inventory__sku">
+                                                    {item.sku}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* CATEGORÍA */}
+
+                                            <td>
+
+                                                <span className="inventory__category">
+                                                    {item.category}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* STOCK */}
+
+                                            <td>
+
+                                                <strong
+                                                    className={
+                                                        getStockClass(
+                                                            stock
+                                                        )
+                                                    }
+                                                >
+                                                    {stock}
+                                                </strong>
+
+                                                <span className="inventory__minimum">
+                                                    {' '}{item.unit_type}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* LOTES */}
+
+                                            <td>
+
+                                                <span className="inventory__stock">
+                                                    {item.lot_count}
+                                                </span>
+
+                                            </td>
+
+
+                                            {/* ESTADO */}
+
+                                            <td>
+
+                                                {stock <= 0 ? (
+
+                                                    <span className="badge badge--danger">
+                                                        Sin stock
+                                                    </span>
+
+                                                ) : stock <= 5 ? (
+
+                                                    <span className="badge badge--warning">
+                                                        Stock bajo
+                                                    </span>
+
+                                                ) : (
+
+                                                    <span className="badge badge--success">
+                                                        Disponible
+                                                    </span>
+
+                                                )}
+
+                                            </td>
+
+                                        </tr>
+
+                                    );
+
+                                })
+
+                            )}
 
                         </tbody>
 
@@ -344,37 +612,17 @@ export default function InventaryAdmin() {
 
                 {/* FOOTER */}
 
-                <div className="inventory__footer">
+                <footer className="inventory__footer">
 
                     <span>
-                        Mostrando 6 de 248 productos
+                        Mostrando {filteredInventory.length} de {inventory.length} ingredientes
                     </span>
 
-                    <div className="inventory__pagination">
+                    <span>
+                        {movements.length} movimientos registrados
+                    </span>
 
-                        <button className="btn btn--outline btn--sm">
-                            Anterior
-                        </button>
-
-                        <button className="btn btn--primary btn--sm">
-                            1
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            2
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            3
-                        </button>
-
-                        <button className="btn btn--outline btn--sm">
-                            Siguiente
-                        </button>
-
-                    </div>
-
-                </div>
+                </footer>
 
             </section>
 

@@ -152,6 +152,36 @@
     font-weight: var(--font-semibold);
 }
 
+/* Empty state */
+
+.alerts__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: var(--space-2xl);
+    min-height: 220px;
+    text-align: center;
+    color: var(--color-gray);
+}
+
+.alerts__empty svg {
+    margin-bottom: var(--space-sm);
+    color: var(--color-neutral-400);
+}
+
+.alerts__empty strong {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-dark);
+}
+
+.alerts__empty span {
+    font-size: var(--text-xs);
+    color: var(--color-gray);
+}
+
 /* Panel */
 
 .alerts__panel {

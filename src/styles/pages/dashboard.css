@@ -84,9 +84,55 @@
 
 .dashboard__chart {
     min-height: 280px;
+    max-height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.dashboard__chart-bars {
+    width: 100%;
+    height: 240px;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: var(--space-sm);
+}
+
+.dashboard__chart-item {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.dashboard__chart-bar-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.dashboard__chart-bar {
+    width: 100%;
+    max-width: 42px;
+    min-height: 4px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    background: var(--color-primary);
+    transition: height 0.25s ease, opacity 0.25s ease;
+}
+
+.dashboard__chart-bar:hover {
+    opacity: 0.8;
+}
+
+.dashboard__chart-label {
+    color: var(--color-neutral-500);
+    font-size: var(--text-xs);
+    white-space: nowrap;
 }
 
 .dashboard__chart-placeholder {
@@ -285,6 +331,19 @@
     .dashboard__stock-quantity {
         grid-column: 1;
         grid-row: 2;
+    }
+
+    .dashboard__chart-bars {
+        height: 200px;
+        gap: 4px;
+    }
+
+    .dashboard__chart-bar {
+        max-width: 28px;
+    }
+
+    .dashboard__chart-label {
+        font-size: 10px;
     }
 
 }
