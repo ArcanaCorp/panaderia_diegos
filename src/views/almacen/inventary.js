@@ -16,118 +16,248 @@ import {
 
 import { useAuth } from '@/context/AuthContext'
 
+import {
+    useWarehouseInventory,
+} from '@/hooks/useWarehouseInventory'
+
+
 export default function InventaryAlmacen() {
 
     const { profile } = useAuth()
 
-    const storeName = profile?.store?.name || 'Almacén Central'
 
-    const stats = [
+    const {
+        products,
+        categories,
+        stats,
+        pagination,
+        page,
+        search,
+        categoryId,
+        status,
+        loading,
+        error,
+        setSearch,
+        setCategoryId,
+        setStatus,
+        nextPage,
+        previousPage,
+    } = useWarehouseInventory()
+
+
+    const storeName =
+        profile?.store?.name ||
+        'Almacén Central'
+
+
+    /*
+     * =========================================================
+     * STATS
+     * =========================================================
+     */
+
+    const statsData = [
+
         {
             label: 'Total productos',
-            value: '248',
+            value: stats.total_products,
             icon: IconPackages,
             modifier: '',
         },
+
         {
             label: 'Disponibles',
-            value: '218',
+            value: stats.available,
             icon: IconCircleCheck,
             modifier: '',
         },
+
         {
             label: 'Stock bajo',
-            value: '24',
+            value: stats.low_stock,
             icon: IconAlertTriangle,
             modifier: 'warning',
         },
+
         {
             label: 'Sin stock',
-            value: '6',
+            value: stats.out_of_stock,
             icon: IconAlertCircle,
             modifier: 'danger',
         },
+
     ]
 
-    const products = [
-        {
-            id: 'HAR-001',
-            name: 'Harina de trigo',
-            unit: 'kg',
-            category: 'Insumos',
-            stock: 80,
-            minimum: 20,
-            status: 'Disponible',
-        },
-        {
-            id: 'AZU-001',
-            name: 'Azúcar',
-            unit: 'kg',
-            category: 'Insumos',
-            stock: 12,
-            minimum: 15,
-            status: 'Bajo',
-        },
-        {
-            id: 'MAN-001',
-            name: 'Mantequilla',
-            unit: 'kg',
-            category: 'Insumos',
-            stock: 4,
-            minimum: 10,
-            status: 'Bajo',
-        },
-        {
-            id: 'LEV-001',
-            name: 'Levadura',
-            unit: 'kg',
-            category: 'Insumos',
-            stock: 0,
-            minimum: 5,
-            status: 'Sin stock',
-        },
-        {
-            id: 'PAN-001',
-            name: 'Pan francés',
-            unit: 'unidad',
-            category: 'Panadería',
-            stock: 120,
-            minimum: 50,
-            status: 'Disponible',
-        },
-        {
-            id: 'PAN-002',
-            name: 'Pan integral',
-            unit: 'unidad',
-            category: 'Panadería',
-            stock: 80,
-            minimum: 30,
-            status: 'Disponible',
-        },
-        {
-            id: 'CRO-001',
-            name: 'Croissant',
-            unit: 'unidad',
-            category: 'Pastelería',
-            stock: 24,
-            minimum: 10,
-            status: 'Disponible',
-        },
-        {
-            id: 'TOR-001',
-            name: 'Torta personal',
-            unit: 'unidad',
-            category: 'Pastelería',
-            stock: 5,
-            minimum: 10,
-            status: 'Bajo',
-        },
-    ]
+
+    /*
+     * =========================================================
+     * PAGINACIÓN
+     * =========================================================
+     */
+
+    const totalPages =
+        pagination.total_pages || 0
+
+    const total =
+        pagination.total || 0
+
+    const pageSize =
+        pagination.page_size || 10
+
+
+    const firstItem =
+        total === 0
+            ? 0
+            : ((page - 1) * pageSize) + 1
+
+
+    const lastItem =
+        Math.min(
+            page * pageSize,
+            total
+        )
+
+
+    /*
+     * =========================================================
+     * LOADING
+     * =========================================================
+     */
+
+    if (loading && !products.length) {
+
+        return (
+            <main className="inventory">
+
+                <header className="inventory__header">
+
+                    <div>
+
+                        <p className="inventory__eyebrow">
+                            Almacén · {storeName}
+                        </p>
+
+                        <h1 className="inventory__title">
+                            Inventario
+                        </h1>
+
+                        <p className="inventory__description">
+                            Cargando inventario...
+                        </p>
+
+                    </div>
+
+                </header>
+
+
+                <section className="inventory__stats">
+
+                    {[1, 2, 3, 4].map((item) => (
+
+                        <article
+                            className="card inventory__stat"
+                            key={item}
+                        >
+
+                            <div className="inventory__stat-icon">
+
+                                <IconPackages size={17} />
+
+                            </div>
+
+                            <div>
+
+                                <p className="inventory__stat-label">
+                                    Cargando
+                                </p>
+
+                                <strong className="inventory__stat-value">
+                                    —
+                                </strong>
+
+                            </div>
+
+                        </article>
+
+                    ))}
+
+                </section>
+
+            </main>
+        )
+    }
+
+
+    /*
+     * =========================================================
+     * ERROR
+     * =========================================================
+     */
+
+    if (error) {
+
+        return (
+            <main className="inventory">
+
+                <header className="inventory__header">
+
+                    <div>
+
+                        <p className="inventory__eyebrow">
+                            Almacén · {storeName}
+                        </p>
+
+                        <h1 className="inventory__title">
+                            Inventario
+                        </h1>
+
+                        <p className="inventory__description">
+                            No se pudo cargar el inventario.
+                        </p>
+
+                    </div>
+
+                    <button
+                        className="btn btn--primary"
+                        onClick={() => window.location.reload()}
+                    >
+                        Reintentar
+                    </button>
+
+                </header>
+
+
+                <section className="card">
+
+                    <div className="card__header">
+
+                        <div>
+
+                            <h2 className="card__title">
+                                Error
+                            </h2>
+
+                            <p className="card__description">
+                                {error}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
+        )
+    }
+
 
     return (
         <main className="inventory">
 
-            {/* HEADER */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
             <header className="inventory__header">
 
@@ -147,31 +277,43 @@ export default function InventaryAlmacen() {
 
                 </div>
 
+
                 <div className="inventory__actions">
 
                     <button className="btn btn--outline">
+
                         <IconArrowUp size={16} />
+
                         Registrar salida
+
                     </button>
 
+
                     <button className="btn btn--primary">
+
                         <IconArrowDown size={16} />
+
                         Registrar ingreso
+
                     </button>
 
                 </div>
 
             </header>
 
-            {/* STATS */}
+
+            {/* =================================================
+                STATS
+            ================================================= */}
 
             <section className="inventory__stats">
 
-                {stats.map((stat) => {
+                {statsData.map((stat) => {
 
                     const Icon = stat.icon
 
                     return (
+
                         <article
                             className="card inventory__stat"
                             key={stat.label}
@@ -184,8 +326,11 @@ export default function InventaryAlmacen() {
                                         : ''
                                 }`}
                             >
+
                                 <Icon size={17} />
+
                             </div>
+
 
                             <div>
 
@@ -200,18 +345,27 @@ export default function InventaryAlmacen() {
                             </div>
 
                         </article>
+
                     )
+
                 })}
 
             </section>
 
-            {/* INVENTORY */}
+
+            {/* =================================================
+                INVENTORY
+            ================================================= */}
 
             <section className="card inventory__content">
 
-                {/* TOOLBAR */}
+
+                {/* =================================================
+                    TOOLBAR
+                ================================================= */}
 
                 <div className="inventory__toolbar">
+
 
                     <div className="inventory__search">
 
@@ -222,36 +376,104 @@ export default function InventaryAlmacen() {
                                 className="input-group__icon--left"
                             />
 
+
                             <input
                                 type="text"
                                 className="input"
                                 placeholder="Buscar producto, SKU..."
+                                value={search}
+                                onChange={(event) =>
+                                    setSearch(
+                                        event.target.value
+                                    )
+                                }
                             />
 
                         </div>
 
                     </div>
 
+
                     <div className="inventory__filters">
 
-                        <button className="btn btn--outline btn--sm">
-                            Todas las categorías
-                        </button>
+
+                        {/* CATEGORÍA */}
+
+                        <select
+                            className="btn btn--outline btn--sm"
+                            value={categoryId || ''}
+                            onChange={(event) =>
+                                setCategoryId(
+                                    event.target.value
+                                )
+                            }
+                        >
+
+                            <option value="">
+                                Todas las categorías
+                            </option>
+
+                            {categories.map((category) => (
+
+                                <option
+                                    key={category.id}
+                                    value={category.id}
+                                >
+                                    {category.name}
+                                </option>
+
+                            ))}
+
+                        </select>
+
+
+                        {/* ESTADO */}
+
+                        <select
+                            className="btn btn--ghost btn--sm"
+                            value={status || ''}
+                            onChange={(event) =>
+                                setStatus(
+                                    event.target.value
+                                )
+                            }
+                        >
+
+                            <option value="">
+                                Estado
+                            </option>
+
+                            <option value="disponible">
+                                Disponible
+                            </option>
+
+                            <option value="bajo">
+                                Bajo
+                            </option>
+
+                            <option value="sin_stock">
+                                Sin stock
+                            </option>
+
+                        </select>
+
 
                         <button className="btn btn--ghost btn--sm">
-                            Estado
-                        </button>
 
-                        <button className="btn btn--ghost btn--sm">
                             <IconFilter size={15} />
+
                             Filtros
+
                         </button>
 
                     </div>
 
                 </div>
 
-                {/* TABLE */}
+
+                {/* =================================================
+                    TABLE
+                ================================================= */}
 
                 <div className="inventory__table-wrapper">
 
@@ -260,119 +482,235 @@ export default function InventaryAlmacen() {
                         <thead>
 
                             <tr>
-                                <th>Producto</th>
-                                <th>SKU</th>
-                                <th>Categoría</th>
-                                <th>Stock</th>
-                                <th>Mínimo</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
+
+                                <th>
+                                    Producto
+                                </th>
+
+                                <th>
+                                    SKU
+                                </th>
+
+                                <th>
+                                    Categoría
+                                </th>
+
+                                <th>
+                                    Stock
+                                </th>
+
+                                <th>
+                                    Mínimo
+                                </th>
+
+                                <th>
+                                    Estado
+                                </th>
+
+                                <th>
+                                    Acciones
+                                </th>
+
                             </tr>
 
                         </thead>
 
+
                         <tbody>
 
-                            {products.map((product) => (
 
-                                <tr key={product.id}>
+                            {products.length === 0 ? (
 
-                                    <td>
+                                <tr>
 
-                                        <div className="inventory__product">
+                                    <td
+                                        colSpan="7"
+                                        style={{
+                                            textAlign: 'center',
+                                            padding: '40px 20px',
+                                        }}
+                                    >
 
-                                            <div className="inventory__product-icon">
-                                                <IconPackages size={16} />
-                                            </div>
+                                        <IconPackages
+                                            size={28}
+                                        />
 
-                                            <div>
-
-                                                <p className="inventory__product-name">
-                                                    {product.name}
-                                                </p>
-
-                                                <span className="inventory__product-unit">
-                                                    {product.unit}
-                                                </span>
-
-                                            </div>
-
-                                        </div>
-
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__sku">
-                                            {product.id}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__category">
-                                            {product.category}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <strong className="inventory__stock">
-                                            {product.stock} {product.unit}
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        <span className="inventory__minimum">
-                                            {product.minimum} {product.unit}
-                                        </span>
-                                    </td>
-
-                                    <td>
-
-                                        <span
-                                            className={`badge ${
-                                                product.status === 'Disponible'
-                                                    ? 'badge--success'
-                                                    : product.status === 'Bajo'
-                                                        ? 'badge--warning'
-                                                        : 'badge--danger'
-                                            }`}
-                                        >
-                                            {product.status}
-                                        </span>
-
-                                    </td>
-
-                                    <td>
-
-                                        <div className="inventory__actions">
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Registrar ingreso"
-                                            >
-                                                <IconArrowDown size={15} />
-                                            </button>
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Registrar salida"
-                                            >
-                                                <IconArrowUp size={15} />
-                                            </button>
-
-                                            <button
-                                                className="btn btn--icon btn--ghost btn--sm"
-                                                title="Transferir"
-                                            >
-                                                <IconArrowsExchange size={15} />
-                                            </button>
-
-                                        </div>
+                                        <p>
+                                            No se encontraron productos.
+                                        </p>
 
                                     </td>
 
                                 </tr>
 
-                            ))}
+                            ) : (
+
+                                products.map((product) => (
+
+                                    <tr
+                                        key={product.id}
+                                    >
+
+
+                                        {/* PRODUCTO */}
+
+                                        <td>
+
+                                            <div className="inventory__product">
+
+                                                <div className="inventory__product-icon">
+
+                                                    <IconPackages
+                                                        size={16}
+                                                    />
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <p className="inventory__product-name">
+                                                        {product.name}
+                                                    </p>
+
+                                                    <span className="inventory__product-unit">
+                                                        {product.unit}
+                                                    </span>
+
+                                                </div>
+
+                                            </div>
+
+                                        </td>
+
+
+                                        {/* SKU */}
+
+                                        <td>
+
+                                            <span className="inventory__sku">
+                                                {product.sku}
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* CATEGORY */}
+
+                                        <td>
+
+                                            <span className="inventory__category">
+                                                {product.category}
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* STOCK */}
+
+                                        <td>
+
+                                            <strong className="inventory__stock">
+
+                                                {product.stock}
+
+                                                {' '}
+
+                                                {product.unit}
+
+                                            </strong>
+
+                                        </td>
+
+
+                                        {/* MINIMUM */}
+
+                                        <td>
+
+                                            <span className="inventory__minimum">
+
+                                                {product.minimum}
+
+                                                {' '}
+
+                                                {product.unit}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* STATUS */}
+
+                                        <td>
+
+                                            <span
+                                                className={`badge ${
+                                                    product.status === 'Disponible'
+                                                        ? 'badge--success'
+                                                        : product.status === 'Bajo'
+                                                            ? 'badge--warning'
+                                                            : 'badge--danger'
+                                                }`}
+                                            >
+                                                {product.status}
+                                            </span>
+
+                                        </td>
+
+
+                                        {/* ACTIONS */}
+
+                                        <td>
+
+                                            <div className="inventory__actions">
+
+
+                                                <button
+                                                    className="btn btn--icon btn--ghost btn--sm"
+                                                    title="Registrar ingreso"
+                                                >
+
+                                                    <IconArrowDown
+                                                        size={15}
+                                                    />
+
+                                                </button>
+
+
+                                                <button
+                                                    className="btn btn--icon btn--ghost btn--sm"
+                                                    title="Registrar salida"
+                                                >
+
+                                                    <IconArrowUp
+                                                        size={15}
+                                                    />
+
+                                                </button>
+
+
+                                                <button
+                                                    className="btn btn--icon btn--ghost btn--sm"
+                                                    title="Transferir"
+                                                >
+
+                                                    <IconArrowsExchange
+                                                        size={15}
+                                                    />
+
+                                                </button>
+
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            )}
 
                         </tbody>
 
@@ -380,37 +718,81 @@ export default function InventaryAlmacen() {
 
                 </div>
 
-                {/* FOOTER */}
+
+                {/* =================================================
+                    FOOTER
+                ================================================= */}
 
                 <footer className="inventory__footer">
 
                     <span>
-                        Mostrando {products.length} de 248 productos
+
+                        Mostrando{' '}
+
+                        {firstItem}
+
+                        {' '}–{' '}
+
+                        {lastItem}
+
+                        {' '}de{' '}
+
+                        {total}
+
+                        {' '}productos
+
                     </span>
+
 
                     <div className="inventory__pagination">
 
+
+                        {/* PREVIOUS */}
+
                         <button
                             className="btn btn--icon btn--ghost btn--sm"
-                            disabled
+                            onClick={previousPage}
+                            disabled={
+                                page <= 1 ||
+                                loading
+                            }
                         >
-                            <IconChevronLeft size={16} />
+
+                            <IconChevronLeft
+                                size={16}
+                            />
+
                         </button>
 
-                        <button className="btn btn--primary btn--sm">
-                            1
-                        </button>
 
-                        <button className="btn btn--ghost btn--sm">
-                            2
-                        </button>
+                        {/* PAGE */}
 
-                        <button className="btn btn--ghost btn--sm">
-                            3
-                        </button>
+                        {totalPages > 0 && (
 
-                        <button className="btn btn--icon btn--ghost btn--sm">
-                            <IconChevronRight size={16} />
+                            <button
+                                className="btn btn--primary btn--sm"
+                            >
+                                {page}
+                            </button>
+
+                        )}
+
+
+                        {/* NEXT */}
+
+                        <button
+                            className="btn btn--icon btn--ghost btn--sm"
+                            onClick={nextPage}
+                            disabled={
+                                page >= totalPages ||
+                                loading
+                            }
+                        >
+
+                            <IconChevronRight
+                                size={16}
+                            />
+
                         </button>
 
                     </div>

@@ -11,105 +11,212 @@ import {
 } from '@tabler/icons-react'
 
 import { useAuth } from '@/context/AuthContext'
+import { useWarehouseDashboard } from '@/hooks/useWarehouseDashboard'
+
 
 export default function DashboardAlmace() {
 
     const { profile } = useAuth()
 
-    const storeName = profile?.store?.name || 'Almacén Central'
-    const userName = profile?.full_name?.split(' ')[0] || 'Usuario'
+    const {
+        stats,
+        movements,
+        lowStockProducts,
+        loading,
+        error,
+    } = useWarehouseDashboard()
 
-    const stats = [
+
+    const storeName =
+        profile?.store?.name ||
+        'Almacén Central'
+
+    const userName =
+        profile?.full_name?.split(' ')[0] ||
+        'Usuario'
+
+
+    /*
+     * =========================================================
+     * LOADING
+     * =========================================================
+     */
+
+    if (loading) {
+
+        return (
+            <main className="dashboard">
+
+                <header className="dashboard__header">
+
+                    <div>
+
+                        <p className="dashboard__eyebrow">
+                            Almacén · {storeName}
+                        </p>
+
+                        <h1 className="dashboard__title">
+                            Hola, {userName}
+                        </h1>
+
+                        <p className="dashboard__description">
+                            Cargando información del almacén...
+                        </p>
+
+                    </div>
+
+                </header>
+
+
+                <section className="dashboard__stats">
+
+                    {[1, 2, 3, 4].map((item) => (
+
+                        <article
+                            className="card card--stat"
+                            key={item}
+                        >
+
+                            <div className="card__content">
+
+                                <div className="card__icon">
+                                    <IconPackages size={18} />
+                                </div>
+
+                                <div>
+
+                                    <p className="card__label">
+                                        Cargando
+                                    </p>
+
+                                    <strong className="card__value">
+                                        —
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    ))}
+
+                </section>
+
+            </main>
+        )
+    }
+
+
+    /*
+     * =========================================================
+     * ERROR
+     * =========================================================
+     */
+
+    if (error) {
+
+        return (
+            <main className="dashboard">
+
+                <header className="dashboard__header">
+
+                    <div>
+
+                        <p className="dashboard__eyebrow">
+                            Almacén · {storeName}
+                        </p>
+
+                        <h1 className="dashboard__title">
+                            Hola, {userName}
+                        </h1>
+
+                        <p className="dashboard__description">
+                            No pudimos cargar la información del almacén.
+                        </p>
+
+                    </div>
+
+                    <button
+                        className="btn btn--primary"
+                        onClick={() => window.location.reload()}
+                    >
+                        Reintentar
+                    </button>
+
+                </header>
+
+
+                <section className="card">
+
+                    <div className="card__header">
+
+                        <div>
+
+                            <h2 className="card__title">
+                                Error
+                            </h2>
+
+                            <p className="card__description">
+                                {error}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
+        )
+    }
+
+
+    /*
+     * =========================================================
+     * STATS
+     * =========================================================
+     */
+
+    const statsData = [
+
         {
             label: 'Productos en stock',
-            value: '248',
+            value: stats.products_in_stock,
             icon: IconPackages,
             type: 'neutral',
         },
+
         {
             label: 'Ingresos hoy',
-            value: '36',
+            value: stats.entries_today,
             icon: IconArrowDown,
             type: 'positive',
         },
+
         {
             label: 'Salidas hoy',
-            value: '52',
+            value: stats.exits_today,
             icon: IconArrowUp,
             type: 'neutral',
         },
+
         {
             label: 'Stock bajo',
-            value: '14',
+            value: stats.low_stock,
             icon: IconAlertTriangle,
             type: 'negative',
         },
+
     ]
 
-    const movements = [
-        {
-            title: 'Ingreso de harina de trigo',
-            description: 'Compra · 50 kg',
-            amount: '+50 kg',
-            type: 'positive',
-        },
-        {
-            title: 'Salida de azúcar',
-            description: 'Producción · 10 kg',
-            amount: '-10 kg',
-            type: 'negative',
-        },
-        {
-            title: 'Transferencia a Tienda Centro',
-            description: 'Pan francés · 50 unidades',
-            amount: '-50 und.',
-            type: 'negative',
-        },
-        {
-            title: 'Ingreso de mantequilla',
-            description: 'Compra · 20 kg',
-            amount: '+20 kg',
-            type: 'positive',
-        },
-        {
-            title: 'Transferencia recibida',
-            description: 'Croissant · 30 unidades',
-            amount: '+30 und.',
-            type: 'positive',
-        },
-    ]
-
-    const lowStock = [
-        {
-            name: 'Harina de trigo',
-            category: 'Insumos',
-            quantity: '8 kg',
-            minimum: '20 kg',
-        },
-        {
-            name: 'Mantequilla',
-            category: 'Insumos',
-            quantity: '4 kg',
-            minimum: '10 kg',
-        },
-        {
-            name: 'Levadura',
-            category: 'Insumos',
-            quantity: '2 kg',
-            minimum: '5 kg',
-        },
-        {
-            name: 'Chocolate cobertura',
-            category: 'Pastelería',
-            quantity: '0 kg',
-            minimum: '3 kg',
-        },
-    ]
 
     return (
         <main className="dashboard">
 
-            {/* HEADER */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
             <header className="dashboard__header">
 
@@ -129,31 +236,43 @@ export default function DashboardAlmace() {
 
                 </div>
 
+
                 <div className="dashboard__actions">
 
                     <button className="btn btn--outline">
+
                         <IconTransfer size={16} />
+
                         Transferir
+
                     </button>
 
+
                     <button className="btn btn--primary">
+
                         <IconPlus size={16} />
+
                         Registrar ingreso
+
                     </button>
 
                 </div>
 
             </header>
 
-            {/* STATS */}
+
+            {/* =================================================
+                STATS
+            ================================================= */}
 
             <section className="dashboard__stats">
 
-                {stats.map((stat) => {
+                {statsData.map((stat) => {
 
                     const Icon = stat.icon
 
                     return (
+
                         <article
                             className="card card--stat"
                             key={stat.label}
@@ -162,8 +281,11 @@ export default function DashboardAlmace() {
                             <div className="card__content">
 
                                 <div className="card__icon">
+
                                     <Icon size={18} />
+
                                 </div>
+
 
                                 <div>
 
@@ -180,16 +302,24 @@ export default function DashboardAlmace() {
                             </div>
 
                         </article>
+
                     )
+
                 })}
 
             </section>
 
-            {/* MAIN GRID */}
+
+            {/* =================================================
+                MAIN GRID
+            ================================================= */}
 
             <section className="dashboard__grid">
 
-                {/* MOVEMENTS */}
+
+                {/* =================================================
+                    MOVEMENTS
+                ================================================= */}
 
                 <article className="card">
 
@@ -207,58 +337,87 @@ export default function DashboardAlmace() {
 
                         </div>
 
+
                         <button className="btn btn--ghost btn--sm">
                             Ver todos
                         </button>
 
                     </div>
 
+
                     <div className="dashboard__activity-list">
 
-                        {movements.map((movement, index) => {
+                        {movements.length === 0 ? (
 
-                            const Icon =
-                                movement.type === 'positive'
-                                    ? IconArrowDown
-                                    : IconArrowUp
+                            <div className="dashboard__empty">
 
-                            return (
-                                <div
-                                    className="dashboard__activity-item"
-                                    key={index}
-                                >
+                                <IconPackages size={22} />
+
+                                <p>
+                                    No hay movimientos registrados.
+                                </p>
+
+                            </div>
+
+                        ) : (
+
+                            movements.map((movement) => {
+
+                                const Icon =
+                                    movement.type === 'positive'
+                                        ? IconArrowDown
+                                        : IconArrowUp
+
+
+                                return (
 
                                     <div
-                                        className={`dashboard__activity-icon dashboard__activity-icon--${movement.type}`}
+                                        className="dashboard__activity-item"
+                                        key={movement.id}
                                     >
-                                        <Icon size={16} />
+
+                                        <div
+                                            className={`dashboard__activity-icon dashboard__activity-icon--${movement.type}`}
+                                        >
+
+                                            <Icon size={16} />
+
+                                        </div>
+
+
+                                        <div className="dashboard__activity-content">
+
+                                            <p className="dashboard__activity-title">
+                                                {movement.title}
+                                            </p>
+
+                                            <p className="dashboard__activity-description">
+                                                {movement.description}
+                                            </p>
+
+                                        </div>
+
+
+                                        <strong className="dashboard__activity-amount">
+                                            {movement.amount}
+                                        </strong>
+
                                     </div>
 
-                                    <div className="dashboard__activity-content">
+                                )
 
-                                        <p className="dashboard__activity-title">
-                                            {movement.title}
-                                        </p>
+                            })
 
-                                        <p className="dashboard__activity-description">
-                                            {movement.description}
-                                        </p>
-
-                                    </div>
-
-                                    <strong className="dashboard__activity-amount">
-                                        {movement.amount}
-                                    </strong>
-
-                                </div>
-                            )
-                        })}
+                        )}
 
                     </div>
 
                 </article>
 
-                {/* LOW STOCK */}
+
+                {/* =================================================
+                    LOW STOCK
+                ================================================= */}
 
                 <article className="card dashboard__stock">
 
@@ -276,56 +435,78 @@ export default function DashboardAlmace() {
 
                         </div>
 
+
                         <button className="btn btn--ghost btn--sm">
                             Ver todos
                         </button>
 
                     </div>
 
+
                     <div className="dashboard__stock-list">
 
-                        {lowStock.map((product) => (
+                        {lowStockProducts.length === 0 ? (
 
-                            <div
-                                className="dashboard__stock-item"
-                                key={product.name}
-                            >
+                            <div className="dashboard__empty">
 
-                                <div className="dashboard__stock-info">
+                                <IconPackages size={22} />
 
-                                    <div className="dashboard__activity-icon dashboard__activity-icon--negative">
-                                        <IconAlertTriangle size={16} />
-                                    </div>
-
-                                    <div>
-
-                                        <p className="dashboard__stock-name">
-                                            {product.name}
-                                        </p>
-
-                                        <p className="dashboard__stock-category">
-                                            {product.category}
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="dashboard__stock-quantity">
-
-                                    <strong>
-                                        {product.quantity}
-                                    </strong>
-
-                                    <span>
-                                        mín. {product.minimum}
-                                    </span>
-
-                                </div>
+                                <p>
+                                    No hay productos con stock bajo.
+                                </p>
 
                             </div>
 
-                        ))}
+                        ) : (
+
+                            lowStockProducts.map((product) => (
+
+                                <div
+                                    className="dashboard__stock-item"
+                                    key={product.id}
+                                >
+
+                                    <div className="dashboard__stock-info">
+
+                                        <div className="dashboard__activity-icon dashboard__activity-icon--negative">
+
+                                            <IconAlertTriangle size={16} />
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="dashboard__stock-name">
+                                                {product.name}
+                                            </p>
+
+                                            <p className="dashboard__stock-category">
+                                                {product.category}
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div className="dashboard__stock-quantity">
+
+                                        <strong>
+                                            {product.quantity}
+                                        </strong>
+
+                                        <span>
+                                            mín. {product.minimum}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            ))
+
+                        )}
 
                     </div>
 
@@ -333,7 +514,10 @@ export default function DashboardAlmace() {
 
             </section>
 
-            {/* QUICK ACTIONS */}
+
+            {/* =================================================
+                QUICK ACTIONS
+            ================================================= */}
 
             <section className="card">
 
@@ -353,26 +537,42 @@ export default function DashboardAlmace() {
 
                 </div>
 
+
                 <div className="dashboard__actions">
 
                     <button className="btn btn--outline">
+
                         <IconArrowDown size={16} />
+
                         Registrar ingreso
+
                     </button>
 
+
                     <button className="btn btn--outline">
+
                         <IconArrowUp size={16} />
+
                         Registrar salida
+
                     </button>
 
+
                     <button className="btn btn--outline">
+
                         <IconArrowsExchange size={16} />
+
                         Transferir productos
+
                     </button>
 
+
                     <button className="btn btn--outline">
+
                         <IconPackages size={16} />
+
                         Ver inventario
+
                     </button>
 
                 </div>
