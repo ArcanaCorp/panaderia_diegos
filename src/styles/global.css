@@ -22,6 +22,7 @@
 @import './components/table.css';
 @import './components/graphic.css';
 @import './components/sidebar.css';
+@import './components/modal.css';
 
 @import './pages/login.css';
 @import './pages/dashboard.css';

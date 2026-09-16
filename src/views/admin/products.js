@@ -1,14 +1,18 @@
 'use client';
 
 import RowsProduct from '@/components/Table/RowsProduct';
+import { useModal } from '@/context/ModalContext';
 import { useAdminProducts } from '@/hooks/useAdminProducts';
-import { IconPlus, IconSearch, IconFilter, IconDownload, IconDotsVertical, IconEdit, IconTrash, IconPackage, IconBox, IconRefresh, IconChevronDown } from '@tabler/icons-react';
+import { exportProductsToExcel } from '@/utils/exportProducts';
+import { IconPlus, IconSearch, IconDownload, IconPackage, IconBox, IconRefresh } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 
 export default function ProductsAdmin() {
 
-    const { products, loading, error, refresh } = useAdminProducts();
+    const { openModal } = useModal();
+    const { products, loading, error, refresh, addProduct, updateProductInState, removeProduct } = useAdminProducts();
 
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('all');
@@ -18,7 +22,7 @@ export default function ProductsAdmin() {
 
         return [
             ...new Set(
-                products
+                (products || [])
                     .map(product => product.category)
                     .filter(Boolean)
             )
@@ -29,7 +33,7 @@ export default function ProductsAdmin() {
 
     const filteredProducts = useMemo(() => {
 
-        return products.filter(product => {
+        return (products || []).filter(product => {
 
             const searchValue = search
                 .toLowerCase()
@@ -44,16 +48,13 @@ export default function ProductsAdmin() {
                     ?.toLowerCase()
                     .includes(searchValue);
 
-
             const matchesCategory =
                 category === 'all' ||
                 product.category === category;
 
-
             const matchesStatus =
                 status === 'all' ||
                 product.status === status;
-
 
             return (
                 matchesSearch &&
@@ -63,32 +64,29 @@ export default function ProductsAdmin() {
 
         });
 
-    }, [
-        products,
-        search,
-        category,
-        status
-    ]);
+    }, [ products, search, category, status ]);
 
 
     /* =========================================================
        ESTADÍSTICAS
        ========================================================= */
 
-    const totalProducts = products.length;
+    const productList = products || [];
+
+    const totalProducts = productList.length;
 
     const availableProducts =
-        products.filter(
+        productList.filter(
             product => product.status === 'Disponible'
         ).length;
 
     const lowStockProducts =
-        products.filter(
+        productList.filter(
             product => product.status === 'Stock bajo'
         ).length;
 
     const outOfStockProducts =
-        products.filter(
+        productList.filter(
             product => product.status === 'Sin stock'
         ).length;
 
@@ -97,30 +95,21 @@ export default function ProductsAdmin() {
        ACCIONES
        ========================================================= */
 
-    function handleNewProduct() {
 
-        console.log('Nuevo producto');
-
+    const handleProductCreated = (product) => {
+        addProduct(product);
+        toast.success('Producto creado con éxito')
     }
 
+    const handleNewProduct = () => {
+        openModal('product-create', null, {
+            onSuccess: handleProductCreated,
+        });
+    };
 
-    function handleEdit(product) {
-
-        console.log('Editar:', product);
-
-    }
-
-
-    function handleDelete(product) {
-
-        console.log('Eliminar:', product);
-
-    }
-
-    function handleStock(product) {
-
-        console.log('Rellenar stock:', product);
-
+    const handleExport = () => {
+        const exported = exportProductsToExcel(filteredProducts);
+        if (!exported) return;
     }
 
 
@@ -318,16 +307,12 @@ export default function ProductsAdmin() {
                             <IconRefresh size={15} />
                             Actualizar
                         </button>
-                        <button className="btn btn--ghost btn--sm">
-                            <IconDownload size={15} />
-                            Exportar
-                        </button>
+                        <button className="btn btn--ghost btn--sm" onClick={handleExport}><IconDownload size={15} /> Exportar</button>
                     </div>
                 </div>
 
                 <div className="products__table-wrapper">
                     <table className="products__table">
-
                         <thead>
                             <tr>
                                 <th>Producto</th>
@@ -339,11 +324,10 @@ export default function ProductsAdmin() {
                                 <th></th>
                             </tr>
                         </thead>
-
                         <tbody>
                             {filteredProducts.length > 0 ? (
                                 filteredProducts.map(product => (
-                                    <RowsProduct key={product.id} product={product} handleDelete={handleDelete} handleEdit={handleEdit} handleStock={handleStock}/>
+                                    <RowsProduct key={product.id} product={product} onProductUpdated={updateProductInState} onProductDeleted={removeProduct} onStockUpdated={updateProductInState}/>
                                 ))
                             ) : (
                                 <tr>

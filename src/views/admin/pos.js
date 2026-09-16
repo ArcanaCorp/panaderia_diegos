@@ -2,23 +2,9 @@
 
 import { useMemo, useState } from 'react';
 
-import {
-    IconSearch,
-    IconPlus,
-    IconMinus,
-    IconTrash,
-    IconShoppingCart,
-    IconCash,
-    IconCreditCard,
-    IconDeviceMobile,
-    IconScan,
-    IconChevronDown,
-    IconX,
-    IconBuildingStore,
-    IconLoader2
-} from '@tabler/icons-react';
+import { IconSearch, IconShoppingCart, IconScan, IconChevronDown, IconX, IconBuildingStore, IconLoader2 } from '@tabler/icons-react';
 import { usePOS } from '@/hooks/usePos';
-
+import POSCard from '@/components/Cards/POSCard';
 
 export default function PosAdmin() {
 
@@ -115,163 +101,33 @@ export default function PosAdmin() {
     }
 
     // --------------------------------
-    // Aumentar cantidad
-    // --------------------------------
-
-    function increaseQuantity(productId) {
-
-        setCart(currentCart => currentCart.map(item => {
-
-            if (item.id !== productId) {
-                return item;
-            }
-
-            if (item.quantity >= item.stock) {
-                return item;
-            }
-
-            return {
-                ...item,
-                quantity: item.quantity + 1
-            };
-
-        }));
-
-    }
-
-    // --------------------------------
-    // Disminuir cantidad
-    // --------------------------------
-
-    function decreaseQuantity(productId) {
-
-        setCart(currentCart => {
-
-            return currentCart
-                .map(item => {
-
-                    if (item.id !== productId) {
-                        return item;
-                    }
-
-                    return {
-                        ...item,
-                        quantity: item.quantity - 1
-                    };
-
-                })
-                .filter(item => item.quantity > 0);
-
-        });
-
-    }
-
-    // --------------------------------
-    // Eliminar producto
-    // --------------------------------
-
-    function removeFromCart(productId) {
-
-        setCart(currentCart =>
-            currentCart.filter(
-                item => item.id !== productId
-            )
-        );
-
-    }
-
-    // --------------------------------
     // Vaciar carrito
     // --------------------------------
 
-    function clearCart() {
-        setCart([]);
-    }
-
-    // --------------------------------
-    // Totales
-    // --------------------------------
-
-    const subtotal = cart.reduce(
-        (total, item) =>
-            total + item.price * item.quantity,
-        0
-    );
-
-    const discount = 0;
-
-    const total = subtotal - discount;
-
-    const totalItems = cart.reduce(
-        (total, item) => total + item.quantity,
-        0
-    );
-
-    // --------------------------------
-    // Render
-    // --------------------------------
+    const clearCart = () => setCart([]);
 
     return (
         <main className="pos">
 
-            {/* HEADER */}
-
             <header className="pos__header">
-
                 <div>
-
-                    <p className="pos__eyebrow">
-                        Punto de venta
-                    </p>
-
-                    <h1 className="pos__title">
-                        Nueva venta
-                    </h1>
-
+                    <p className="pos__eyebrow">Punto de venta</p>
+                    <h1 className="pos__title">Nueva venta</h1>
                 </div>
-
                 <div className="pos__header-actions">
-
-                    <button
-                        className="btn btn--outline"
-                        disabled={!selectedStore}
-                    >
-                        <IconScan size={16} />
-                        Escanear
-                    </button>
-
-                    <button className="btn btn--ghost btn--icon">
-                        <IconX size={18} />
-                    </button>
-
+                    <button className="btn btn--outline" disabled={!selectedStore}><IconScan size={16} /> Escanear</button>
+                    <button className="btn btn--ghost btn--icon"><IconX size={18} /></button>
                 </div>
-
             </header>
-
-
-            {/* STORE */}
 
             <section className="pos__store">
 
                 <div className="pos__store-label">
-
                     <IconBuildingStore size={18} />
-
                     <div>
-
-                        <span>
-                            Tienda
-                        </span>
-
-                        <strong>
-                            {loadingStores
-                                ? 'Cargando...'
-                                : selectedStore?.name || 'Selecciona una tienda'
-                            }
-                        </strong>
-
+                        <span>Tienda</span>
+                        <strong>{loadingStores ? 'Cargando...' : selectedStore?.name || 'Selecciona una tienda'}</strong>
                     </div>
-
                 </div>
 
 
@@ -532,238 +388,7 @@ export default function PosAdmin() {
 
                 {/* CART */}
 
-                <aside className="pos__cart">
-
-                    <div className="pos__cart-header">
-
-                        <div>
-
-                            <h2 className="pos__cart-title">
-                                Venta actual
-                            </h2>
-
-                            <p className="pos__cart-count">
-                                {totalItems} productos
-                            </p>
-
-                        </div>
-
-                        <button
-                            className="btn btn--ghost btn--icon"
-                            onClick={clearCart}
-                            disabled={cart.length === 0}
-                        >
-                            <IconTrash size={17} />
-                        </button>
-
-                    </div>
-
-
-                    {/* CUSTOMER */}
-
-                    <button className="pos__customer">
-
-                        <div>
-
-                            <span className="pos__customer-label">
-                                Cliente
-                            </span>
-
-                            <span className="pos__customer-name">
-                                Público general
-                            </span>
-
-                        </div>
-
-                        <IconChevronDown size={16} />
-
-                    </button>
-
-
-                    {/* CART ITEMS */}
-
-                    <div className="pos__cart-items">
-
-                        {cart.length === 0 ? (
-
-                            <div className="pos__cart-empty">
-
-                                <IconShoppingCart size={24} />
-
-                                <p>
-                                    Agrega productos a la venta
-                                </p>
-
-                            </div>
-
-                        ) : (
-
-                            cart.map(item => (
-
-                                <div
-                                    key={item.id}
-                                    className="pos__cart-item"
-                                >
-
-                                    <div className="pos__cart-item-info">
-
-                                        <p>
-                                            {item.name}
-                                        </p>
-
-                                        <span>
-                                            S/ {item.price.toFixed(2)}
-                                        </span>
-
-                                    </div>
-
-
-                                    <div className="pos__quantity">
-
-                                        <button
-                                            className="btn btn--ghost btn--icon btn--xs"
-                                            onClick={() =>
-                                                decreaseQuantity(item.id)
-                                            }
-                                        >
-                                            <IconMinus size={14} />
-                                        </button>
-
-                                        <span>
-                                            {item.quantity}
-                                        </span>
-
-                                        <button
-                                            className="btn btn--ghost btn--icon btn--xs"
-                                            onClick={() =>
-                                                increaseQuantity(item.id)
-                                            }
-                                        >
-                                            <IconPlus size={14} />
-                                        </button>
-
-                                    </div>
-
-
-                                    <strong className="pos__cart-item-total">
-                                        S/ {(
-                                            item.price *
-                                            item.quantity
-                                        ).toFixed(2)}
-                                    </strong>
-
-                                </div>
-
-                            ))
-
-                        )}
-
-                    </div>
-
-
-                    {/* SUMMARY */}
-
-                    <div className="pos__summary">
-
-                        <div>
-                            <span>Subtotal</span>
-                            <strong>
-                                S/ {subtotal.toFixed(2)}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>Descuento</span>
-                            <strong>
-                                S/ {discount.toFixed(2)}
-                            </strong>
-                        </div>
-
-                        <div className="pos__summary-total">
-
-                            <span>Total</span>
-
-                            <strong>
-                                S/ {total.toFixed(2)}
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    {/* PAYMENT */}
-
-                    <div className="pos__payment">
-
-                        <p className="pos__payment-label">
-                            Método de pago
-                        </p>
-
-                        <div className="pos__payment-methods">
-
-                            {paymentMethods.map(method => {
-
-                                const type =
-                                    method.type?.toLowerCase();
-
-                                let Icon = IconCash;
-
-                                if (
-                                    type?.includes('tarjeta') ||
-                                    type?.includes('card')
-                                ) {
-                                    Icon = IconCreditCard;
-                                }
-
-                                if (
-                                    type?.includes('yape') ||
-                                    type?.includes('plin') ||
-                                    type?.includes('mobile')
-                                ) {
-                                    Icon = IconDeviceMobile;
-                                }
-
-                                return (
-
-                                    <button
-                                        key={method.id}
-                                        className="pos__payment-method"
-                                    >
-
-                                        <Icon size={18} />
-
-                                        <span>
-                                            {method.name}
-                                        </span>
-
-                                    </button>
-
-                                );
-
-                            })}
-
-                        </div>
-
-                    </div>
-
-
-                    {/* COMPLETE */}
-
-                    <button
-                        className="btn btn--primary pos__complete"
-                        disabled={
-                            cart.length === 0 ||
-                            !selectedStore
-                        }
-                    >
-                        <IconShoppingCart size={17} />
-
-                        Cobrar S/ {total.toFixed(2)}
-
-                    </button>
-
-                </aside>
+                <POSCard cart={cart} clearCart={clearCart} paymentMethods={paymentMethods} selectedStore={selectedStore} />
 
             </section>
 

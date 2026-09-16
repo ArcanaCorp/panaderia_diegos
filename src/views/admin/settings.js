@@ -1,20 +1,10 @@
 'use client';
 
-import {
-    IconUser,
-    IconLock,
-    IconUsers,
-    IconBuildingStore,
-    IconCreditCard,
-    IconBell,
-    IconChevronRight,
-    IconShield,
-    IconSettings,
-    IconLogout,
-    IconBuildingCommunity,
-} from '@tabler/icons-react';
+import { IconUser, IconLock, IconUsers, IconBuildingStore, IconCreditCard, IconBell, IconChevronRight, IconShield, IconSettings, IconBuildingCommunity } from '@tabler/icons-react';
 
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import SettingsModal from '@/components/Modals/SettingsModal';
 
 const settingsGroups = [
     {
@@ -40,7 +30,7 @@ const settingsGroups = [
             {
                 icon: IconBuildingCommunity,
                 title: 'Datos de la empresa',
-                description: 'Actualiza datos de la empresa y contacto',
+                description: 'Actualiza datos de la empresa y contacto.',
                 path: 'company',
             },
             {
@@ -84,88 +74,112 @@ const settingsGroups = [
 
 export default function SettingsAdmin() {
     const { profile, role } = useAuth();
+    const [activeSetting, setActiveSetting] = useState(null);
 
-    function handleSetting(path) {
-        console.log('Abrir configuración:', path);
+    function handleSetting(item) {
+        setActiveSetting(item);
+    }
+
+    function closeModal() {
+        setActiveSetting(null);
     }
 
     return (
-        <main className="settings">
-            <header className="settings__header">
-                <div>
-                    <div className="settings__title-row">
-                        <div className="settings__title-icon">
-                            <IconSettings size={18} />
-                        </div>
+        <>
+            <main className="settings">
+                <header className="settings__header">
+                    <div>
+                        <div className="settings__title-row">
+                            <div className="settings__title-icon">
+                                <IconSettings size={18} />
+                            </div>
 
-                        <div>
-                            <h1 className="settings__title">Configuración</h1>
-                            <p className="settings__description">
-                                Administra tu cuenta, empresa y sistema.
-                            </p>
+                            <div>
+                                <h1 className="settings__title">
+                                    Configuración
+                                </h1>
+
+                                <p className="settings__description">
+                                    Administra tu cuenta, empresa y sistema.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                </header>
 
-            <section className="settings__profile card">
-                <div className="settings__avatar">
-                    {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
-                </div>
+                <section className="settings__profile card">
+                    <div className="settings__avatar">
+                        {profile?.full_name
+                            ?.charAt(0)
+                            ?.toUpperCase() || 'U'}
+                    </div>
 
-                <div className="settings__profile-info">
-                    <h2>{profile?.full_name || 'Usuario'}</h2>
-                    <p>{profile?.email || 'Sin correo registrado'}</p>
-                </div>
+                    <div className="settings__profile-info">
+                        <h2>
+                            {profile?.full_name || 'Usuario'}
+                        </h2>
 
-                <span className="badge badge--primary">
-                    {role || 'Administrador'}
-                </span>
-            </section>
+                        <p>
+                            {profile?.email || 'Sin correo registrado'}
+                        </p>
+                    </div>
 
-            <div className="settings__groups">
-                {settingsGroups.map((group) => (
-                    <section className="settings__group" key={group.title}>
-                        <div className="settings__group-header">
-                            <h2>{group.title}</h2>
-                        </div>
+                    <span className="badge badge--primary">
+                        {role || 'Administrador'}
+                    </span>
+                </section>
 
-                        <div className="settings__list card">
-                            {group.items.map((item) => {
-                                const Icon = item.icon;
+                <div className="settings__groups">
+                    {settingsGroups.map((group) => (
+                        <section
+                            className="settings__group"
+                            key={group.title}
+                        >
+                            <div className="settings__group-header">
+                                <h2>{group.title}</h2>
+                            </div>
 
-                                return (
-                                    <button
-                                        type="button"
-                                        className="settings__item"
-                                        key={item.path}
-                                        onClick={() => handleSetting(item.path)}
-                                    >
-                                        <span className="settings__item-icon">
-                                            <Icon size={17} />
-                                        </span>
+                            <div className="settings__list card">
+                                {group.items.map((item) => {
+                                    const Icon = item.icon;
 
-                                        <span className="settings__item-content">
-                                            <span className="settings__item-title">
-                                                {item.title}
+                                    return (
+                                        <button
+                                            type="button"
+                                            className="settings__item"
+                                            key={item.path}
+                                            onClick={() =>
+                                                handleSetting(item)
+                                            }
+                                        >
+                                            <span className="settings__item-icon">
+                                                <Icon size={17} />
                                             </span>
 
-                                            <span className="settings__item-description">
-                                                {item.description}
-                                            </span>
-                                        </span>
+                                            <span className="settings__item-content">
+                                                <span className="settings__item-title">
+                                                    {item.title}
+                                                </span>
 
-                                        <IconChevronRight
-                                            className="settings__item-arrow"
-                                            size={17}
-                                        />
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </section>
-                ))}
-            </div>
-        </main>
+                                                <span className="settings__item-description">
+                                                    {item.description}
+                                                </span>
+                                            </span>
+
+                                            <IconChevronRight
+                                                className="settings__item-arrow"
+                                                size={17}
+                                            />
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    ))}
+                </div>
+            </main>
+
+            <SettingsModal item={activeSetting} onClose={closeModal} />
+        </>
     );
 }

@@ -20,10 +20,7 @@ export function useAdminProduction() {
             setLoading(true);
             setError(null);
 
-            const {
-                data: result,
-                error: rpcError,
-            } = await db.rpc('get_admin_production');
+            const { data: result, error: rpcError } = await db.rpc('get_admin_production');
 
             if (rpcError) {
                 throw rpcError;

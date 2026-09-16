@@ -1,31 +1,25 @@
 'use client';
 
 import { useAdminProduction } from '@/hooks/useAdminProduccion';
-import {
-    IconPlus,
-    IconSearch,
-    IconFilter,
-    IconDotsVertical,
-    IconClock,
-    IconChefHat,
-    IconCheck,
-    IconAlertTriangle,
-    IconPackage,
-} from '@tabler/icons-react';
-
+import { IconPlus, IconSearch, IconClock, IconChefHat, IconCheck, IconAlertTriangle, IconRefresh, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
+import { useModal } from '@/context/ModalContext';
+import { toast } from 'sonner';
+import RowsProduction from '@/components/Table/RowsProduction';
+
+const PAGE_SIZE = 10;
 
 export default function ProduccionAdmin() {
 
-    const {
-        orders,
-        loading,
-        error,
-        refresh,
-    } = useAdminProduction();
+    const { orders, loading, error, refresh } = useAdminProduction();
+
+    const { openModal } = useModal();
 
     const [search, setSearch] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [refreshing, setRefreshing] = useState(false);
+
 
     /*
      * ============================================================
@@ -48,7 +42,6 @@ export default function ProduccionAdmin() {
                 value.getMonth() === today.getMonth() &&
                 value.getFullYear() === today.getFullYear()
             );
-
         };
 
         return {
@@ -121,91 +114,134 @@ export default function ProduccionAdmin() {
 
     /*
      * ============================================================
-     * HELPERS
+     * PAGINACIÓN
      * ============================================================
      */
 
-    const formatDate = (date) => {
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredOrders.length / PAGE_SIZE)
+    );
 
-        if (!date) return '-';
+    const paginatedOrders = useMemo(() => {
 
-        return new Date(date).toLocaleString('es-PE', {
-            day: '2-digit',
-            month: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-        });
+        const start = (currentPage - 1) * PAGE_SIZE;
 
-    };
+        return filteredOrders.slice(
+            start,
+            start + PAGE_SIZE
+        );
 
-    const getStatusLabel = (status) => {
-
-        const labels = {
-            pendiente: 'Pendiente',
-            proceso: 'En producción',
-            terminado: 'Terminado',
-            diseño: 'Diseño',
-            finalizado: 'Finalizado',
-        };
-
-        return labels[status] || status;
-
-    };
-
-    const getPriorityLabel = (priority) => {
-
-        const labels = {
-            baja: 'Baja',
-            normal: 'Normal',
-            alta: 'Alta',
-            urgente: 'Urgente',
-        };
-
-        return labels[priority] || priority;
-
-    };
-
-    const getPriorityClass = (priority) => {
-
-        if (priority === 'urgente') {
-            return 'badge badge--danger';
-        }
-
-        if (priority === 'alta') {
-            return 'badge badge--warning';
-        }
-
-        return 'badge badge--neutral';
-
-    };
-
-    const getStatusClass = (status) => {
-
-        if (
-            status === 'terminado' ||
-            status === 'finalizado'
-        ) {
-            return 'badge badge--success';
-        }
-
-        if (status === 'proceso') {
-            return 'badge badge--info';
-        }
-
-        if (status === 'diseño') {
-            return 'badge badge--neutral';
-        }
-
-        return 'badge badge--warning';
-
-    };
+    }, [
+        filteredOrders,
+        currentPage,
+    ]);
 
 
     /*
      * ============================================================
-     * LOADING
+     * AJUSTAR PÁGINA
      * ============================================================
      */
+
+    if (
+        currentPage > totalPages &&
+        totalPages > 0
+    ) {
+        setCurrentPage(totalPages);
+    }
+
+
+    /*
+     * ============================================================
+     * HANDLERS
+     * ============================================================
+     */
+
+    function handleNewOrder() {
+
+        openModal(
+            'production-create',
+            null,
+            {
+                onSuccess: () => {
+                    refresh();
+                    toast.success(
+                        'Orden de producción creada'
+                    );
+                },
+            }
+        );
+
+    }
+
+
+    function handleDetail(order) {
+
+        openModal(
+            'production-detail',
+            order
+        );
+
+    }
+
+
+    async function handleRefresh() {
+
+        try {
+
+            setRefreshing(true);
+
+            await refresh();
+
+            toast.success(
+                'Producción actualizada'
+            );
+
+        } catch (error) {
+
+            toast.error(
+                'No se pudo actualizar la producción'
+            );
+
+        } finally {
+
+            setRefreshing(false);
+
+        }
+
+    }
+
+
+    function handleSearchChange(event) {
+
+        setSearch(event.target.value);
+        setCurrentPage(1);
+
+    }
+
+
+    function handleStatusChange(status) {
+
+        setStatusFilter(status);
+        setCurrentPage(1);
+
+    }
+
+
+    function goToPage(page) {
+
+        if (
+            page < 1 ||
+            page > totalPages
+        ) {
+            return;
+        }
+
+        setCurrentPage(page);
+
+    }
+
 
     if (loading) {
 
@@ -241,10 +277,6 @@ export default function ProduccionAdmin() {
     return (
         <main className="production">
 
-            {/* ==================================================
-                HEADER
-            ================================================== */}
-
             <header className="production__header">
 
                 <div>
@@ -263,22 +295,47 @@ export default function ProduccionAdmin() {
 
                 </div>
 
+
                 <div className="production__actions">
+
+                    {/* ACTUALIZAR */}
 
                     <button
                         className="btn btn--outline"
                         type="button"
+                        onClick={handleRefresh}
+                        disabled={refreshing}
                     >
-                        <IconFilter size={16} />
-                        Filtrar
+
+                        <IconRefresh
+                            size={16}
+                            className={
+                                refreshing
+                                    ? 'spin'
+                                    : ''
+                            }
+                        />
+
+                        {refreshing
+                            ? 'Actualizando...'
+                            : 'Actualizar'
+                        }
+
                     </button>
+
+
+                    {/* NUEVA ORDEN */}
 
                     <button
                         className="btn btn--primary"
                         type="button"
+                        onClick={handleNewOrder}
                     >
+
                         <IconPlus size={16} />
+
                         Nueva orden
+
                     </button>
 
                 </div>
@@ -286,9 +343,7 @@ export default function ProduccionAdmin() {
             </header>
 
 
-            {/* ==================================================
-                ERROR
-            ================================================== */}
+            {/* ERROR */}
 
             {error && (
 
@@ -299,9 +354,7 @@ export default function ProduccionAdmin() {
             )}
 
 
-            {/* ==================================================
-                SUMMARY
-            ================================================== */}
+            {/* SUMMARY */}
 
             <section className="production__stats">
 
@@ -391,9 +444,7 @@ export default function ProduccionAdmin() {
             </section>
 
 
-            {/* ==================================================
-                ORDERS
-            ================================================== */}
+            {/* ORDERS */}
 
             <section className="card production__content">
 
@@ -413,9 +464,7 @@ export default function ProduccionAdmin() {
                                 className="input"
                                 placeholder="Buscar orden o producto..."
                                 value={search}
-                                onChange={(event) =>
-                                    setSearch(event.target.value)
-                                }
+                                onChange={handleSearchChange}
                             />
 
                         </div>
@@ -433,7 +482,7 @@ export default function ProduccionAdmin() {
                                     : ''
                             }`}
                             onClick={() =>
-                                setStatusFilter('all')
+                                handleStatusChange('all')
                             }
                         >
                             Todas
@@ -447,7 +496,7 @@ export default function ProduccionAdmin() {
                                     : ''
                             }`}
                             onClick={() =>
-                                setStatusFilter('pendiente')
+                                handleStatusChange('pendiente')
                             }
                         >
                             Pendientes
@@ -461,7 +510,7 @@ export default function ProduccionAdmin() {
                                     : ''
                             }`}
                             onClick={() =>
-                                setStatusFilter('proceso')
+                                handleStatusChange('proceso')
                             }
                         >
                             En producción
@@ -475,7 +524,7 @@ export default function ProduccionAdmin() {
                                     : ''
                             }`}
                             onClick={() =>
-                                setStatusFilter('finalizado')
+                                handleStatusChange('finalizado')
                             }
                         >
                             Completadas
@@ -512,7 +561,7 @@ export default function ProduccionAdmin() {
 
                         <tbody>
 
-                            {filteredOrders.length === 0 ? (
+                            {paginatedOrders.length === 0 ? (
 
                                 <tr>
 
@@ -530,170 +579,9 @@ export default function ProduccionAdmin() {
 
                             ) : (
 
-                                filteredOrders.map((order) => {
-
-                                    const firstItem =
-                                        order.items?.[0];
-
-                                    const totalItems =
-                                        order.items?.length || 0;
-
-                                    const quantity =
-                                        order.items?.reduce(
-                                            (
-                                                total,
-                                                item
-                                            ) =>
-                                                total +
-                                                Number(
-                                                    item.quantity || 0
-                                                ),
-                                            0
-                                        ) || 0;
-
-                                    return (
-
-                                        <tr key={order.id}>
-
-                                            {/* ORDEN */}
-
-                                            <td>
-
-                                                <span className="production__order-id">
-                                                    {order.code || order.id}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* PRODUCTO */}
-
-                                            <td>
-
-                                                <div className="production__product">
-
-                                                    <div className="production__product-icon">
-                                                        <IconPackage size={16} />
-                                                    </div>
-
-                                                    <div>
-
-                                                        <p className="production__product-name">
-                                                            {firstItem?.product ||
-                                                                'Producto'}
-                                                        </p>
-
-                                                        {totalItems > 1 && (
-
-                                                            <span className="production__unit">
-                                                                + {totalItems - 1} productos
-                                                            </span>
-
-                                                        )}
-
-                                                    </div>
-
-                                                </div>
-
-                                            </td>
-
-
-                                            {/* CANTIDAD */}
-
-                                            <td>
-
-                                                <strong className="production__quantity">
-                                                    {quantity}
-                                                </strong>
-
-                                                <span className="production__unit">
-                                                    {firstItem?.unit_type ||
-                                                        'unidades'}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* PRIORIDAD */}
-
-                                            <td>
-
-                                                <span
-                                                    className={getPriorityClass(
-                                                        order.priority
-                                                    )}
-                                                >
-                                                    {getPriorityLabel(
-                                                        order.priority
-                                                    )}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* SOLICITADO */}
-
-                                            <td>
-
-                                                <span className="production__requested">
-                                                    {order.user_id
-                                                        ? 'Usuario'
-                                                        : '-'}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* FECHA */}
-
-                                            <td>
-
-                                                <span className="production__date">
-                                                    {formatDate(
-                                                        order.created_at
-                                                    )}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* ESTADO */}
-
-                                            <td>
-
-                                                <span
-                                                    className={getStatusClass(
-                                                        order.status
-                                                    )}
-                                                >
-                                                    {getStatusLabel(
-                                                        order.status
-                                                    )}
-                                                </span>
-
-                                            </td>
-
-
-                                            {/* ACTIONS */}
-
-                                            <td>
-
-                                                <button
-                                                    type="button"
-                                                    className="btn btn--ghost btn--icon"
-                                                >
-                                                    <IconDotsVertical
-                                                        size={17}
-                                                    />
-                                                </button>
-
-                                            </td>
-
-                                        </tr>
-
-                                    );
-
-                                })
+                                paginatedOrders.map((order) => (
+                                    <RowsProduction key={order.id} order={order} handleDetail={handleDetail} />
+                                ))
 
                             )}
 
@@ -704,22 +592,69 @@ export default function ProduccionAdmin() {
                 </div>
 
 
-                {/* FOOTER */}
+                {/* FOOTER + PAGINATION */}
 
                 <div className="production__footer">
 
                     <span>
-                        Mostrando {filteredOrders.length} órdenes
+
+                        {filteredOrders.length === 0
+                            ? 'Sin registros'
+                            : `Mostrando ${
+                                ((currentPage - 1) * PAGE_SIZE) + 1
+                            }–${
+                                Math.min(
+                                    currentPage * PAGE_SIZE,
+                                    filteredOrders.length
+                                )
+                            } de ${
+                                filteredOrders.length
+                            } órdenes`
+                        }
+
                     </span>
+
 
                     <div className="production__pagination">
 
                         <button
                             type="button"
                             className="btn btn--outline btn--sm"
-                            onClick={refresh}
+                            disabled={currentPage === 1}
+                            onClick={() =>
+                                goToPage(currentPage - 1)
+                            }
                         >
-                            Actualizar
+
+                            <IconChevronLeft size={16} />
+
+                            Anterior
+
+                        </button>
+
+
+                        <span className="production__page-info">
+
+                            Página {currentPage} de {totalPages}
+
+                        </span>
+
+
+                        <button
+                            type="button"
+                            className="btn btn--outline btn--sm"
+                            disabled={
+                                currentPage === totalPages
+                            }
+                            onClick={() =>
+                                goToPage(currentPage + 1)
+                            }
+                        >
+
+                            Siguiente
+
+                            <IconChevronRight size={16} />
+
                         </button>
 
                     </div>
