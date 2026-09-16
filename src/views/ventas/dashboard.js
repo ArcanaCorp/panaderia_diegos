@@ -2,116 +2,85 @@
 
 import {
     IconShoppingCart,
-    IconCash,
     IconPackage,
     IconAlertTriangle,
     IconArrowUpRight,
     IconBell,
     IconPlus,
     IconClock,
+    IconRefresh,
 } from '@tabler/icons-react';
 
 import { useAuth } from '@/context/AuthContext';
+import { useSalesDashboard } from '@/hooks/useSalesDashboard';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardView() {
+    
+    const router = useRouter();
     const { profile } = useAuth();
 
-    const storeName = profile?.store?.name || 'Mi tienda';
+    const {
+        dashboard,
+        loading,
+        error,
+        reload,
+    } = useSalesDashboard();
+
     const userName = profile?.full_name || 'Usuario';
+    const storeName = profile?.store?.name || 'Mi tienda';
 
-    const recentSales = [
-        {
-            id: '#V-00482',
-            title: 'Venta realizada',
-            description: 'Pan francés x 10 · Hace 5 min',
-            amount: 'S/ 12.50',
-            type: 'positive',
-            icon: <IconShoppingCart size={16} />,
-        },
-        {
-            id: '#V-00481',
-            title: 'Venta realizada',
-            description: 'Croissant x 2 · Hace 18 min',
-            amount: 'S/ 7.00',
-            type: 'positive',
-            icon: <IconShoppingCart size={16} />,
-        },
-        {
-            id: '#V-00480',
-            title: 'Venta realizada',
-            description: 'Pan integral x 8 · Hace 32 min',
-            amount: 'S/ 4.00',
-            type: 'positive',
-            icon: <IconShoppingCart size={16} />,
-        },
-        {
-            id: '#V-00479',
-            title: 'Venta realizada',
-            description: 'Torta personal x 1 · Hace 45 min',
-            amount: 'S/ 8.00',
-            type: 'positive',
-            icon: <IconShoppingCart size={16} />,
-        },
-    ];
+    if (loading) {
+        return (
+            <div className="dashboard">
+                <div className="dashboard__loading">
+                    <IconRefresh size={24} className="dashboard__loading-icon" />
+                    <span>Cargando dashboard...</span>
+                </div>
+            </div>
+        );
+    }
 
-    const alerts = [
-        {
-            title: 'Stock bajo',
-            description: 'Mantequilla tiene 4 unidades disponibles',
-            type: 'negative',
-            icon: <IconAlertTriangle size={16} />,
-        },
-        {
-            title: 'Stock bajo',
-            description: 'Croissant tiene 8 unidades disponibles',
-            type: 'negative',
-            icon: <IconAlertTriangle size={16} />,
-        },
-        {
-            title: 'Nuevo pedido',
-            description: 'Hay un pedido pendiente de atención',
-            type: 'neutral',
-            icon: <IconBell size={16} />,
-        },
-    ];
+    if (error) {
+        return (
+            <div className="dashboard">
+                <div className="dashboard__error">
+                    <IconAlertTriangle size={24} />
 
-    const products = [
-        {
-            name: 'Pan francés',
-            category: 'Panadería',
-            quantity: '120 unidades',
-            status: 'Disponible',
-            badge: 'success',
-        },
-        {
-            name: 'Pan integral',
-            category: 'Panadería',
-            quantity: '80 unidades',
-            status: 'Disponible',
-            badge: 'success',
-        },
-        {
-            name: 'Croissant',
-            category: 'Pastelería',
-            quantity: '24 unidades',
-            status: 'Stock bajo',
-            badge: 'warning',
-        },
-        {
-            name: 'Empanada de carne',
-            category: 'Panadería',
-            quantity: '18 unidades',
-            status: 'Disponible',
-            badge: 'success',
-        },
-        {
-            name: 'Torta personal',
-            category: 'Pastelería',
-            quantity: '12 unidades',
-            status: 'Stock bajo',
-            badge: 'warning',
-        },
-    ];
+                    <div>
+                        <strong>No se pudo cargar el dashboard</strong>
+                        <p>{error}</p>
+                    </div>
+
+                    <button
+                        className="btn btn--outline btn--sm"
+                        onClick={reload}
+                    >
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (!dashboard) return null;
+
+    const stats = dashboard.stats || {};
+    const recentSales = dashboard.recent_sales || [];
+    const products = dashboard.products || [];
+    const alerts = dashboard.alerts || [];
+
+    const todaySales = Number(stats.today_sales || 0);
+    const yesterdaySales = Number(stats.yesterday_sales || 0);
+
+    let salesChange = 0;
+
+    if (yesterdaySales > 0) {
+        salesChange =
+            ((todaySales - yesterdaySales) / yesterdaySales) * 100;
+    }
+
+    const isPositive = salesChange >= 0;
 
     return (
         <div className="dashboard">
@@ -133,12 +102,13 @@ export default function DashboardView() {
                 </div>
 
                 <div className="dashboard__actions">
-                    <button className="btn btn--primary">
+                    <button className="btn btn--primary" onClick={() => router.push('/dashboard/pos')}>
                         <IconPlus size={16} />
                         Nueva venta
                     </button>
                 </div>
             </header>
+
 
             {/* STATS */}
             <section className="dashboard__stats">
@@ -150,15 +120,25 @@ export default function DashboardView() {
                         </p>
 
                         <h3 className="card__value">
-                            S/ 1,245.80
+                            S/ {todaySales.toFixed(2)}
                         </h3>
 
-                        <span className="card__trend card__trend--positive">
+                        <span
+                            className={`card__trend ${
+                                isPositive
+                                    ? 'card__trend--positive'
+                                    : 'card__trend--negative'
+                            }`}
+                        >
                             <IconArrowUpRight size={14} />
-                            12.5% vs ayer
+
+                            {yesterdaySales > 0
+                                ? `${Math.abs(salesChange).toFixed(1)}% vs ayer`
+                                : 'Sin ventas ayer'}
                         </span>
                     </div>
                 </div>
+
 
                 <div className="card card--stat">
                     <div className="card__content">
@@ -167,7 +147,7 @@ export default function DashboardView() {
                         </p>
 
                         <h3 className="card__value">
-                            38
+                            {stats.today_sales_count || 0}
                         </h3>
 
                         <span className="card__trend">
@@ -177,6 +157,7 @@ export default function DashboardView() {
                     </div>
                 </div>
 
+
                 <div className="card card--stat">
                     <div className="card__content">
                         <p className="card__label">
@@ -184,7 +165,7 @@ export default function DashboardView() {
                         </p>
 
                         <h3 className="card__value">
-                            124
+                            {stats.products_count || 0}
                         </h3>
 
                         <span className="card__trend">
@@ -194,6 +175,7 @@ export default function DashboardView() {
                     </div>
                 </div>
 
+
                 <div className="card card--stat">
                     <div className="card__content">
                         <p className="card__label">
@@ -201,7 +183,7 @@ export default function DashboardView() {
                         </p>
 
                         <h3 className="card__value">
-                            3
+                            {stats.low_stock_count || 0}
                         </h3>
 
                         <span className="card__trend">
@@ -213,12 +195,12 @@ export default function DashboardView() {
 
             </section>
 
-            {/* MAIN GRID */}
+
+            {/* VENTAS + ALERTAS */}
             <section className="dashboard__grid">
 
                 {/* VENTAS */}
                 <div className="card">
-
                     <div className="card__header">
                         <div>
                             <h2 className="card__title">
@@ -236,43 +218,52 @@ export default function DashboardView() {
                     </div>
 
                     <div className="card__body">
-                        <div className="dashboard__activity-list">
 
-                            {recentSales.map((sale) => (
-                                <div
-                                    key={sale.id}
-                                    className="dashboard__activity-item"
-                                >
+                        {recentSales.length === 0 ? (
+                            <div className="dashboard__empty">
+                                <IconShoppingCart size={24} />
+                                <span>
+                                    Aún no hay ventas registradas.
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="dashboard__activity-list">
+
+                                {recentSales.map((sale) => (
                                     <div
-                                        className={`dashboard__activity-icon dashboard__activity-icon--${sale.type}`}
+                                        key={sale.id}
+                                        className="dashboard__activity-item"
                                     >
-                                        {sale.icon}
+                                        <div className="dashboard__activity-icon dashboard__activity-icon--positive">
+                                            <IconShoppingCart size={16} />
+                                        </div>
+
+                                        <div className="dashboard__activity-content">
+                                            <p className="dashboard__activity-title">
+                                                {sale.code || 'Venta'}
+                                            </p>
+
+                                            <p className="dashboard__activity-description">
+                                                {sale.customer_name ||
+                                                    'Cliente general'}
+                                            </p>
+                                        </div>
+
+                                        <span className="dashboard__activity-amount">
+                                            S/ {Number(sale.total || 0).toFixed(2)}
+                                        </span>
                                     </div>
+                                ))}
 
-                                    <div className="dashboard__activity-content">
-                                        <p className="dashboard__activity-title">
-                                            {sale.title}
-                                        </p>
+                            </div>
+                        )}
 
-                                        <p className="dashboard__activity-description">
-                                            {sale.description}
-                                        </p>
-                                    </div>
-
-                                    <span className="dashboard__activity-amount">
-                                        {sale.amount}
-                                    </span>
-                                </div>
-                            ))}
-
-                        </div>
                     </div>
-
                 </div>
+
 
                 {/* ALERTAS */}
                 <div className="card">
-
                     <div className="card__header">
                         <div>
                             <h2 className="card__title">
@@ -288,44 +279,53 @@ export default function DashboardView() {
                     </div>
 
                     <div className="card__body">
-                        <div className="dashboard__activity-list">
 
-                            {alerts.map((alert, index) => (
-                                <div
-                                    key={index}
-                                    className="dashboard__activity-item"
-                                >
+                        {alerts.length === 0 ? (
+                            <div className="dashboard__empty">
+                                <IconBell size={24} />
+                                <span>
+                                    No hay alertas pendientes.
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="dashboard__activity-list">
+
+                                {alerts.map((alert, index) => (
                                     <div
-                                        className={`dashboard__activity-icon dashboard__activity-icon--${alert.type}`}
+                                        key={`${alert.product_id || index}`}
+                                        className="dashboard__activity-item"
                                     >
-                                        {alert.icon}
+                                        <div className="dashboard__activity-icon dashboard__activity-icon--negative">
+                                            <IconAlertTriangle size={16} />
+                                        </div>
+
+                                        <div className="dashboard__activity-content">
+                                            <p className="dashboard__activity-title">
+                                                {alert.title}
+                                            </p>
+
+                                            <p className="dashboard__activity-description">
+                                                {alert.description}
+                                            </p>
+                                        </div>
+
+                                        <IconClock
+                                            size={16}
+                                            className="text-gray"
+                                        />
                                     </div>
+                                ))}
 
-                                    <div className="dashboard__activity-content">
-                                        <p className="dashboard__activity-title">
-                                            {alert.title}
-                                        </p>
+                            </div>
+                        )}
 
-                                        <p className="dashboard__activity-description">
-                                            {alert.description}
-                                        </p>
-                                    </div>
-
-                                    <IconClock
-                                        size={16}
-                                        className="text-gray"
-                                    />
-                                </div>
-                            ))}
-
-                        </div>
                     </div>
-
                 </div>
 
             </section>
 
-            {/* PRODUCTOS / STOCK */}
+
+            {/* INVENTARIO */}
             <section className="dashboard__stock">
 
                 <div className="card">
@@ -346,37 +346,64 @@ export default function DashboardView() {
                         </button>
                     </div>
 
+
                     <div className="card__body">
-                        <div className="dashboard__stock-list">
 
-                            {products.map((product) => (
-                                <div
-                                    key={product.name}
-                                    className="dashboard__stock-item"
-                                >
-                                    <div className="dashboard__stock-info">
-                                        <p className="dashboard__stock-name">
-                                            {product.name}
-                                        </p>
+                        {products.length === 0 ? (
+                            <div className="dashboard__empty">
+                                <IconPackage size={24} />
 
-                                        <p className="dashboard__stock-category">
-                                            {product.category}
-                                        </p>
-                                    </div>
+                                <span>
+                                    No hay productos disponibles.
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="dashboard__stock-list">
 
-                                    <span className="dashboard__stock-quantity">
-                                        {product.quantity}
-                                    </span>
+                                {products.map((product) => {
 
-                                    <span className={`badge badge--${product.badge}`}>
-                                        {product.status}
-                                    </span>
-                                </div>
-                            ))}
+                                    const lowStock =
+                                        Number(product.stock) <=
+                                        Number(product.minimum_stock);
 
-                        </div>
+                                    return (
+                                        <div
+                                            key={product.id}
+                                            className="dashboard__stock-item"
+                                        >
+                                            <div className="dashboard__stock-info">
+                                                <p className="dashboard__stock-name">
+                                                    {product.name}
+                                                </p>
+
+                                                <p className="dashboard__stock-category">
+                                                    {product.category}
+                                                </p>
+                                            </div>
+
+                                            <span className="dashboard__stock-quantity">
+                                                {product.stock} {product.unit_type}
+                                            </span>
+
+                                            <span
+                                                className={`badge ${
+                                                    lowStock
+                                                        ? 'badge--warning'
+                                                        : 'badge--success'
+                                                }`}
+                                            >
+                                                {lowStock
+                                                    ? 'Stock bajo'
+                                                    : 'Disponible'}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+
+                            </div>
+                        )}
+
                     </div>
-
                 </div>
 
             </section>

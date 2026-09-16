@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
 import {
     IconSearch,
     IconScan,
@@ -12,104 +13,82 @@ import {
     IconDeviceMobile,
     IconX,
     IconUser,
+    IconAlertTriangle,
+    IconRefresh,
+    IconPackage,
 } from '@tabler/icons-react';
 
 import { useAuth } from '@/context/AuthContext';
+import { useSalesPOS } from '@/hooks/useSalesPOS';
 
 export default function POSVentas() {
-
     const { profile } = useAuth();
+
+    const {
+        products,
+        categories: dbCategories,
+        paymentMethods,
+        loading,
+        error,
+        reload,
+    } = useSalesPOS();
 
     const [category, setCategory] = useState('Todos');
     const [search, setSearch] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Efectivo');
+    const [paymentMethod, setPaymentMethod] = useState(null);
+    const [cart, setCart] = useState([]);
 
-    const [cart, setCart] = useState([
-        {
-            id: 1,
-            name: 'Pan francés',
-            price: 0.30,
-            quantity: 4,
-            unit: 'Unidad',
-        },
-        {
-            id: 2,
-            name: 'Croissant',
-            price: 3.50,
-            quantity: 2,
-            unit: 'Unidad',
-        },
-    ]);
+    /*
+     * Seleccionar automáticamente el primer método de pago
+     */
+    useEffect(() => {
+        if (!paymentMethod && paymentMethods.length > 0) {
+            setPaymentMethod(paymentMethods[0].id);
+        }
+    }, [paymentMethods, paymentMethod]);
 
-    const products = [
-        {
-            id: 1,
-            name: 'Pan francés',
-            category: 'Panadería',
-            price: 0.30,
-            stock: 120,
-            unit: 'Unidad',
-        },
-        {
-            id: 2,
-            name: 'Pan integral',
-            category: 'Panadería',
-            price: 0.50,
-            stock: 80,
-            unit: 'Unidad',
-        },
-        {
-            id: 3,
-            name: 'Croissant',
-            category: 'Pastelería',
-            price: 3.50,
-            stock: 24,
-            unit: 'Unidad',
-        },
-        {
-            id: 4,
-            name: 'Empanada de carne',
-            category: 'Panadería',
-            price: 4.00,
-            stock: 18,
-            unit: 'Unidad',
-        },
-        {
-            id: 5,
-            name: 'Torta personal',
-            category: 'Pastelería',
-            price: 8.00,
-            stock: 12,
-            unit: 'Unidad',
-        },
-        {
-            id: 6,
-            name: 'Café americano',
-            category: 'Bebidas',
-            price: 4.50,
-            stock: 30,
-            unit: 'Unidad',
-        },
-    ];
+    /*
+     * Categorías
+     */
+    const categories = useMemo(() => {
+        return [
+            'Todos',
+            ...dbCategories.map((item) => item.name),
+        ];
+    }, [dbCategories]);
 
-    const categories = [
-        'Todos',
-        'Panadería',
-        'Pastelería',
-        'Bebidas',
-    ];
+    /*
+     * Productos filtrados
+     */
+    const filteredProducts = useMemo(() => {
+        const searchValue = search.trim().toLowerCase();
 
-    const filteredProducts = products.filter((product) => {
-        const matchesCategory =
-            category === 'Todos' || product.category === category;
+        return products.filter((product) => {
+            const matchesCategory =
+                category === 'Todos' ||
+                product.category === category;
 
-        const matchesSearch =
-            product.name.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch =
+                !searchValue ||
+                product.name
+                    ?.toLowerCase()
+                    .includes(searchValue) ||
+                product.sku
+                    ?.toLowerCase()
+                    .includes(searchValue);
 
-        return matchesCategory && matchesSearch;
-    });
+            return matchesCategory && matchesSearch;
+        });
+    }, [products, category, search]);
 
+    /*
+     * Agregar producto
+     */
     function addToCart(product) {
+        const stock = Number(product.stock || 0);
+
+        if (stock <= 0) return;
+
         setCart((current) => {
             const existing = current.find(
                 (item) => item.id === product.id
@@ -119,12 +98,12 @@ export default function POSVentas() {
                 return current.map((item) =>
                     item.id === product.id
                         ? {
-                            ...item,
-                            quantity: Math.min(
-                                item.quantity + 1,
-                                product.stock
-                            ),
-                        }
+                              ...item,
+                              quantity: Math.min(
+                                  item.quantity + 1,
+                                  stock
+                              ),
+                          }
                         : item
                 );
             }
@@ -132,58 +111,129 @@ export default function POSVentas() {
             return [
                 ...current,
                 {
-                    ...product,
+                    id: product.id,
+                    name: product.name,
+                    sku: product.sku,
+                    price: Number(product.price || 0),
                     quantity: 1,
+                    unit: product.unit || 'unidad',
+                    stock,
                 },
             ];
         });
     }
 
+    /*
+     * Modificar cantidad
+     */
     function updateQuantity(id, amount) {
         setCart((current) =>
-            current
-                .map((item) => {
-                    if (item.id !== id) return item;
+            current.map((item) => {
+                if (item.id !== id) return item;
 
-                    const product = products.find(
-                        (product) => product.id === id
-                    );
+                const quantity = Math.min(
+                    Math.max(item.quantity + amount, 1),
+                    item.stock
+                );
 
-                    const quantity = Math.min(
-                        Math.max(item.quantity + amount, 1),
-                        product.stock
-                    );
-
-                    return {
-                        ...item,
-                        quantity,
-                    };
-                })
+                return {
+                    ...item,
+                    quantity,
+                };
+            })
         );
     }
 
+    /*
+     * Eliminar producto
+     */
     function removeFromCart(id) {
         setCart((current) =>
             current.filter((item) => item.id !== id)
         );
     }
 
+    /*
+     * Vaciar carrito
+     */
     function clearCart() {
         setCart([]);
     }
 
+    /*
+     * Totales
+     */
     const subtotal = cart.reduce(
-        (total, item) => total + item.price * item.quantity,
+        (total, item) =>
+            total + item.price * item.quantity,
         0
     );
 
     const discount = 0;
-    const total = subtotal - discount;
 
-    const itemCount = cart.reduce(
-        (total, item) => total + item.quantity,
+    const total = Math.max(
+        subtotal - discount,
         0
     );
+
+    const itemCount = cart.reduce(
+        (total, item) =>
+            total + item.quantity,
+        0
+    );
+
+    /*
+     * Loading
+     */
+    if (loading) {
+        return (
+            <div className="pos">
+                <div className="pos__state">
+                    <IconRefresh
+                        size={24}
+                        className="pos__state-icon"
+                    />
+
+                    <strong>
+                        Cargando punto de venta...
+                    </strong>
+
+                    <span>
+                        Estamos preparando los productos de tu tienda.
+                    </span>
+                </div>
+            </div>
+        );
+    }
+
+    /*
+     * Error
+     */
+    if (error) {
+        return (
+            <div className="pos">
+                <div className="pos__state pos__state--error">
+                    <IconAlertTriangle size={24} />
+
+                    <strong>
+                        No se pudo cargar el punto de venta
+                    </strong>
+
+                    <span>
+                        {error}
+                    </span>
+
+                    <button
+                        className="btn btn--outline"
+                        onClick={reload}
+                    >
+                        <IconRefresh size={16} />
+                        Reintentar
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="pos">
@@ -212,6 +262,7 @@ export default function POSVentas() {
                         className="btn btn--ghost btn--icon"
                         onClick={clearCart}
                         title="Nueva venta"
+                        disabled={cart.length === 0}
                     >
                         <IconX size={17} />
                     </button>
@@ -220,13 +271,16 @@ export default function POSVentas() {
 
             </header>
 
+
             {/* LAYOUT */}
             <div className="pos__layout">
 
                 {/* PRODUCTS */}
                 <section className="pos__products">
 
+                    {/* SEARCH */}
                     <div className="input-group">
+
                         <span className="input-group__icon--left">
                             <IconSearch size={16} />
                         </span>
@@ -236,76 +290,137 @@ export default function POSVentas() {
                             type="search"
                             placeholder="Buscar producto..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) =>
+                                setSearch(e.target.value)
+                            }
                         />
-                    </div>
-
-                    <div className="pos__categories">
-
-                        {categories.map((item) => (
-                            <button
-                                key={item}
-                                className={`pos__category ${
-                                    category === item
-                                        ? 'pos__category--active'
-                                        : ''
-                                }`}
-                                onClick={() => setCategory(item)}
-                            >
-                                {item}
-                            </button>
-                        ))}
 
                     </div>
 
-                    <div className="pos__product-grid">
 
-                        {filteredProducts.map((product) => (
-                            <button
-                                key={product.id}
-                                className="pos__product"
-                                onClick={() => addToCart(product)}
-                                disabled={product.stock === 0}
-                            >
+                    {/* CATEGORIES */}
+                    {categories.length > 1 && (
+                        <div className="pos__categories">
 
-                                <div className="pos__product-image">
-                                    {product.name.charAt(0)}
-                                </div>
+                            {categories.map((item) => (
+                                <button
+                                    key={item}
+                                    className={`pos__category ${
+                                        category === item
+                                            ? 'pos__category--active'
+                                            : ''
+                                    }`}
+                                    onClick={() =>
+                                        setCategory(item)
+                                    }
+                                >
+                                    {item}
+                                </button>
+                            ))}
 
-                                <div className="pos__product-info">
+                        </div>
+                    )}
 
-                                    <span className="pos__product-name">
-                                        {product.name}
-                                    </span>
 
-                                    <span className="pos__product-category">
-                                        {product.category}
-                                    </span>
+                    {/* PRODUCTS */}
+                    {filteredProducts.length === 0 ? (
 
-                                </div>
+                        <div className="pos__empty">
 
-                                <div className="pos__product-bottom">
+                            <IconPackage size={32} />
 
-                                    <strong>
-                                        S/ {product.price.toFixed(2)}
-                                    </strong>
+                            <strong>
+                                No encontramos productos
+                            </strong>
 
-                                    <span>
-                                        Stock: {product.stock}
-                                    </span>
+                            <span>
+                                {search
+                                    ? 'Prueba con otro término de búsqueda.'
+                                    : 'No hay productos disponibles en esta tienda.'}
+                            </span>
 
-                                </div>
+                        </div>
 
-                            </button>
-                        ))}
+                    ) : (
 
-                    </div>
+                        <div className="pos__product-grid">
+
+                            {filteredProducts.map((product) => {
+
+                                const stock = Number(
+                                    product.stock || 0
+                                );
+
+                                const price = Number(
+                                    product.price || 0
+                                );
+
+                                const outOfStock =
+                                    stock <= 0;
+
+                                return (
+                                    <button
+                                        key={product.id}
+                                        className={`pos__product ${
+                                            outOfStock
+                                                ? 'pos__product--disabled'
+                                                : ''
+                                        }`}
+                                        onClick={() =>
+                                            addToCart(product)
+                                        }
+                                        disabled={outOfStock}
+                                    >
+
+                                        <div className="pos__product-image">
+                                            {product.name
+                                                ?.charAt(0)
+                                                ?.toUpperCase()}
+                                        </div>
+
+
+                                        <div className="pos__product-info">
+
+                                            <span className="pos__product-name">
+                                                {product.name}
+                                            </span>
+
+                                            <span className="pos__product-category">
+                                                {product.category}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div className="pos__product-bottom">
+
+                                            <strong>
+                                                S/ {price.toFixed(2)}
+                                            </strong>
+
+                                            <span>
+                                                {outOfStock
+                                                    ? 'Sin stock'
+                                                    : `Stock: ${stock}`}
+                                            </span>
+
+                                        </div>
+
+                                    </button>
+                                );
+                            })}
+
+                        </div>
+
+                    )}
 
                 </section>
+
 
                 {/* CART */}
                 <aside className="pos__cart">
 
+                    {/* CART HEADER */}
                     <div className="pos__cart-header">
 
                         <div>
@@ -314,7 +429,10 @@ export default function POSVentas() {
                             </h2>
 
                             <p className="pos__cart-count">
-                                {itemCount} productos
+                                {itemCount}{' '}
+                                {itemCount === 1
+                                    ? 'producto'
+                                    : 'productos'}
                             </p>
                         </div>
 
@@ -329,6 +447,7 @@ export default function POSVentas() {
                         )}
 
                     </div>
+
 
                     {/* CUSTOMER */}
                     <button className="pos__customer">
@@ -347,15 +466,18 @@ export default function POSVentas() {
 
                     </button>
 
+
                     {/* CART ITEMS */}
                     <div className="pos__cart-items">
 
                         {cart.length === 0 ? (
 
                             <div className="card__body">
+
                                 <p className="text-sm text-gray">
                                     No hay productos agregados.
                                 </p>
+
                             </div>
 
                         ) : (
@@ -374,15 +496,25 @@ export default function POSVentas() {
                                         </p>
 
                                         <span>
-                                            S/ {item.price.toFixed(2)} · {item.unit}
+                                            S/ {item.price.toFixed(2)}
+                                            {' · '}
+                                            {item.unit}
                                         </span>
+
 
                                         <div className="pos__quantity">
 
                                             <button
+                                                type="button"
                                                 className="btn btn--ghost btn--icon btn--xs"
                                                 onClick={() =>
-                                                    updateQuantity(item.id, -1)
+                                                    updateQuantity(
+                                                        item.id,
+                                                        -1
+                                                    )
+                                                }
+                                                disabled={
+                                                    item.quantity <= 1
                                                 }
                                             >
                                                 <IconMinus size={14} />
@@ -393,9 +525,17 @@ export default function POSVentas() {
                                             </span>
 
                                             <button
+                                                type="button"
                                                 className="btn btn--ghost btn--icon btn--xs"
                                                 onClick={() =>
-                                                    updateQuantity(item.id, 1)
+                                                    updateQuantity(
+                                                        item.id,
+                                                        1
+                                                    )
+                                                }
+                                                disabled={
+                                                    item.quantity >=
+                                                    item.stock
                                                 }
                                             >
                                                 <IconPlus size={14} />
@@ -405,17 +545,23 @@ export default function POSVentas() {
 
                                     </div>
 
+
                                     <button
+                                        type="button"
                                         className="btn btn--ghost btn--icon btn--xs"
                                         onClick={() =>
-                                            removeFromCart(item.id)
+                                            removeFromCart(
+                                                item.id
+                                            )
                                         }
                                     >
                                         <IconTrash size={14} />
                                     </button>
 
+
                                     <span className="pos__cart-item-total">
-                                        S/ {(item.price * item.quantity).toFixed(2)}
+                                        S/ {(item.price *
+                                            item.quantity).toFixed(2)}
                                     </span>
 
                                 </div>
@@ -426,31 +572,46 @@ export default function POSVentas() {
 
                     </div>
 
+
                     {/* SUMMARY */}
                     <div className="pos__summary">
 
                         <div>
-                            <span>Subtotal</span>
+                            <span>
+                                Subtotal
+                            </span>
+
                             <strong>
                                 S/ {subtotal.toFixed(2)}
                             </strong>
                         </div>
 
+
                         <div>
-                            <span>Descuento</span>
+                            <span>
+                                Descuento
+                            </span>
+
                             <strong>
                                 S/ {discount.toFixed(2)}
                             </strong>
                         </div>
 
+
                         <div className="pos__summary-total">
-                            <span>Total</span>
+
+                            <span>
+                                Total
+                            </span>
+
                             <strong>
                                 S/ {total.toFixed(2)}
                             </strong>
+
                         </div>
 
                     </div>
+
 
                     {/* PAYMENT */}
                     <div className="pos__payment">
@@ -459,58 +620,78 @@ export default function POSVentas() {
                             Método de pago
                         </p>
 
-                        <div className="pos__payment-methods">
 
-                            <button
-                                className={`pos__payment-method ${
-                                    paymentMethod === 'Efectivo'
-                                        ? 'pos__payment-method--active'
-                                        : ''
-                                }`}
-                                onClick={() =>
-                                    setPaymentMethod('Efectivo')
-                                }
-                            >
-                                <IconCash size={18} />
-                                Efectivo
-                            </button>
+                        {paymentMethods.length === 0 ? (
 
-                            <button
-                                className={`pos__payment-method ${
-                                    paymentMethod === 'Tarjeta'
-                                        ? 'pos__payment-method--active'
-                                        : ''
-                                }`}
-                                onClick={() =>
-                                    setPaymentMethod('Tarjeta')
-                                }
-                            >
-                                <IconCreditCard size={18} />
-                                Tarjeta
-                            </button>
+                            <div className="pos__payment-empty">
+                                <IconAlertTriangle size={16} />
 
-                            <button
-                                className={`pos__payment-method ${
-                                    paymentMethod === 'Yape'
-                                        ? 'pos__payment-method--active'
-                                        : ''
-                                }`}
-                                onClick={() =>
-                                    setPaymentMethod('Yape')
-                                }
-                            >
-                                <IconDeviceMobile size={18} />
-                                Yape
-                            </button>
+                                <span>
+                                    No hay métodos de pago configurados.
+                                </span>
+                            </div>
 
-                        </div>
+                        ) : (
+
+                            <div className="pos__payment-methods">
+
+                                {paymentMethods.map((method) => (
+
+                                    <button
+                                        key={method.id}
+                                        type="button"
+                                        className={`pos__payment-method ${
+                                            paymentMethod === method.id
+                                                ? 'pos__payment-method--active'
+                                                : ''
+                                        }`}
+                                        onClick={() =>
+                                            setPaymentMethod(
+                                                method.id
+                                            )
+                                        }
+                                    >
+
+                                        {method.type === 'cash' && (
+                                            <IconCash size={18} />
+                                        )}
+
+                                        {method.type === 'card' && (
+                                            <IconCreditCard size={18} />
+                                        )}
+
+                                        {method.type === 'digital_wallet' && (
+                                            <IconDeviceMobile size={18} />
+                                        )}
+
+                                        {method.type !== 'cash' &&
+                                            method.type !== 'card' &&
+                                            method.type !== 'digital_wallet' && (
+                                                <IconDeviceMobile size={18} />
+                                            )}
+
+                                        {method.name}
+
+                                    </button>
+
+                                ))}
+
+                            </div>
+
+                        )}
 
                     </div>
 
+
                     {/* COMPLETE */}
                     <button
+                        type="button"
                         className="btn btn--primary pos__complete"
-                        disabled={cart.length === 0}
+                        disabled={
+                            cart.length === 0 ||
+                            !paymentMethod ||
+                            paymentMethods.length === 0
+                        }
                     >
                         Cobrar S/ {total.toFixed(2)}
                     </button>
