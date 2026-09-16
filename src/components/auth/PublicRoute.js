@@ -26,7 +26,7 @@ export default function PublicRoute({ children }) {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="screen center">
                 Cargando...
             </div>
         );

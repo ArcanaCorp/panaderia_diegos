@@ -1,19 +1,11 @@
 'use client';
 
-import {
-    IconBuildingStore,
-    IconCircleCheck,
-    IconClock,
-    IconCurrency,
-    IconPackage,
-    IconTruckDelivery,
-    IconDotsVertical,
-    IconArrowUpRight,
-    IconChevronRight,
-} from '@tabler/icons-react';
+import { IconBuildingStore, IconCircleCheck, IconClock, IconCurrency, IconPackage, IconTruckDelivery, IconArrowUpRight, IconChevronRight } from '@tabler/icons-react';
 
 import { useState } from 'react';
 import { useAdminStores } from '@/hooks/useAdminStores';
+import { useModal } from '@/context/ModalContext';
+import StoreCard from '@/components/Cards/StoreCard';
 
 function formatCurrency(value) {
     return Number(value || 0).toLocaleString('es-PE', {
@@ -75,15 +67,10 @@ function isStoreOpen(store) {
 }
 
 export default function StoresAdmin() {
-    const {
-        stores,
-        recentSales,
-        loading,
-        error,
-        refresh,
-    } = useAdminStores();
 
-    const [selectedStore, setSelectedStore] = useState(null);
+    const { openModal } = useModal();
+
+    const { stores, recentSales, loading, error, refresh } = useAdminStores();
 
     const activeStores = stores.filter(
         (store) => store.is_active
@@ -106,7 +93,19 @@ export default function StoresAdmin() {
     );
 
     function handleTransfer() {
-        console.log('Abrir transferencia de productos');
+        openModal('store-transfer', null,{
+            onSuccess: () => {
+                refresh();
+            },
+        });
+    }
+
+    function handleViewInventory() {
+        openModal('store-inventory');
+    }
+
+    function handleViewStore(store) {
+        openModal('store-detail', store);
     }
 
     if (loading) {
@@ -268,137 +267,9 @@ export default function StoresAdmin() {
 
                 <div className="stores__grid">
 
-                    {stores.map((store) => {
-                        const open = isStoreOpen(store);
-
-                        return (
-                            <article
-                                className="card stores__card"
-                                key={store.id}
-                            >
-
-                                <div className="stores__card-header">
-
-                                    <div className="stores__card-store">
-
-                                        <div className="stores__card-icon">
-                                            <IconBuildingStore size={18} />
-                                        </div>
-
-                                        <div>
-                                            <h3>
-                                                {store.name}
-                                            </h3>
-
-                                            <span>
-                                                {store.code}
-                                                {' · '}
-                                                {store.address || 'Sin dirección'}
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                    <button
-                                        className="btn btn--icon btn--ghost btn--sm"
-                                    >
-                                        <IconDotsVertical size={17} />
-                                    </button>
-
-                                </div>
-
-                                <div className="stores__status">
-
-                                    <span
-                                        className={`badge ${
-                                            open
-                                                ? 'badge--success'
-                                                : 'badge--neutral'
-                                        }`}
-                                    >
-                                        {open
-                                            ? 'Abierta'
-                                            : 'Cerrada'}
-                                    </span>
-
-                                    <span
-                                        className={`badge ${
-                                            store.is_active
-                                                ? 'badge--primary'
-                                                : 'badge--neutral'
-                                        }`}
-                                    >
-                                        {store.is_active
-                                            ? 'Activa'
-                                            : 'Inactiva'}
-                                    </span>
-
-                                </div>
-
-                                <div className="stores__metrics">
-
-                                    <div>
-                                        <span>Ventas hoy</span>
-
-                                        <strong>
-                                            S/ {formatCurrency(
-                                                store.sales
-                                            )}
-                                        </strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Ventas</span>
-
-                                        <strong>
-                                            {store.sales_count}
-                                        </strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Stock</span>
-
-                                        <strong>
-                                            {formatNumber(
-                                                store.stock
-                                            )}
-                                        </strong>
-                                    </div>
-
-                                    <div>
-                                        <span>Stock bajo</span>
-
-                                        <strong className="stores__metric-danger">
-                                            {store.low_stock}
-                                        </strong>
-                                    </div>
-
-                                </div>
-
-                                <div className="stores__card-footer">
-
-                                    <span>
-                                        Última venta:{' '}
-                                        {formatLastSale(
-                                            store.last_sale
-                                        )}
-                                    </span>
-
-                                    <button
-                                        className="btn btn--ghost btn--sm"
-                                        onClick={() =>
-                                            setSelectedStore(store)
-                                        }
-                                    >
-                                        Ver tienda
-                                        <IconChevronRight size={15} />
-                                    </button>
-
-                                </div>
-
-                            </article>
-                        );
-                    })}
+                    {stores.map((store) => (
+                        <StoreCard key={store.id} store={store} handleViewStore={(store) => openModal('store-detail', store)} />
+                    ))}
 
                 </div>
             </section>
@@ -512,7 +383,7 @@ export default function StoresAdmin() {
                         <IconChevronRight size={16} />
                     </button>
 
-                    <button className="stores__action">
+                    <button className="stores__action" onClick={handleViewInventory}>
                         <span className="stores__action-icon">
                             <IconPackage size={18} />
                         </span>
@@ -533,14 +404,6 @@ export default function StoresAdmin() {
                 </div>
 
             </section>
-
-            {/* SELECTED STORE */}
-            {selectedStore && (
-                <div className="stores__selected">
-                    Tienda seleccionada:{' '}
-                    {selectedStore.name}
-                </div>
-            )}
 
         </main>
     );

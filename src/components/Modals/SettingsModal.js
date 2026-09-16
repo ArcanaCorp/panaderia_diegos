@@ -6,6 +6,7 @@ import PaymentsSettings from "./Settings/PaymentsSettings";
 import ProfileSettings from "./Settings/ProfileSettings";
 import StoresSettings from "./Settings/StoresSettings";
 import UsersSettings from "./Settings/UsersSettings";
+import SecuritySettings from "./Settings/SecuritySettings";
 
 export default function SettingsModal({ item, onClose }) {
     if (!item) return null;

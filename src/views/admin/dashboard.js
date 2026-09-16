@@ -7,9 +7,11 @@ import Activity from '@/components/Cards/admin/Activity';
 import StockItem from '@/components/Cards/admin/StockItem';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { formatCurrency, formatPercentage, getActivityIcon, getActivityType, getTrendClass, getTrendIcon, getTrendText } from "@/helpers/dashboard.helper";
+import { useRouter } from 'next/navigation';
 
 export default function DashboardAdmin() {
 
+    const router = useRouter();
     const { profile } = useAuth();
 
     const { data, loading, error, refresh } = useAdminDashboard();
@@ -101,19 +103,14 @@ export default function DashboardAdmin() {
 
                 <div className="dashboard__actions">
 
-                    <button className="btn btn--primary">
+                    <button className="btn btn--primary" onClick={() => router.push('/dashboard/pos')}>
                         <IconShoppingCart size={16} />
                         Nueva venta
                     </button>
 
-                    <button className="btn btn--outline">
+                    <button className="btn btn--outline" onClick={() => router.push('/dashboard/produccion')}>
                         <IconClipboardList size={16} />
                         Nuevo pedido
-                    </button>
-
-                    <button className="btn btn--outline">
-                        <IconPackage size={16} />
-                        Nuevo ingreso
                     </button>
 
                 </div>

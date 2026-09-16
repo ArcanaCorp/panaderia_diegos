@@ -8,6 +8,9 @@ import ProductStockModal from './Products/ProductStockModal';
 import ProductDetailModal from './Products/ProductDetailModal';
 import ProductionModal from './Production/ProductionModal';
 import ProductionDetailModal from './Production/ProductionDetailModal';
+import StoreTransferModal from './Stores/StoreTransferModal';
+import StoreInventoryModal from './Stores/StoreInventoryModal';
+import StoreDetailModal from './Stores/StoreDetailModal';
 
 export default function GlobalModals() {
     const { modal, data, options, closeModal } = useModal();
@@ -52,6 +55,21 @@ export default function GlobalModals() {
             return (
                 <ProductionDetailModal order={data} onClose={closeModal} />
             );
+
+        case 'store-transfer':
+            return (
+                <StoreTransferModal onClose={closeModal} onSuccess={handleSuccess} />
+            );
+
+        case 'store-inventory':
+            return (
+                <StoreInventoryModal onClose={closeModal} />
+            );
+
+        case 'store-detail':
+            return (
+                <StoreDetailModal store={data} onClose={closeModal} />
+            )
 
         default:
             return null;
