@@ -1,4 +1,4 @@
-import { IconClipboardList, IconPackage, IconShoppingCart } from "@tabler/icons-react";
+import { IconClipboardList, IconPackage, IconShoppingCart, IconArrowDownRight } from "@tabler/icons-react";
 
 export const formatCurrency = (value) => {
     return new Intl.NumberFormat('es-PE', {
