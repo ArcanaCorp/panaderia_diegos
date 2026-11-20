@@ -369,21 +369,10 @@ export async function POST(request) {
                     ${escapeHtml(company.country)}
                 </p>
 
-                ${company.fiscalRegime ? `
-                    <p class="company-info bold">
-                        RÉGIMEN FISCAL:
-                    </p>
-                    <p class="company-info">
-                        ${escapeHtml(company.fiscalRegime)}
-                    </p>
-                ` : ""}
-
                 ${company.expeditionPlace ? `
+                    <p class="company-info">Código</p>
                     <p class="company-info bold">
-                        LUGAR DE EXPEDICIÓN:
-                    </p>
-                    <p class="company-info">
-                        ${escapeHtml(company.expeditionPlace)}
+                        ${escapeHtml(sale.saleNumber || "1")}
                     </p>
                 ` : ""}
 
@@ -412,10 +401,6 @@ export async function POST(request) {
                 <div>
                     <strong>Cajero:</strong>
                     ${escapeHtml(sale.cashier || "")}
-                </div>
-
-                <div class="folio">
-                    Folio: ${escapeHtml(sale.saleNumber || "1")}
                 </div>
 
             </section>
