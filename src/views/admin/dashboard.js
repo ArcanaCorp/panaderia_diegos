@@ -8,6 +8,7 @@ import StockItem from '@/components/Cards/admin/StockItem';
 import { useAdminDashboard } from '@/hooks/useAdminDashboard';
 import { formatCurrency, formatPercentage, getActivityIcon, getActivityType, getTrendClass, getTrendIcon, getTrendText } from "@/helpers/dashboard.helper";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function DashboardAdmin() {
 
@@ -81,6 +82,8 @@ export default function DashboardAdmin() {
             </main>
         );
     }
+
+    console.log(kpis);
 
     return (
         <main className="dashboard">
@@ -229,17 +232,21 @@ export default function DashboardAdmin() {
                     </div>
                     <div className="dashboard__activity-list">
                         {recent_activity?.length > 0 ? (
-                            recent_activity.map((item, index) => (
-                                <Activity
-                                    key={`${item.type}-${item.created_at}-${index}`}
-                                    icon={getActivityIcon(item.type)}
-                                    title={item.title}
-                                    description={item.description}
-                                    amount={item.amount !== null && item.amount !== undefined ? formatCurrency(item.amount) : null}
-                                    type={getActivityType(item.type)}
-                                />
-                            ))
-
+                            <>
+                                {recent_activity.slice(0, 5).map((item, index) => (
+                                    <Activity
+                                        key={`${item.type}-${item.created_at}-${index}`}
+                                        icon={getActivityIcon(item.type)}
+                                        title={item.title}
+                                        description={item.description}
+                                        amount={item.amount !== null && item.amount !== undefined ? formatCurrency(item.amount) : null}
+                                        type={getActivityType(item.type)}
+                                    />
+                                ))}
+                                {recent_activity.length > 5 && (
+                                    <Link href={'/dashboard/alerts'} className='btn btn-secondary mt-md'>Ver todos</Link>
+                                )}
+                            </>
                         ) : (
                             <div className="dashboard__chart-placeholder">
                                 <span>No hay actividad reciente.</span>

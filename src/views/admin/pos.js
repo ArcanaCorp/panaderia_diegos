@@ -388,7 +388,7 @@ export default function PosAdmin() {
 
                 {/* CART */}
 
-                <POSCard cart={cart} clearCart={clearCart} paymentMethods={paymentMethods} selectedStore={selectedStore} />
+                <POSCard cart={cart} setCart={setCart} clearCart={clearCart} paymentMethods={paymentMethods} selectedStore={selectedStore} />
 
             </section>
 

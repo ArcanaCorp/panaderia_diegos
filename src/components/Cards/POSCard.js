@@ -5,7 +5,7 @@ import { IconCash, IconChevronDown, IconCreditCard, IconDeviceMobile, IconLoader
 import { useState } from "react";
 import { toast } from "sonner";
 
-export default function POSCard ({ clearCart, cart, paymentMethods, selectedStore }) {
+export default function POSCard ({ clearCart, cart, setCart, paymentMethods, selectedStore }) {
 
     const { profile } = useAuth();
     
@@ -145,9 +145,10 @@ export default function POSCard ({ clearCart, cart, paymentMethods, selectedStor
                             </div>
 
                             <div className="pos__quantity">
-                                <button className="btn btn-primary btn-xs" onClick={() => decreaseQuantity(item.id)}><IconMinus size={14} /></button>
+                                <button className="btn btn-primary btn-sm" onClick={() => decreaseQuantity(item.id)}><IconMinus size={14} /></button>
                                 <span>{item.quantity}</span>
-                                <button className="btn btn-primary btn-xs" onClick={() => increaseQuantity(item.id)}><IconPlus size={14} /></button>
+                                <button className="btn btn-primary btn-sm" onClick={() => increaseQuantity(item.id)}><IconPlus size={14} /></button>
+                                <button className="btn btn-secondary btn-sm" onClick={() => removeFromCart(item.id)}><IconTrash size={14} /></button>
                             </div>
 
                             <strong className="pos__cart-item-total">S/ {(item.price * item.quantity).toFixed(2)}</strong>
@@ -199,7 +200,7 @@ export default function POSCard ({ clearCart, cart, paymentMethods, selectedStor
                 </div>
             </div>
 
-            <button type="button" className="btn btn--primary pos__complete" disabled={cart.length === 0 || !selectedStore || !selectedPaymentMethod || processingSale} onClick={handleCompleteSale}>
+            <button type="button" className="btn btn-primary pos__complete" disabled={cart.length === 0 || !selectedStore || !selectedPaymentMethod || processingSale} onClick={handleCompleteSale}>
                 {processingSale ? (
                     <>
                         <IconLoader2 size={17} className="spin"/>

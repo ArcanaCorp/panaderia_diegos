@@ -506,7 +506,7 @@ export default function POSVentas() {
 
                                             <button
                                                 type="button"
-                                                className="btn btn--ghost btn--icon btn--xs"
+                                                className="btn btn-primary btn-xs"
                                                 onClick={() =>
                                                     updateQuantity(
                                                         item.id,
@@ -526,7 +526,7 @@ export default function POSVentas() {
 
                                             <button
                                                 type="button"
-                                                className="btn btn--ghost btn--icon btn--xs"
+                                                className="btn btn-primary btn-sm"
                                                 onClick={() =>
                                                     updateQuantity(
                                                         item.id,
@@ -540,23 +540,23 @@ export default function POSVentas() {
                                             >
                                                 <IconPlus size={14} />
                                             </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-secondary btn-sm"
+                                                onClick={() =>
+                                                    removeFromCart(
+                                                        item.id
+                                                    )
+                                                }
+                                            >
+                                                <IconTrash size={14} />
+                                            </button>
 
                                         </div>
 
                                     </div>
 
 
-                                    <button
-                                        type="button"
-                                        className="btn btn--ghost btn--icon btn--xs"
-                                        onClick={() =>
-                                            removeFromCart(
-                                                item.id
-                                            )
-                                        }
-                                    >
-                                        <IconTrash size={14} />
-                                    </button>
 
 
                                     <span className="pos__cart-item-total">
@@ -686,7 +686,7 @@ export default function POSVentas() {
                     {/* COMPLETE */}
                     <button
                         type="button"
-                        className="btn btn--primary pos__complete"
+                        className="btn btn-primary pos__complete"
                         disabled={
                             cart.length === 0 ||
                             !paymentMethod ||

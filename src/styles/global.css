@@ -25,6 +25,7 @@
 @import './components/modal.css';
 
 @import './pages/login.css';
+@import './pages/page.css';
 @import './pages/dashboard.css';
 @import './pages/pos.css';
 @import './pages/inventary.css';
