@@ -20,6 +20,8 @@ import {
 
 import { useAuth } from '@/context/AuthContext';
 import { useSalesPOS } from '@/hooks/useSalesPOS';
+import { toast } from 'sonner';
+import { createdSale } from '@/services/pos.service';
 
 export default function POSVentas() {
     const { profile } = useAuth();
@@ -37,6 +39,7 @@ export default function POSVentas() {
     const [search, setSearch] = useState('');
     const [paymentMethod, setPaymentMethod] = useState(null);
     const [cart, setCart] = useState([]);
+    const [ loadingSale, setLoadingSale ] = useState(false);
 
     /*
      * Seleccionar automáticamente el primer método de pago
@@ -181,6 +184,43 @@ export default function POSVentas() {
             total + item.quantity,
         0
     );
+
+    console.log(profile);
+
+    async function handleCompleteSale() {    
+    
+            if (cart.length === 0) return toast.error('Agrega productos a la venta');
+    
+            if (!paymentMethod) return toast.error('Selecciona un método de pago');
+    
+            try {
+    
+                setLoadingSale(true);
+                // Obtener usuario actual
+                const companyId = profile?.company_id;
+                const store = profile?.store_id;
+    
+                // Preparar productos
+                const items = cart.map(item => ({
+                    product_id: item.id,
+                    quantity: item.quantity
+                }));
+    
+                // Registrar venta
+                const sale = await createdSale({companyId, profile, selectedStore: store, selectedPaymentMethod: paymentMethod, total, items});
+            
+                toast.success('Venta registrada', { description: `Venta ${sale?.sale_code} por S/ ${Number(sale?.total).toFixed(2)}`});
+    
+                clearCart();
+                setPaymentMethod(null);
+    
+            } catch (error) {
+                console.error('Error registrando venta:', error);
+                toast.error('No se pudo registrar la venta', { description: error?.message || 'Ocurrió un error inesperado.'});
+            } finally {
+                setLoadingSale(false);
+            }
+        }
 
     /*
      * Loading
@@ -686,6 +726,7 @@ export default function POSVentas() {
                     {/* COMPLETE */}
                     <button
                         type="button"
+                        onClick={handleCompleteSale}
                         className="btn btn-primary pos__complete"
                         disabled={
                             cart.length === 0 ||
