@@ -22,6 +22,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useSalesPOS } from '@/hooks/useSalesPOS';
 import { toast } from 'sonner';
 import { createdSale } from '@/services/pos.service';
+import { salePrint } from '@/services/print.service';
 
 export default function POSVentas() {
     const { profile } = useAuth();
@@ -185,8 +186,6 @@ export default function POSVentas() {
         0
     );
 
-    console.log(profile);
-
     async function handleCompleteSale() {    
     
             if (cart.length === 0) return toast.error('Agrega productos a la venta');
@@ -211,6 +210,7 @@ export default function POSVentas() {
             
                 toast.success('Venta registrada', { description: `Venta ${sale?.sale_code} por S/ ${Number(sale?.total).toFixed(2)}`});
     
+                await salePrint(sale);
                 clearCart();
                 setPaymentMethod(null);
     
