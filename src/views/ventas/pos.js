@@ -89,25 +89,25 @@ export default function POSVentas() {
      * Agregar producto
      */
     function addToCart(product) {
+        console.log(product);
+        
         const stock = Number(product.stock || 0);
 
         if (stock <= 0) return;
 
         setCart((current) => {
-            const existing = current.find(
-                (item) => item.id === product.id
-            );
+            const existing = current.find((item) => item.id === product.id);
 
             if (existing) {
                 return current.map((item) =>
                     item.id === product.id
                         ? {
-                              ...item,
-                              quantity: Math.min(
-                                  item.quantity + 1,
-                                  stock
-                              ),
-                          }
+                            ...item,
+                            quantity: Math.min(
+                                item.quantity + 1,
+                                stock
+                            ),
+                        }
                         : item
                 );
             }
@@ -202,6 +202,9 @@ export default function POSVentas() {
                 // Preparar productos
                 const items = cart.map(item => ({
                     product_id: item.id,
+                    name: item.name,
+                    sku: item.sku,
+                    price: Number(item.price || 0),
                     quantity: item.quantity
                 }));
     
@@ -210,7 +213,11 @@ export default function POSVentas() {
             
                 toast.success('Venta registrada', { description: `Venta ${sale?.sale_code} por S/ ${Number(sale?.total).toFixed(2)}`});
     
-                await salePrint(sale);
+                const newSale = {
+                    ...sale,
+                    items,
+                }
+                await salePrint(newSale);
                 clearCart();
                 setPaymentMethod(null);
     
