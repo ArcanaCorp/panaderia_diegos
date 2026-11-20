@@ -26,17 +26,11 @@ export default function DashboardAdmin() {
                 <section className="dashboard__header">
 
                     <div>
-                        <p className="dashboard__eyebrow">
-                            Panel de administración
-                        </p>
+                        <p className="dashboard__eyebrow">Panel de administración</p>
 
-                        <h1 className="dashboard__title">
-                            Cargando dashboard...
-                        </h1>
+                        <h1 className="dashboard__title">Cargando dashboard...</h1>
 
-                        <p className="dashboard__description">
-                            Estamos preparando la información de tu empresa.
-                        </p>
+                        <p className="dashboard__description">Estamos preparando la información de tu empresa.</p>
                     </div>
 
                 </section>
@@ -82,8 +76,6 @@ export default function DashboardAdmin() {
             </main>
         );
     }
-
-    console.log(kpis);
 
     return (
         <main className="dashboard">
@@ -244,7 +236,7 @@ export default function DashboardAdmin() {
                                     />
                                 ))}
                                 {recent_activity.length > 5 && (
-                                    <Link href={'/dashboard/alerts'} className='btn btn-secondary mt-md'>Ver todos</Link>
+                                    <Link href={'/dashboard/pos'} className='btn btn-secondary mt-md'>Ver todos</Link>
                                 )}
                             </>
                         ) : (

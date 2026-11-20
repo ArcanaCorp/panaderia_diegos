@@ -20,6 +20,19 @@ export async function getStoreShowcase(userId) {
     return data;
 }
 
+export async function getCatalogProducts(companyId) {
+    const { data, error } = await db
+        .from('products')
+        .select('*')
+        .eq('company_id', companyId)
+        .eq('product_type', 'finished_product')
+        .eq('is_active', true);
+
+    if (error) throw error;
+
+    return data || [];
+}
+
 export async function transferProductsBetweenStores({
     companyId,
     sourceStoreId,
@@ -47,6 +60,28 @@ export async function transferProductsBetweenStores({
         );
 
         throw error;
+    }
+
+    return data;
+}
+
+export async function addProductsToStore({ companyId, storeId, items }) {
+    const { data, error } = await db.rpc(
+        'add_existing_products_to_store',
+        {
+            p_company_id: companyId,
+            p_store_id: storeId,
+            p_items: items,
+        }
+    );
+
+    if (error) {
+        console.error('addProductsToStore:', error);
+        throw error;
+    }
+
+    if (!data?.success) {
+        throw new Error('No se pudieron actualizar los productos.');
     }
 
     return data;

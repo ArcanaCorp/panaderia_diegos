@@ -473,11 +473,6 @@
 
 /* CART ITEMS */
 
-.pos__cart-items {
-    flex: 1;
-    overflow-y: auto;
-}
-
 .pos__cart-item {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
