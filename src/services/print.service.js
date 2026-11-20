@@ -1,4 +1,5 @@
 export const salePrint = async (sale) => {
+
         const printWindow = window.open("", "_blank", "width=400,height=700");
 
         if (!printWindow) {
@@ -7,6 +8,7 @@ export const salePrint = async (sale) => {
         }
 
         try {
+
             const response = await fetch("/api/print-sale", {
                 method: "POST",
                 headers: {

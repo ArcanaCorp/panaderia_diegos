@@ -89,7 +89,6 @@ export default function POSVentas() {
      * Agregar producto
      */
     function addToCart(product) {
-        console.log(product);
         
         const stock = Number(product.stock || 0);
 
@@ -186,6 +185,8 @@ export default function POSVentas() {
         0
     );
 
+    console.log(profile);
+
     async function handleCompleteSale() {    
     
             if (cart.length === 0) return toast.error('Agrega productos a la venta');
@@ -214,9 +215,44 @@ export default function POSVentas() {
                 toast.success('Venta registrada', { description: `Venta ${sale?.sale_code} por S/ ${Number(sale?.total).toFixed(2)}`});
     
                 const newSale = {
-                    ...sale,
-                    items,
-                }
+                    companyName: profile?.store.name || "",
+                    taxId: "RUC: 20600000000",
+                    companyAddress: profile?.store.address || "",
+                    companyCity: "Jauja, Junín",
+                    companyCountry: "PERÚ",
+                    fiscalRegime: "",
+                    expeditionPlace: "Jauja",
+                    saleNumber: sale?.sale_code || "",
+                    date: "20/11/2026 07:30 a. m.",
+                    customerName: "Público en General",
+                    cashier: "Administrador",
+                    items: [
+                        {
+                            name: "Papas Fritas",
+                            quantity: 1,
+                            unit: "UND",
+                            price: 15.00,
+                        },
+                        {
+                            name: "Gaseosa",
+                            quantity: 2,
+                            unit: "UND",
+                            price: 5.00,
+                        },
+                    ],
+                    subtotal: 25.00,
+                    discounts: 0.00,
+                    tax: 4.50,
+                    taxLabel: "IGV",
+                    total: 29.50,
+                    totalInWords: "VEINTINUEVE SOLES 50/100",
+                    currency: "S/",
+                    currencyName: "Sol peruano",
+                    paymentMethod: "Contado",
+                    paymentType: "Efectivo",
+                    exchangeRate: 1.00,
+                };
+
                 await salePrint(newSale);
                 clearCart();
                 setPaymentMethod(null);
