@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
     IconCreditCard,
@@ -41,13 +41,7 @@ export default function PaymentsSettings() {
         isActive: true,
     });
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadPaymentMethods();
-        }
-    }, [profile?.company_id]);
-
-    async function loadPaymentMethods() {
+    const loadPaymentMethods() {useCallback(async () => {
         try {
             setLoading(true);
             setError('');
@@ -65,7 +59,11 @@ export default function PaymentsSettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [profile?.company_id]);
+
+    useEffect(() => {
+        if (profile?.company_id) loadPaymentMethods();
+    }, [loadPaymentMethods]);
 
     function resetForm() {
         setForm({
