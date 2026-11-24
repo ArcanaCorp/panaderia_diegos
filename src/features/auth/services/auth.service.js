@@ -30,7 +30,7 @@ export async function getSession() {
 export async function getProfile(userId) {
     const { data: profile, error } = await db
         .from("profiles")
-        .select("*")
+        .select("id, company_id, full_name, email, phone, role, store_id, is_active")
         .eq("id", userId)
         .single();
 
@@ -41,7 +41,7 @@ export async function getProfile(userId) {
     if (profile.role === "ventas" && profile.store_id) {
         const { data: store, error: storeError } = await db
             .from("stores")
-            .select("*")
+            .select("id, name, ruc, address")
             .eq("id", profile.store_id)
             .single();
 
