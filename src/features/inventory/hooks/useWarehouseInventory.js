@@ -58,7 +58,7 @@ export function useWarehouseInventory() {
                     await getWarehouseInventory({
 
                         userId:
-                            profile.id,
+                            profileId,
 
                         page,
 
