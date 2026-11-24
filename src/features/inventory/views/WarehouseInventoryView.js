@@ -1,5 +1,6 @@
 'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconPackages,
     IconAlertTriangle,
@@ -125,66 +126,7 @@ export default function InventaryAlmacen() {
      */
 
     if (loading && !products.length) {
-
-        return (
-            <main className="inventory">
-
-                <header className="inventory__header">
-
-                    <div>
-
-                        <p className="inventory__eyebrow">
-                            Almacén · {storeName}
-                        </p>
-
-                        <h1 className="inventory__title">
-                            Inventario
-                        </h1>
-
-                        <p className="inventory__description">
-                            Cargando inventario...
-                        </p>
-
-                    </div>
-
-                </header>
-
-
-                <section className="inventory__stats">
-
-                    {[1, 2, 3, 4].map((item) => (
-
-                        <article
-                            className="card inventory__stat"
-                            key={item}
-                        >
-
-                            <div className="inventory__stat-icon">
-
-                                <IconPackages size={17} />
-
-                            </div>
-
-                            <div>
-
-                                <p className="inventory__stat-label">
-                                    Cargando
-                                </p>
-
-                                <strong className="inventory__stat-value">
-                                    —
-                                </strong>
-
-                            </div>
-
-                        </article>
-
-                    ))}
-
-                </section>
-
-            </main>
-        )
+        return <FeatureSkeleton variant="inventory" />;
     }
 
 
