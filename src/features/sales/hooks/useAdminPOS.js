@@ -110,7 +110,11 @@ export function usePOS() {
     }, []);
 
     useEffect(() => {
-        fetchStores();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchStores();
+        });
+        return () => { active = false; };
     }, [fetchStores]);
 
     useEffect(() => {
