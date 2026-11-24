@@ -76,8 +76,12 @@ export default function UsersSettings() {
     }, [companyId]);
 
     useEffect(() => {
-        if (companyId) loadData();
-    }, [loadData]);
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadData();
+        });
+        return () => { active = false; };
+    }, [companyId, loadData]);
 
     function openCreateForm() {
         setError('');
