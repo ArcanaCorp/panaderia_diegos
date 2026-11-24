@@ -7,6 +7,8 @@ import { getSalesPOS } from '@/features/sales/services/sales-pos.service';
 
 export function useSalesPOS() {
     const { profile } = useAuth();
+    const profileId = profile?.id;
+    const companyId = profile?.company_id;
 
     const [pos, setPos] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export function useSalesPOS() {
     const hasLoadedRef = useRef(false);
 
     const loadPOS = useCallback(async () => {
-        const userId = profile?.id;
+        const userId = profileId;
         const requestId = requestRef.current + 1;
         requestRef.current = requestId;
 
@@ -58,12 +60,16 @@ export function useSalesPOS() {
                 setRefreshing(false);
             }
         }
-    }, [profile?.id]);
+    }, [profileId]);
 
     useEffect(() => {
-        loadPOS();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadPOS();
+        });
 
         return () => {
+            active = false;
             requestRef.current += 1;
         };
     }, [loadPOS]);
