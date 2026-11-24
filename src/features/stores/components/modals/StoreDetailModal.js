@@ -28,21 +28,23 @@ export default function StoreDetailModal({ store, onClose }) {
     
     const { profile } = useAuth();
     const companyId = profile?.company_id;
+    const storeId = store?.id;
+    const storeCompanyId = store?.company_id;
 
     const [salesUsers, setSalesUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
     const [error, setError] = useState('');
 
     const loadSalesUsers = useCallback(async () => {
-        if (!store?.id) return;
+        if (!storeId) return;
 
         try {
             setLoadingUsers(true);
             setError('');
 
             const data = await getStoreSalesUsers(
-                store.id,
-                companyId || store.company_id
+                storeId,
+                companyId || storeCompanyId
             );
 
             setSalesUsers(data);
@@ -56,11 +58,11 @@ export default function StoreDetailModal({ store, onClose }) {
         } finally {
             setLoadingUsers(false);
         }
-    }, [store?.id, companyId]);
+    }, [storeId, storeCompanyId, companyId]);
 
     useEffect(() => {
-        if (store?.id) Promise.resolve().then(loadSalesUsers);
-    }, [loadSalesUsers]);
+        if (storeId) Promise.resolve().then(loadSalesUsers);
+    }, [storeId, loadSalesUsers]);
 
     if (!store) {
         return null;
