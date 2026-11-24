@@ -17,6 +17,7 @@ export function usePOS() {
     const [error, setError] = useState(null);
 
     const storeRequestRef = useRef(0);
+    const selectedStoreId = selectedStore?.id;
 
     const fetchStores = useCallback(async () => {
         try {
@@ -118,7 +119,7 @@ export function usePOS() {
     }, [fetchStores]);
 
     useEffect(() => {
-        Promise.resolve().then(() => fetchStoreData(selectedStore?.id));
+        Promise.resolve().then(() => fetchStoreData(selectedStoreId));
 
         return () => {
             storeRequestRef.current += 1;
@@ -126,11 +127,11 @@ export function usePOS() {
     }, [selectedStore?.id, fetchStoreData]);
 
     const refresh = useCallback(() => {
-        if (selectedStore?.id) {
-            return fetchStoreData(selectedStore.id);
+        if (selectedStoreId) {
+            return fetchStoreData(selectedStoreId);
         }
         return Promise.resolve();
-    }, [fetchStoreData, selectedStore?.id]);
+    }, [fetchStoreData, selectedStoreId]);
 
     return {
         stores,
