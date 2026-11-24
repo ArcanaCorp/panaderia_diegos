@@ -392,10 +392,6 @@ export async function POST(request) {
                     </div>
                 ` : ""}
 
-                <h1 class="company-name">
-                    ${escapeHtml(company.name)}
-                </h1>
-
                 ${company.taxId ? `
                     <p class="company-info bold">
                         ${escapeHtml(company.taxId)}
