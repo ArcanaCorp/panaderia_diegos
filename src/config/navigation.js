@@ -1,4 +1,4 @@
-﻿import {
+import {
     IconLayoutDashboard,
     IconShoppingCart,
     IconPackages,
@@ -13,8 +13,8 @@
 export const NAVIGATION = {
     admin: [
         { path: "/dashboard", label: "Dashboard", icon: IconLayoutDashboard },
-        { path: "/dashboard/products", label: "Productos", icon: IconListCheck },
         { path: "/dashboard/pos", label: "Ventas", icon: IconShoppingCart },
+        { path: "/dashboard/products", label: "Productos", icon: IconListCheck },
         { path: "/dashboard/inventary", label: "Almacén", icon: IconPackages },
         { path: "/dashboard/produccion", label: "Producción", icon: IconToolsKitchen2 },
         { path: "/dashboard/store", label: "Tiendas", icon: IconBuildingStore },
