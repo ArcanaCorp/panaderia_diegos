@@ -63,8 +63,12 @@ export default function CompanySettings() {
     }, [companyId]);
 
     useEffect(() => {
-        if (companyId) loadCompany();
-    }, [loadCompany]);
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadCompany();
+        });
+        return () => { active = false; };
+    }, [companyId, loadCompany]);
 
     function handleChange(event) {
         const { name, value } = event.target;
