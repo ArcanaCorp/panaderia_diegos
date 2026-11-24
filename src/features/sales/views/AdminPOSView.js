@@ -1,5 +1,6 @@
 'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { useMemo, useState } from 'react';
 
 import { IconSearch, IconShoppingCart, IconScan, IconChevronDown, IconX, IconBuildingStore, IconLoader2 } from '@tabler/icons-react';
@@ -105,6 +106,8 @@ export default function PosAdmin() {
     // --------------------------------
 
     const clearCart = () => setCart([]);
+
+    if (loadingStores || loadingProducts) return <FeatureSkeleton variant="pos" />;
 
     return (
         <main className="pos" style={{display: 'grid', placeItems: 'center'}}>
