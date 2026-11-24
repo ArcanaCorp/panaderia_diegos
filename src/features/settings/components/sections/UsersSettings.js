@@ -43,7 +43,7 @@ export default function UsersSettings() {
         isActive: true,
     });
 
-    const loadData() {useCallback(async () => {
+    const loadData = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
