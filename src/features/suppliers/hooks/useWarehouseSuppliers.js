@@ -19,6 +19,8 @@ import {
 export function useWarehouseSuppliers() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
+    const companyId = profile?.company_id
 
     const [suppliers, setSuppliers] =
         useState([])
@@ -68,7 +70,7 @@ export function useWarehouseSuppliers() {
     const loadSuppliers = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 setLoading(false)
                 return
             }
@@ -128,7 +130,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             page,
             search,
             status,
@@ -197,7 +199,7 @@ export function useWarehouseSuppliers() {
     const addSupplier = useCallback(
         async (form) => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 throw new Error(
                     'No se encontrÃ³ el usuario.'
                 )
@@ -240,7 +242,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             loadSuppliers,
         ]
     )
@@ -255,7 +257,7 @@ export function useWarehouseSuppliers() {
     const editSupplier = useCallback(
         async (supplierId, form) => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 throw new Error(
                     'No se encontrÃ³ el usuario.'
                 )
@@ -299,7 +301,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             loadSuppliers,
         ]
     )
@@ -318,7 +320,7 @@ export function useWarehouseSuppliers() {
                 isActive
             ) => {
 
-                if (!profile?.id) {
+                if (!profileId) {
                     throw new Error(
                         'No se encontrÃ³ el usuario.'
                     )
@@ -363,7 +365,7 @@ export function useWarehouseSuppliers() {
 
             },
             [
-                profile?.id,
+                profileId,
                 loadSuppliers,
             ]
         )
