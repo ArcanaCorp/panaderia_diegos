@@ -27,7 +27,7 @@ export async function POST(request) {
         const currency = sale.currency || "S/";
         const taxLabel = sale.taxLabel || "IGV";
 
-        const money = (value) => `${currency} ${Number(value || 0).toFixed(2)}`;
+        const money = (value) => `${escapeHtml(currency)} ${Number(value || 0).toFixed(2)}`;
 
         const number = (value) => {
             const parsed = Number(value ?? 0);
