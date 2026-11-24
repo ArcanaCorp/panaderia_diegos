@@ -8,7 +8,6 @@ import { getSalesPOS } from '@/features/sales/services/sales-pos.service';
 export function useSalesPOS() {
     const { profile } = useAuth();
     const profileId = profile?.id;
-    const companyId = profile?.company_id;
 
     const [pos, setPos] = useState(null);
     const [loading, setLoading] = useState(true);
