@@ -40,7 +40,7 @@ export function useProductionInventory() {
 
             const data =
                 await getProductionInventory(
-                    profile.id
+                    profileId
                 )
 
             setInventory(data)
@@ -101,7 +101,7 @@ export function useProductionInventory() {
                         quantity,
 
                         userId:
-                            profile.id,
+                            profileId,
 
                         reason,
 
