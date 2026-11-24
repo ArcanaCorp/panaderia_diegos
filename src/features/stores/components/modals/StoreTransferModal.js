@@ -13,6 +13,7 @@ const INITIAL_FORM = {
 
 export default function StoreTransferModal({ onClose, onSuccess }) {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [stores, setStores] = useState([]);
     const [products, setProducts] = useState([]);
@@ -29,15 +30,15 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
     const [error, setError] = useState('');
 
     const loadData = useCallback(async () => {
-        if (!profile?.company_id) return;
+        if (!companyId) return;
 
         try {
             setLoading(true);
             setError('');
 
             const [storesData, productsData] = await Promise.all([
-                getStores(profile.company_id),
-                getStoreTransferProducts(profile.company_id),
+                getStores(companyId),
+                getStoreTransferProducts(companyId),
             ]);
 
             setStores(storesData);
@@ -51,10 +52,10 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
         } finally {
             setLoading(false);
         }
-    }, [profile?.company_id]);
+    }, [companyId]);
 
     useEffect(() => {
-        if (profile?.company_id) loadData();
+        if (companyId) loadData();
     }, [loadData]);
 
     const availableProducts = useMemo(() => {
@@ -149,7 +150,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
 
         setError('');
 
-        if (!profile?.company_id) {
+        if (!companyId) {
             setError('No se encontró la empresa del usuario.');
             return;
         }
@@ -184,7 +185,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
             }));
 
             const transferId = await sendProductsToStore({
-                companyId: profile.company_id,
+                companyId: companyId,
                 storeId: form.storeId,
                 createdBy: profile.id,
                 items,
