@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getSalesDashboard } from '@/services/ventas/dashboard.service';
+import { getSalesDashboard } from '@/features/dashboard/services/sales-dashboard.service';
 
 export function useSalesDashboard() {
     const { profile } = useAuth();

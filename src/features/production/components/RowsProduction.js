@@ -1,5 +1,5 @@
 import { IconDotsVertical, IconPackage } from "@tabler/icons-react";
-import { formatDate, getPriorityClass, getPriorityLabel, getStatusClass, getStatusLabel } from '@/helpers/produccion.helper';
+import { formatDate, getPriorityClass, getPriorityLabel, getStatusClass, getStatusLabel } from '@/features/production/utils/production.utils';
 
 export default function RowsProduction ({ order, handleDetail }) {
 

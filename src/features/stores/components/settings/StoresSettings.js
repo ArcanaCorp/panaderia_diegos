@@ -21,7 +21,7 @@ import {
     getCompanyStores,
     getStoreManagers,
     createStore,
-} from '@/services/stores.service';
+} from '@/features/stores/services/stores.service';
 
 export default function StoresSettings() {
     const { profile } = useAuth();

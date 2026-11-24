@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '@/context/AuthContext'
-import { getWarehouseInventory } from '@/services/warehouse/warehouse.service'
+import { getWarehouseInventory } from '@/features/inventory/services/warehouse-inventory.service'
 
 
 export function useWarehouseInventory() {

@@ -9,7 +9,7 @@ import {
     getStoreShowcase,
     transferProductsBetweenStores,
     addProductsToStore
-} from '@/services/ventas/showcase.service';
+} from '@/features/sales/services/showcase.service';
 
 export function useShowcase() {
     const { profile } = useAuth();

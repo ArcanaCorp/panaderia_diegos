@@ -3,7 +3,7 @@
 import { IconBuildingStore, IconPackage, IconSearch, IconTrash, IconX, IconTruckDelivery } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getStores, getStoreTransferProducts, sendProductsToStore } from '@/services/stores.service';
+import { getStores, getStoreTransferProducts, sendProductsToStore } from '@/features/stores/services/stores.service';
 
 const INITIAL_FORM = {
     storeId: '',

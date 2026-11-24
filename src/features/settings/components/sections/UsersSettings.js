@@ -18,7 +18,7 @@ import { db } from '@/libs/supabase';
 import {
     getCompanyUsers,
     createCompanyUser,
-} from '@/services/users.service';
+} from '@/features/settings/services/users.service';
 
 export default function UsersSettings() {
     const { profile } = useAuth();

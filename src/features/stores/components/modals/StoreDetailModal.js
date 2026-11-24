@@ -3,7 +3,7 @@
 import { IconBuildingStore, IconClock, IconMail, IconMapPin, IconPhone, IconUser, IconUsers, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
-import { getStoreSalesUsers } from '@/services/stores.service';
+import { getStoreSalesUsers } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
 
 function formatTime(time) {

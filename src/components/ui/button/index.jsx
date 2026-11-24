@@ -1,41 +1,23 @@
-import './button.css';
-
 export default function Button({
     children,
-
-    // Variantes
     variant = 'outline',
     size = 'md',
-
-    // Estados
     disabled = false,
     loading = false,
-
-    // Dimensiones
     fullWidth = false,
     block = false,
     mobileFull = false,
-
-    // Iconos
     icon = null,
     iconRight = null,
     iconOnly = false,
-
-    // Formas
     pill = false,
     circle = false,
-
-    // Accesibilidad
     type = 'button',
     ariaLabel,
     ariaDescribedBy,
-
-    // Comportamiento
     onClick,
     onMouseEnter,
     onMouseLeave,
-
-    // HTML
     id,
     name,
     value,
@@ -43,8 +25,6 @@ export default function Button({
     title,
     tabIndex,
     autoFocus,
-
-    // Personalización
     className = '',
     style,
     ...rest
@@ -53,19 +33,15 @@ export default function Button({
         'btn',
         `btn-${variant}`,
         `btn-${size}`,
-
         fullWidth && 'btn-full',
         block && 'btn-block',
         mobileFull && 'btn-mobile-full',
-
         iconOnly && 'btn-icon-only',
         pill && 'btn-pill',
         circle && 'btn-circle',
-
         loading && (iconOnly ? 'btn-loading-icon' : 'btn-loading'),
         disabled && 'disabled',
-
-        className
+        className,
     ].filter(Boolean).join(' ');
 
     const isDisabled = disabled || loading;
@@ -92,24 +68,11 @@ export default function Button({
             onMouseLeave={onMouseLeave}
             {...rest}
         >
-            {loading && (
-                <span className="btn-spinner" aria-hidden="true" />
-            )}
-
+            {loading && <span className="btn-spinner" aria-hidden="true" />}
             <span className="btn-content">
-                {icon && (
-                    <span className="btn-icon" aria-hidden="true">
-                        {icon}
-                    </span>
-                )}
-
+                {icon && <span className="btn-icon" aria-hidden="true">{icon}</span>}
                 {children}
-
-                {iconRight && (
-                    <span className="btn-icon" aria-hidden="true">
-                        {iconRight}
-                    </span>
-                )}
+                {iconRight && <span className="btn-icon" aria-hidden="true">{iconRight}</span>}
             </span>
         </button>
     );

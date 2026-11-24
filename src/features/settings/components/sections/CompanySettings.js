@@ -10,7 +10,7 @@ import { useAuth } from '@/context/AuthContext';
 import {
     getCompany,
     updateCompany,
-} from '@/services/companies.service';
+} from '@/features/settings/services/company.service';
 
 export default function CompanySettings() {
     const { profile } = useAuth();

@@ -13,7 +13,7 @@ import {
     login as loginService,
     logout as logoutService,
     getProfile,
-} from "@/services/auth.service";
+} from "@/features/auth/services/auth.service";
 
 import { db } from "@/libs/supabase";
 

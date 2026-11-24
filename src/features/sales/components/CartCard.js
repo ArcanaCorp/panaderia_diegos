@@ -1,6 +1,6 @@
 'use client';
 import { createdSale } from "@/features/sales/services/admin-pos.service";
-import { salePrint } from "@/services/print.service";
+import { salePrint } from "@/features/sales/services/print.service";
 import { IconAlertTriangle, IconCash, IconCheck, IconCreditCard, IconDeviceMobile, IconMinus, IconPlus, IconTrash, IconUser } from "@tabler/icons-react";
 import { useState } from "react";
 import { toast } from "sonner";

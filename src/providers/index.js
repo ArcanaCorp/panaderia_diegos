@@ -1,4 +1,4 @@
-import GlobalModals from "@/components/Modals/GlobalModals";
+import GlobalModals from "@/providers/GlobalModals";
 import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { ModalProvider } from "@/context/ModalContext";

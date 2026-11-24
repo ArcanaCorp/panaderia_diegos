@@ -19,7 +19,7 @@ import { useAuth } from '@/context/AuthContext';
 import {
     getCompanyPaymentMethods,
     createPaymentMethod,
-} from '@/services/paymentMethods.service';
+} from '@/features/settings/services/payment-methods.service';
 
 export default function PaymentsSettings() {
     const { profile } = useAuth();

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { IconCheck, IconLoader2 } from '@tabler/icons-react';
 
 import { useAuth } from '@/context/AuthContext';
-import { updateMyProfile } from '@/services/profiles.service';
+import { updateMyProfile } from '@/features/settings/services/profile.service';
 
 export default function ProfileSettings() {
     const { profile } = useAuth();

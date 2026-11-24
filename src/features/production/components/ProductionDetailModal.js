@@ -1,7 +1,7 @@
 'use client';
 
 import { IconChefHat, IconX, IconPackage, IconCalendar, IconUser, IconNotes } from '@tabler/icons-react';
-import { getPriorityClass, getPriorityLabel, getStatusClass, getStatusLabel, formatDate } from '@/helpers/produccion.helper';
+import { getPriorityClass, getPriorityLabel, getStatusClass, getStatusLabel, formatDate } from '@/features/production/utils/production.utils';
 
 export default function ProductionDetailModal({ order, onClose }) {
 

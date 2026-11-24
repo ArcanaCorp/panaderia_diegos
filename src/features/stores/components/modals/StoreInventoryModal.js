@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { getStores, getStoreInventory } from '@/services/stores.service';
+import { getStores, getStoreInventory } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
 
 const formatNumber = (value) => {

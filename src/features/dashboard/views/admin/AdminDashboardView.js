@@ -23,7 +23,7 @@ import {
     getTrendClass,
     getTrendIcon,
     getTrendText,
-} from "@/helpers/dashboard.helper";
+} from "@/features/dashboard/helpers/dashboard.helper";
 import LineChart from "@/features/dashboard/components/LineChart";
 
 export default function DashboardAdmin() {
