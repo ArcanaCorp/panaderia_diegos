@@ -1,7 +1,7 @@
 'use client';
 
 import { db } from '@/libs/supabase';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const INITIAL_DATA = {
     products: [],
@@ -9,125 +9,86 @@ const INITIAL_DATA = {
 };
 
 export function usePOS() {
-
     const [stores, setStores] = useState([]);
     const [selectedStore, setSelectedStore] = useState(null);
-
     const [data, setData] = useState(INITIAL_DATA);
-
     const [loadingStores, setLoadingStores] = useState(true);
     const [loadingProducts, setLoadingProducts] = useState(false);
-
     const [error, setError] = useState(null);
 
-    // --------------------------------
-    // Cargar tiendas
-    // --------------------------------
+    const storeRequestRef = useRef(0);
 
     const fetchStores = useCallback(async () => {
-
         try {
-
             setLoadingStores(true);
             setError(null);
 
             const {
                 data: companyId,
-                error: companyError
+                error: companyError,
             } = await db.rpc('get_my_company_id');
 
-            if (companyError) {
-                throw companyError;
-            }
-
+            if (companyError) throw companyError;
             if (!companyId) {
                 throw new Error('No se encontró la empresa del usuario');
             }
 
             const {
                 data: storesData,
-                error: storesError
+                error: storesError,
             } = await db
                 .from('stores')
-                .select(`
-                    id,
-                    name,
-                    code,
-                    address,
-                    phone,
-                    is_main
-                `)
+                .select('id, name, code, address, phone, is_main')
                 .eq('company_id', companyId)
                 .eq('is_active', true)
-                .order('is_main', {
-                    ascending: false
-                })
-                .order('name', {
-                    ascending: true
-                });
+                .order('is_main', { ascending: false })
+                .order('name', { ascending: true });
 
-            if (storesError) {
-                throw storesError;
-            }
+            if (storesError) throw storesError;
 
-            setStores(storesData || []);
+            const availableStores = storesData || [];
+            setStores(availableStores);
 
-            // Seleccionar automáticamente la principal
-            if (storesData?.length > 0) {
-
+            if (availableStores.length > 0) {
                 const mainStore =
-                    storesData.find(store => store.is_main) ||
-                    storesData[0];
+                    availableStores.find((store) => store.is_main) ||
+                    availableStores[0];
 
                 setSelectedStore(mainStore);
+            } else {
+                setSelectedStore(null);
             }
-
         } catch (err) {
-
             console.error('Error cargando tiendas:', err);
-
-            setError(
-                err?.message ||
-                'No se pudieron cargar las tiendas'
-            );
-
+            setError(err?.message || 'No se pudieron cargar las tiendas');
         } finally {
-
             setLoadingStores(false);
-
         }
-
     }, []);
 
-    // --------------------------------
-    // Cargar productos de la tienda
-    // --------------------------------
-
     const fetchStoreData = useCallback(async (storeId) => {
+        const requestId = storeRequestRef.current + 1;
+        storeRequestRef.current = requestId;
 
         if (!storeId) {
             setData(INITIAL_DATA);
+            setLoadingProducts(false);
             return;
         }
 
+        setLoadingProducts(true);
+        setError(null);
+
         try {
-
-            setLoadingProducts(true);
-            setError(null);
-
             const {
                 data: result,
-                error: rpcError
-            } = await db.rpc(
-                'get_pos_data',
-                {
-                    p_store_id: storeId
-                }
-            );
+                error: rpcError,
+            } = await db.rpc('get_pos_data', {
+                p_store_id: storeId,
+            });
 
-            if (rpcError) {
-                throw rpcError;
-            }
+            if (rpcError) throw rpcError;
+            if (storeRequestRef.current !== requestId) return;
 
             setData({
                 ...INITIAL_DATA,
@@ -135,75 +96,43 @@ export function usePOS() {
                 products: result?.products || [],
                 payment_methods: result?.payment_methods || [],
             });
-
         } catch (err) {
+            if (storeRequestRef.current !== requestId) return;
 
-            console.error(
-                'Error cargando productos del POS:',
-                err
-            );
-
-            setData(INITIAL_DATA);
-
-            setError(
-                err?.message ||
-                'No se pudieron cargar los productos'
-            );
-
+            console.error('Error cargando productos del POS:', err);
+            // Conserva los últimos datos válidos si falla el cambio o refresco.
+            setError(err?.message || 'No se pudieron cargar los productos');
         } finally {
-
-            setLoadingProducts(false);
-
+            if (storeRequestRef.current === requestId) {
+                setLoadingProducts(false);
+            }
         }
-
     }, []);
-
-    // --------------------------------
-    // Inicializar
-    // --------------------------------
 
     useEffect(() => {
         fetchStores();
     }, [fetchStores]);
 
-    // --------------------------------
-    // Cambiar tienda
-    // --------------------------------
-
     useEffect(() => {
+        fetchStoreData(selectedStore?.id);
+    }, [selectedStore?.id, fetchStoreData]);
 
-        if (!selectedStore?.id) {
-            setData(INITIAL_DATA);
-            return;
+    const refresh = useCallback(() => {
+        if (selectedStore?.id) {
+            return fetchStoreData(selectedStore.id);
         }
-
-        fetchStoreData(selectedStore.id);
-
-    }, [selectedStore, fetchStoreData]);
+        return Promise.resolve();
+    }, [fetchStoreData, selectedStore?.id]);
 
     return {
-
         stores,
-
         selectedStore,
-
         setSelectedStore,
-
         products: data.products,
-
         paymentMethods: data.payment_methods,
-
         loadingStores,
-
         loadingProducts,
-
         error,
-
-        refresh: () => {
-            if (selectedStore?.id) {
-                fetchStoreData(selectedStore.id);
-            }
-        },
-
+        refresh,
     };
 }
