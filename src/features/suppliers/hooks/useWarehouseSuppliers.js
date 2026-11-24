@@ -81,7 +81,7 @@ export function useWarehouseSuppliers() {
 
                 const data =
                     await getWarehouseSuppliers({
-                        userId: profile.id,
+                        userId: profileId,
                         page,
                         pageSize,
                         search,
@@ -211,7 +211,7 @@ export function useWarehouseSuppliers() {
 
                 const result =
                     await createSupplier({
-                        userId: profile.id,
+                        userId: profileId,
                         ...form,
                     })
 
@@ -269,7 +269,7 @@ export function useWarehouseSuppliers() {
 
                 const result =
                     await updateSupplier({
-                        userId: profile.id,
+                        userId: profileId,
                         supplierId,
                         ...form,
                     })
@@ -333,7 +333,7 @@ export function useWarehouseSuppliers() {
                     const result =
                         await toggleSupplierStatus({
                             userId:
-                                profile.id,
+                                profileId,
                             supplierId,
                             isActive,
                         })
