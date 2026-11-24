@@ -14,6 +14,7 @@ export function useSalesPOS() {
     const [error, setError] = useState(null);
 
     const requestRef = useRef(0);
+    const hasLoadedRef = useRef(false);
 
     const loadPOS = useCallback(async () => {
         const userId = profile?.id;
@@ -25,12 +26,11 @@ export function useSalesPOS() {
             setLoading(false);
             setRefreshing(false);
             setError(null);
+            hasLoadedRef.current = false;
             return;
         }
 
-        const isInitialLoad = pos === null;
-
-        if (isInitialLoad) {
+        if (!hasLoadedRef.current) {
             setLoading(true);
         } else {
             setRefreshing(true);
@@ -42,7 +42,9 @@ export function useSalesPOS() {
             const data = await getSalesPOS(userId);
 
             if (requestRef.current !== requestId) return;
+
             setPos(data);
+            hasLoadedRef.current = true;
         } catch (err) {
             if (requestRef.current !== requestId) return;
 
@@ -56,7 +58,7 @@ export function useSalesPOS() {
                 setRefreshing(false);
             }
         }
-    }, [profile?.id, pos]);
+    }, [profile?.id]);
 
     useEffect(() => {
         loadPOS();
