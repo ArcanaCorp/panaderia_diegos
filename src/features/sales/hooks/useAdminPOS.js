@@ -115,6 +115,10 @@ export function usePOS() {
 
     useEffect(() => {
         fetchStoreData(selectedStore?.id);
+
+        return () => {
+            storeRequestRef.current += 1;
+        };
     }, [selectedStore?.id, fetchStoreData]);
 
     const refresh = useCallback(() => {
