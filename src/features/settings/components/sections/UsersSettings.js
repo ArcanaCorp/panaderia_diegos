@@ -22,6 +22,7 @@ import {
 
 export default function UsersSettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [users, setUsers] = useState([]);
     const [stores, setStores] = useState([]);
@@ -49,12 +50,12 @@ export default function UsersSettings() {
             setError('');
 
             const [usersData, storesResult] = await Promise.all([
-                getCompanyUsers(profile.company_id),
+                getCompanyUsers(companyId),
 
                 db
                     .from('stores')
                     .select('id, name, code')
-                    .eq('company_id', profile.company_id)
+                    .eq('company_id', companyId)
                     .eq('is_active', true)
                     .order('name'),
             ]);
@@ -72,10 +73,10 @@ export default function UsersSettings() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.company_id]);
+    }, [companyId]);
 
     useEffect(() => {
-        if (profile?.company_id) loadData();
+        if (companyId) loadData();
     }, [loadData]);
 
     function openCreateForm() {
@@ -137,7 +138,7 @@ export default function UsersSettings() {
             }
 
             const result = await createCompanyUser({
-                companyId: profile.company_id,
+                companyId: companyId,
                 fullName: form.fullName,
                 email: form.email,
                 password: form.password,
