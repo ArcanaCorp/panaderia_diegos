@@ -1,7 +1,7 @@
 'use client';
 
 import { IconBuildingStore, IconPackage, IconSearch, IconTrash, IconX, IconTruckDelivery } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getStores, getStoreTransferProducts, sendProductsToStore } from '@/features/stores/services/stores.service';
 
@@ -28,7 +28,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
 
     const [error, setError] = useState('');
 
-    const loadData() {useCallback(async () => {
+    const loadData = useCallback(async () => {
         if (!profile?.company_id) return;
 
         try {
