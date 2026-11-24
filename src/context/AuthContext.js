@@ -62,6 +62,17 @@ export function AuthProvider({ children }) {
         const userId = sessionUser.id;
         const currentRequest = profileRequestRef.current;
 
+        if (
+            loadedProfileUserRef.current &&
+            loadedProfileUserRef.current !== userId
+        ) {
+            loadedProfileUserRef.current = null;
+
+            if (mountedRef.current) {
+                setProfile(null);
+            }
+        }
+
         if (currentRequest.userId === userId && currentRequest.promise) {
             return currentRequest.promise;
         }
