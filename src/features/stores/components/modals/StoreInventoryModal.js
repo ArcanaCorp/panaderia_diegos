@@ -8,6 +8,7 @@ import {
     IconX,
 } from '@tabler/icons-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 
 import { getStores, getStoreInventory } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
@@ -324,9 +325,12 @@ export default function StoreInventoryModal({ onClose }) {
                                                     <td>
                                                         <div className="store-inventory__product">
                                                             {product?.image_url ? (
-                                                                <img
+                                                                <Image
                                                                     src={product.image_url}
                                                                     alt=""
+                                                                    width={40}
+                                                                    height={40}
+                                                                    unoptimized
                                                                 />
                                                             ) : (
                                                                 <div className="store-inventory__product-icon">
