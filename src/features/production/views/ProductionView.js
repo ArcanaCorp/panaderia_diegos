@@ -1,5 +1,6 @@
 'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconClock,
     IconPlayerPlay,
@@ -104,25 +105,7 @@ export default function ProduccionView() {
         }
     }
 
-    if (loading) {
-        return (
-            <main className="production">
-
-                <div className="card">
-
-                    <div className="card__content">
-
-                        <p className="card__description">
-                            Cargando órdenes de producción...
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </main>
-        )
-    }
+    if (loading) return <FeatureSkeleton variant="production" />;
 
     if (error) {
         return (
