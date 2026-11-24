@@ -27,6 +27,7 @@ function getInitials(name) {
 export default function StoreDetailModal({ store, onClose }) {
     
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [salesUsers, setSalesUsers] = useState([]);
     const [loadingUsers, setLoadingUsers] = useState(true);
@@ -41,7 +42,7 @@ export default function StoreDetailModal({ store, onClose }) {
 
             const data = await getStoreSalesUsers(
                 store.id,
-                profile?.company_id || store.company_id
+                companyId || store.company_id
             );
 
             setSalesUsers(data);
@@ -55,10 +56,10 @@ export default function StoreDetailModal({ store, onClose }) {
         } finally {
             setLoadingUsers(false);
         }
-    }, [store?.id, profile?.company_id]);
+    }, [store?.id, companyId]);
 
     useEffect(() => {
-        if (store?.id) loadSalesUsers();
+        if (store?.id) Promise.resolve().then(loadSalesUsers);
     }, [loadSalesUsers]);
 
     if (!store) {
