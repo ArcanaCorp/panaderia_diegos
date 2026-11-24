@@ -51,7 +51,11 @@ export function useAdminStores() {
     }, []);
 
     useEffect(() => {
-        fetchStores();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchStores();
+        });
+        return () => { active = false; };
     }, [fetchStores]);
 
     return {
