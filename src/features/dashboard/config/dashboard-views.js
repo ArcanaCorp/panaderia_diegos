@@ -1,12 +1,9 @@
 import dynamic from "next/dynamic";
+import DashboardSkeleton from "@/features/dashboard/components/DashboardSkeleton";
 
 const loadView = (loader) =>
     dynamic(loader, {
-        loading: () => (
-            <div className="screen center" role="status">
-                Cargando módulo...
-            </div>
-        ),
+        loading: () => <DashboardSkeleton />,
     });
 
 const AlertsAdmin = loadView(() => import("@/features/alerts/views/AlertsView"));
