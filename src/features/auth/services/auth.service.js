@@ -41,7 +41,7 @@ export async function getProfile(userId) {
     if (profile.role === "ventas" && profile.store_id) {
         const { data: store, error: storeError } = await db
             .from("stores")
-            .select("id, name, ruc, address")
+            .select("id, name, address")
             .eq("id", profile.store_id)
             .single();
 
