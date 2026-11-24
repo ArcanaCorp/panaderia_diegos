@@ -14,6 +14,7 @@ import {
 
 export default function CompanySettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [form, setForm] = useState({
         businessName: '',
@@ -37,7 +38,7 @@ export default function CompanySettings() {
             setError('');
 
             const company = await getCompany(
-                profile.company_id
+                companyId
             );
 
             setForm({
@@ -59,10 +60,10 @@ export default function CompanySettings() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.company_id]);
+    }, [companyId]);
 
     useEffect(() => {
-        if (profile?.company_id) loadCompany();
+        if (companyId) loadCompany();
     }, [loadCompany]);
 
     function handleChange(event) {
@@ -92,7 +93,7 @@ export default function CompanySettings() {
             setSaving(true);
 
             await updateCompany({
-                companyId: profile.company_id,
+                companyId: companyId,
                 businessName: form.businessName,
                 tradeName: form.tradeName,
                 address: form.address,
