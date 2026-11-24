@@ -49,7 +49,7 @@ export default function StoresSettings() {
         closingTime: '',
     });
 
-    const loadData() {useCallback(async () => {
+    const loadData = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
