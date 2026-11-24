@@ -35,7 +35,7 @@ export function useShowcase() {
             setLoading(true);
             setError(null);
 
-            const data = await getStoreShowcase(profile.id);
+            const data = await getStoreShowcase(profileId);
             const prod = await getCatalogProducts(companyId);
 
             setShowcase(data);
@@ -78,7 +78,7 @@ export function useShowcase() {
                 companyId: companyId,
                 sourceStoreId: profile.store_id,
                 destinationStoreId,
-                createdBy: profile.id,
+                createdBy: profileId,
                 items,
                 notes,
             });
