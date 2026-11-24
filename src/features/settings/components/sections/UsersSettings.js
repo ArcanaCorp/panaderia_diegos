@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     IconUsers,
     IconPlus,
@@ -43,13 +43,7 @@ export default function UsersSettings() {
         isActive: true,
     });
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadData();
-        }
-    }, [profile?.company_id]);
-
-    async function loadData() {
+    const loadData() {useCallback(async () => {
         try {
             setLoading(true);
             setError('');
@@ -78,7 +72,11 @@ export default function UsersSettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [profile?.company_id]);
+
+    useEffect(() => {
+        if (profile?.company_id) loadData();
+    }, [loadData]);
 
     function openCreateForm() {
         setError('');
