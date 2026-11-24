@@ -23,6 +23,7 @@ import {
 
 export default function PaymentsSettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [paymentMethods, setPaymentMethods] = useState([]);
 
@@ -47,7 +48,7 @@ export default function PaymentsSettings() {
             setError('');
 
             const data = await getCompanyPaymentMethods(
-                profile.company_id
+                companyId
             );
 
             setPaymentMethods(data);
@@ -59,10 +60,10 @@ export default function PaymentsSettings() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.company_id]);
+    }, [companyId]);
 
     useEffect(() => {
-        if (profile?.company_id) loadPaymentMethods();
+        if (companyId) loadPaymentMethods();
     }, [loadPaymentMethods]);
 
     function resetForm() {
@@ -109,7 +110,7 @@ export default function PaymentsSettings() {
             setSuccess('');
 
             const newPaymentMethod = await createPaymentMethod({
-                companyId: profile.company_id,
+                companyId: companyId,
                 name: form.name,
                 type: form.type,
                 description: form.description,
