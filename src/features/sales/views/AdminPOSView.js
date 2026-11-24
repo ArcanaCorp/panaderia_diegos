@@ -42,6 +42,23 @@ const timeLabel = (value) => {
 const saleCode = (sale) => sale.code || sale.sale_number || sale.id?.slice?.(0, 8) || 'Venta';
 const saleTotal = (sale) => sale.total ?? sale.total_amount ?? sale.grand_total ?? 0;
 const saleStatus = (sale) => String(sale.status || sale.payment_status || 'Registrada');
+const statusLabel = (value) => ({
+    completed: 'Completada',
+    complete: 'Completada',
+    paid: 'Pagada',
+    pending: 'Pendiente',
+    cancelled: 'Anulada',
+    canceled: 'Anulada',
+    partial: 'Pago parcial',
+})[String(value).toLowerCase()] || value;
+const paymentLabel = (value) => ({
+    full: 'Pago completo',
+    partial: 'Pago dividido',
+    cash: 'Efectivo',
+    card: 'Tarjeta',
+    transfer: 'Transferencia',
+    digital_wallet: 'Billetera digital',
+})[String(value || '').toLowerCase()] || value || '—';
 
 export default function PosAdmin() {
     const {
@@ -201,8 +218,8 @@ export default function PosAdmin() {
                                     <td>{timeLabel(sale.created_at)}</td>
                                     <td>{sale.customer_name || 'Público general'}</td>
                                     <td>{storeNames.get(String(sale.store_id)) || '—'}</td>
-                                    <td>{sale.payment_type || sale.payment_method || '—'}</td>
-                                    <td><span className="sales-admin__status">{saleStatus(sale)}</span></td>
+                                    <td>{paymentLabel(sale.payment_type || sale.payment_method)}</td>
+                                    <td><span className="sales-admin__status">{statusLabel(saleStatus(sale))}</span></td>
                                     <td className="sales-admin__amount">{currency(saleTotal(sale))}</td>
                                 </tr>
                             ))}
