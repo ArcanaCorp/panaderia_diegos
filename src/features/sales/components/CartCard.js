@@ -74,7 +74,9 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
     async function lookupCustomer() {
         const dni = customerDni.trim();
 
-        if (!/^\\d{8}$/.test(dni)) {
+        console.log(`DNI: ${dni}`);
+
+        if (!/^[0-9]{8}$/.test(dni)) {
             return toast.error('Ingresa un DNI válido de 8 dígitos.');
         }
 
