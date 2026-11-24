@@ -6,19 +6,20 @@ import { getSalesDashboard } from '@/features/dashboard/services/sales-dashboard
 
 export function useSalesDashboard() {
     const { profile } = useAuth();
+    const profileId = profile?.id;
 
     const [dashboard, setDashboard] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const loadDashboard = useCallback(async () => {
-        if (!profile?.id) return;
+        if (!profileId) return;
 
         try {
             setLoading(true);
             setError(null);
 
-            const data = await getSalesDashboard(profile.id);
+            const data = await getSalesDashboard(profileId);
 
             setDashboard(data);
         } catch (err) {
@@ -30,10 +31,14 @@ export function useSalesDashboard() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.id]);
+    }, [profileId]);
 
     useEffect(() => {
-        loadDashboard();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadDashboard();
+        });
+        return () => { active = false; };
     }, [loadDashboard]);
 
     return {

@@ -1,8 +1,12 @@
 import dynamic from "next/dynamic";
-import DashboardSkeleton from "@/features/dashboard/components/DashboardSkeleton";
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 
-const loadView = (loader) => dynamic(loader, { loading: () => <DashboardSkeleton /> });
+const loadView = (loader) =>
+    dynamic(loader, {
+        loading: () => <DashboardSkeleton />,
+    });
 
+const AlertsAdmin = loadView(() => import("@/features/alerts/views/AlertsView"));
 const DashboardAdmin = loadView(() => import("@/features/dashboard/views/admin/AdminDashboardView"));
 const InventaryAdmin = loadView(() => import("@/features/inventory/views/AdminInventoryView"));
 const PosAdmin = loadView(() => import("@/features/sales/views/AdminPOSView"));
@@ -11,17 +15,17 @@ const ProductsAdmin = loadView(() => import("@/features/products/views/ProductsV
 const SettingsAdmin = loadView(() => import("@/features/settings/views/SettingsView"));
 const StoresAdmin = loadView(() => import("@/features/stores/views/StoresView"));
 
-const DashboardAlmacen = loadView(() => import("@/features/dashboard/views/warehouse/WarehouseDashboardView"));
-const InventaryAlmacen = loadView(() => import("@/features/inventory/views/WarehouseInventoryView"));
-const SuppliersAlmacen = loadView(() => import("@/features/suppliers/views/SuppliersView"));
+const DashboardAlmacen = loadView(() => import("@/features/dashboard/views/warehouse/WarehouseDashboardView"), "dashboard");
+const InventaryAlmacen = loadView(() => import("@/features/inventory/views/WarehouseInventoryView"), "inventory");
+const SuppliersAlmacen = loadView(() => import("@/features/suppliers/views/SuppliersView"), "suppliers");
 
-const DashboardProduccion = loadView(() => import("@/features/dashboard/views/production/ProductionDashboardView"));
-const InventoryProduccion = loadView(() => import("@/features/production/views/ProductionInventoryView"));
-const ProduccionView = loadView(() => import("@/features/production/views/ProductionView"));
+const DashboardProduccion = loadView(() => import("@/features/dashboard/views/production/ProductionDashboardView"), "dashboard");
+const InventoryProduccion = loadView(() => import("@/features/production/views/ProductionInventoryView"), "inventory");
+const ProduccionView = loadView(() => import("@/features/production/views/ProductionView"), "production");
 
-const DashboardVentas = loadView(() => import("@/features/dashboard/views/sales/SalesDashboardView"));
-const POSVentas = loadView(() => import("@/features/sales/views/SalesPOSView"));
-const ShowcasesView = loadView(() => import("@/features/sales/views/ShowcasesView"));
+const DashboardVentas = loadView(() => import("@/features/dashboard/views/sales/SalesDashboardView"), "dashboard");
+const POSVentas = loadView(() => import("@/features/sales/views/SalesPOSView"), "pos");
+const ShowcasesView = loadView(() => import("@/features/sales/views/ShowcasesView"), "showcase");
 
 export const DASHBOARD_VIEWS = {
     admin: {

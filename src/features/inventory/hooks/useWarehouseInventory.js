@@ -8,6 +8,7 @@ import { getWarehouseInventory } from '@/features/inventory/services/warehouse-i
 export function useWarehouseInventory() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
 
 
     const [inventory, setInventory] =
@@ -39,7 +40,7 @@ export function useWarehouseInventory() {
     const loadInventory = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
 
                 setLoading(false)
 
@@ -57,7 +58,7 @@ export function useWarehouseInventory() {
                     await getWarehouseInventory({
 
                         userId:
-                            profile.id,
+                            profileId,
 
                         page,
 
@@ -94,7 +95,7 @@ export function useWarehouseInventory() {
 
         },
         [
-            profile?.id,
+            profileId,
             page,
             search,
             categoryId,
@@ -104,10 +105,12 @@ export function useWarehouseInventory() {
 
 
     useEffect(() => {
-
-        loadInventory()
-
-    }, [loadInventory])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadInventory();
+        });
+        return () => { active = false; };
+    }, [loadInventory]);
 
 
     /*

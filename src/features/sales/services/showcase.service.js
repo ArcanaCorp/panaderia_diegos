@@ -1,4 +1,5 @@
 import { db } from '@/libs/supabase';
+import { getActiveFinishedProducts } from '@/features/products/services/product.service';
 
 export async function getStoreShowcase(userId) {
     if (!userId) {
@@ -21,16 +22,7 @@ export async function getStoreShowcase(userId) {
 }
 
 export async function getCatalogProducts(companyId) {
-    const { data, error } = await db
-        .from('products')
-        .select('*')
-        .eq('company_id', companyId)
-        .eq('product_type', 'finished_product')
-        .eq('is_active', true);
-
-    if (error) throw error;
-
-    return data || [];
+    return getActiveFinishedProducts(companyId);
 }
 
 export async function transferProductsBetweenStores({

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     IconCheck,
     IconLoader2,
@@ -14,6 +14,7 @@ import {
 
 export default function CompanySettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [form, setForm] = useState({
         businessName: '',
@@ -31,19 +32,13 @@ export default function CompanySettings() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadCompany();
-        }
-    }, [profile?.company_id]);
-
-    async function loadCompany() {
+    const loadCompany = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
 
             const company = await getCompany(
-                profile.company_id
+                companyId
             );
 
             setForm({
@@ -65,7 +60,15 @@ export default function CompanySettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [companyId]);
+
+    useEffect(() => {
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadCompany();
+        });
+        return () => { active = false; };
+    }, [companyId, loadCompany]);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -94,7 +97,7 @@ export default function CompanySettings() {
             setSaving(true);
 
             await updateCompany({
-                companyId: profile.company_id,
+                companyId: companyId,
                 businessName: form.businessName,
                 tradeName: form.tradeName,
                 address: form.address,

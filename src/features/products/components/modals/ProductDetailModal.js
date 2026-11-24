@@ -7,6 +7,42 @@ import {
     IconX,
 } from '@tabler/icons-react';
 
+function DetailRow({
+    label,
+    children,
+}) {
+    return (
+        <div className="modal__detail-row">
+            <span>
+                {label}
+            </span>
+
+            <strong>
+                {children}
+            </strong>
+        </div>
+    );
+}
+
+function StatusItem({
+    active,
+    children,
+}) {
+    return (
+        <div className="modal__checkbox">
+            {active ? (
+                <IconCheck size={16} />
+            ) : (
+                <IconX size={16} />
+            )}
+
+            <span>
+                {children}
+            </span>
+        </div>
+    );
+}
+
 export default function ProductDetailModal({
     product,
     onClose,
@@ -22,41 +58,7 @@ export default function ProductDetailModal({
             value || 0
         ).toFixed(2)}`;
 
-    function DetailRow({
-        label,
-        children,
-    }) {
-        return (
-            <div className="modal__detail-row">
-                <span>
-                    {label}
-                </span>
 
-                <strong>
-                    {children}
-                </strong>
-            </div>
-        );
-    }
-
-    function StatusItem({
-        active,
-        children,
-    }) {
-        return (
-            <div className="modal__checkbox">
-                {active ? (
-                    <IconCheck size={16} />
-                ) : (
-                    <IconX size={16} />
-                )}
-
-                <span>
-                    {children}
-                </span>
-            </div>
-        );
-    }
 
     return (
         <div

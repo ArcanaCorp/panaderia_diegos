@@ -1,5 +1,6 @@
 'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconClipboardList,
     IconClock,
@@ -102,19 +103,7 @@ export default function DashboardProduccion() {
         return `${order.items.length} productos · ${totalQuantity} unidades`
     }
 
-    if (loading) {
-        return (
-            <main className="dashboard">
-                <div className="card">
-                    <div className="card__content">
-                        <p className="card__description">
-                            Cargando producción...
-                        </p>
-                    </div>
-                </div>
-            </main>
-        )
-    }
+    if (loading) return <FeatureSkeleton variant="dashboard" />;
 
     if (error) {
         return (

@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconBell,
     IconAlertTriangle,
@@ -178,13 +179,7 @@ export default function AlertsAdmin() {
      */
 
     if (loading) {
-        return (
-            <main className="alerts">
-                <div className="card">
-                    Cargando alertas y actividad...
-                </div>
-            </main>
-        );
+        return <FeatureSkeleton variant="alerts" />;
     }
 
     /*

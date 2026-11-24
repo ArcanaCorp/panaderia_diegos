@@ -1,5 +1,6 @@
 'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { useAdminProduction } from '@/features/production/hooks/useAdminProduction';
 import { IconPlus, IconSearch, IconClock, IconChefHat, IconCheck, IconAlertTriangle, IconRefresh, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
@@ -244,33 +245,7 @@ export default function ProduccionAdmin() {
 
 
     if (loading) {
-
-        return (
-            <main className="production">
-
-                <header className="production__header">
-
-                    <div>
-
-                        <p className="production__eyebrow">
-                            Operaciones
-                        </p>
-
-                        <h1 className="production__title">
-                            Producción
-                        </h1>
-
-                        <p className="production__description">
-                            Cargando órdenes de producción...
-                        </p>
-
-                    </div>
-
-                </header>
-
-            </main>
-        );
-
+        return <FeatureSkeleton variant="production" />;
     }
 
 

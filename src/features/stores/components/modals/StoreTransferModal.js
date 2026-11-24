@@ -1,7 +1,7 @@
 'use client';
 
 import { IconBuildingStore, IconPackage, IconSearch, IconTrash, IconX, IconTruckDelivery } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { getStores, getStoreTransferProducts, sendProductsToStore } from '@/features/stores/services/stores.service';
 
@@ -13,6 +13,7 @@ const INITIAL_FORM = {
 
 export default function StoreTransferModal({ onClose, onSuccess }) {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [stores, setStores] = useState([]);
     const [products, setProducts] = useState([]);
@@ -28,20 +29,16 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
 
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadData();
-    }, [profile?.company_id]);
-
-    async function loadData() {
-        if (!profile?.company_id) return;
+    const loadData = useCallback(async () => {
+        if (!companyId) return;
 
         try {
             setLoading(true);
             setError('');
 
             const [storesData, productsData] = await Promise.all([
-                getStores(profile.company_id),
-                getStoreTransferProducts(profile.company_id),
+                getStores(companyId),
+                getStoreTransferProducts(companyId),
             ]);
 
             setStores(storesData);
@@ -55,7 +52,15 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [companyId]);
+
+    useEffect(() => {
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadData();
+        });
+        return () => { active = false; };
+    }, [companyId, loadData]);
 
     const availableProducts = useMemo(() => {
         const search = productSearch.trim().toLowerCase();
@@ -149,7 +154,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
 
         setError('');
 
-        if (!profile?.company_id) {
+        if (!companyId) {
             setError('No se encontró la empresa del usuario.');
             return;
         }
@@ -184,7 +189,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
             }));
 
             const transferId = await sendProductsToStore({
-                companyId: profile.company_id,
+                companyId: companyId,
                 storeId: form.storeId,
                 createdBy: profile.id,
                 items,

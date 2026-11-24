@@ -54,9 +54,11 @@ export function useAdminProducts() {
     }, []);
 
     useEffect(() => {
-
-        fetchProducts();
-
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchProducts();
+        });
+        return () => { active = false; };
     }, [fetchProducts]);
 
     const addProduct = useCallback((product) => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { IconCheck, IconLoader2 } from '@tabler/icons-react';
 
 import { useAuth } from '@/context/AuthContext';
@@ -9,23 +9,16 @@ import { updateMyProfile } from '@/features/settings/services/profile.service';
 export default function ProfileSettings() {
     const { profile } = useAuth();
 
-    const [form, setForm] = useState({
-        fullName: '',
-        phone: '',
-    });
+    const [form, setForm] = useState(() => ({
+        fullName: profile?.full_name || '',
+        phone: profile?.phone || '',
+    }));
 
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (!profile) return;
 
-        setForm({
-            fullName: profile.full_name || '',
-            phone: profile.phone || '',
-        });
-    }, [profile]);
 
     function handleChange(event) {
         const { name, value } = event.target;

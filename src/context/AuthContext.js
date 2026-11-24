@@ -5,6 +5,7 @@ import {
     useCallback,
     useContext,
     useEffect,
+    useMemo,
     useRef,
     useState,
 } from "react";
@@ -191,30 +192,29 @@ export function AuthProvider({ children }) {
         };
     }, [clearUser, loadUser]);
 
-    async function signIn(email, password) {
+    const signIn = useCallback(async (email, password) => {
         const data = await loginService(email, password);
         await loadUser(data.session);
         return data;
-    }
+    }, [loadUser]);
 
-    async function signOut() {
+    const signOut = useCallback(async () => {
         // SIGNED_OUT dispara clearUser desde el listener; no duplicar la limpieza.
         await logoutService();
-    }
+    }, []);
 
     const role = profile?.role || null;
+    const contextValue = useMemo(() => ({
+        user,
+        profile,
+        role,
+        loading,
+        signIn,
+        signOut,
+    }), [user, profile, role, loading, signIn, signOut]);
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                profile,
-                role,
-                loading,
-                signIn,
-                signOut,
-            }}
-        >
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );

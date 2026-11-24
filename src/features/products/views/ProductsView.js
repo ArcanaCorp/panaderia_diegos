@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import RowsProduct from '@/features/products/components/RowsProduct';
 import { useModal } from '@/context/ModalContext';
 import { useAdminProducts } from '@/features/products/hooks/useAdminProducts';
@@ -117,45 +118,7 @@ export default function ProductsAdmin() {
        LOADING
        ========================================================= */
 
-    if (loading) {
-
-        return (
-
-            <main className="products">
-
-                <header className="products__header">
-
-                    <div>
-
-                        <div className="products__title-row">
-
-                            <div className="products__title-icon">
-                                <IconPackage size={18} />
-                            </div>
-
-                            <div>
-
-                                <h1 className="products__title">
-                                    Productos
-                                </h1>
-
-                                <p className="products__description">
-                                    Cargando catÃ¡logo...
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </header>
-
-            </main>
-
-        );
-
-    }
+    if (loading) return <FeatureSkeleton variant="table" />;
 
 
     /* =========================================================

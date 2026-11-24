@@ -7,6 +7,7 @@ import { getWarehouseDashboard } from '@/features/dashboard/services/warehouse-d
 export function useWarehouseDashboard() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
     const [dashboard, setDashboard] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -15,7 +16,7 @@ export function useWarehouseDashboard() {
     const loadDashboard = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
 
                 setLoading(false)
 
@@ -29,7 +30,7 @@ export function useWarehouseDashboard() {
 
                 const data =
                     await getWarehouseDashboard(
-                        profile.id
+                        profileId
                     )
 
                 setDashboard(data)
@@ -53,15 +54,17 @@ export function useWarehouseDashboard() {
             }
 
         },
-        [profile?.id]
+        [profileId]
     )
 
 
     useEffect(() => {
-
-        loadDashboard()
-
-    }, [loadDashboard])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadDashboard();
+        });
+        return () => { active = false; };
+    }, [loadDashboard]);
 
 
     return {

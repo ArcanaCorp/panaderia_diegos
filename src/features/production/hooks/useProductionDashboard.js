@@ -8,6 +8,7 @@ import { getProductionDashboard, updateProductionOrderStatus } from '@/features/
 export function useProductionDashboard() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
 
     const [dashboard, setDashboard] = useState(null)
 
@@ -20,7 +21,7 @@ export function useProductionDashboard() {
 
     const loadDashboard = useCallback(async () => {
 
-        if (!profile?.id) {
+        if (!profileId) {
             setLoading(false)
             return
         }
@@ -32,7 +33,7 @@ export function useProductionDashboard() {
 
             const data =
                 await getProductionDashboard(
-                    profile.id
+                    profileId
                 )
 
             setDashboard(data)
@@ -55,18 +56,18 @@ export function useProductionDashboard() {
 
         }
 
-    }, [profile?.id])
+    }, [profileId])
 
 
     const changeOrderStatus = useCallback( async (orderId, status) => {
 
-        if (!profile?.id) throw new Error('No se encontró el usuario.')
+        if (!profileId) throw new Error('No se encontró el usuario.')
 
         try {
 
             setUpdating(true)
             setError(null)
-            await updateProductionOrderStatus(orderId, profile.id, status)
+            await updateProductionOrderStatus(orderId, profileId, status)
             await loadDashboard()
 
         } catch (err) {
@@ -78,14 +79,16 @@ export function useProductionDashboard() {
             setUpdating(false)
         }
 
-    }, [profile?.id, loadDashboard])
+    }, [profileId, loadDashboard])
 
 
     useEffect(() => {
-
-        loadDashboard()
-
-    }, [loadDashboard])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadDashboard();
+        });
+        return () => { active = false; };
+    }, [loadDashboard]);
 
 
     return {

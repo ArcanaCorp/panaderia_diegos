@@ -5,33 +5,9 @@ import { useEffect, useState } from 'react';
 import { getActiveProductCategories } from '@/features/products/services/categories.service';
 import { updateProduct } from '@/features/products/services/product.service';
 
-const INITIAL_FORM = {
-    name: '',
-    description: '',
-    category_id: '',
-    unit_type: 'unidad',
-    unit_weight: '',
-    unit_measure: '',
-    allow_fraction: false,
-    price_unit: '',
-    price_dozen: '',
-    cost_price: '',
-    track_inventory: true,
-    is_perishable: false,
-    requires_expiration_date: false,
-    image_url: '',
-};
-
 export default function ProductEditModal({ product, onClose, onSuccess }) {
 
-    const [form, setForm] = useState(INITIAL_FORM);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingCategories, setLoadingCategories] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        setForm({
+    const [form, setForm] = useState(() => ({
             name: product.name || '',
             description: product.description || '',
             category_id: product.category_id || '',
@@ -46,8 +22,13 @@ export default function ProductEditModal({ product, onClose, onSuccess }) {
             is_perishable: product.is_perishable || false,
             requires_expiration_date: product.requires_expiration_date || false,
             image_url: product.image_url || '',
-        });
-    }, [product]);
+        }));
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [error, setError] = useState(null);
+
+
 
     useEffect(() => {
         let active = true;

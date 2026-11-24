@@ -13,6 +13,8 @@ import {
 
 export function useShowcase() {
     const { profile } = useAuth();
+    const profileId = profile?.id;
+    const companyId = profile?.company_id;
 
     const [showcase, setShowcase] = useState(null);
     const [catalog, setCatalog] = useState([]);
@@ -24,7 +26,7 @@ export function useShowcase() {
     const [error, setError] = useState(null);
 
     const loadShowcase = useCallback(async () => {
-        if (!profile?.id) {
+        if (!profileId) {
             setLoading(false);
             return;
         }
@@ -33,8 +35,8 @@ export function useShowcase() {
             setLoading(true);
             setError(null);
 
-            const data = await getStoreShowcase(profile.id);
-            const prod = await getCatalogProducts(profile.company_id);
+            const data = await getStoreShowcase(profileId);
+            const prod = await getCatalogProducts(companyId);
 
             setShowcase(data);
             setCatalog(prod || []);
@@ -49,15 +51,19 @@ export function useShowcase() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.id]);
+    }, [profileId, companyId]);
 
     useEffect(() => {
-        loadShowcase();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadShowcase();
+        });
+        return () => { active = false; };
     }, [loadShowcase]);
 
     // TRANSFERIR PRODUCTOS
     async function transfer({ destinationStoreId, items, notes }) {
-        if (!profile?.company_id) {
+        if (!companyId) {
             throw new Error('No se encontró la empresa.');
         }
 
@@ -69,10 +75,10 @@ export function useShowcase() {
             setTransferring(true);
 
             const result = await transferProductsBetweenStores({
-                companyId: profile.company_id,
+                companyId: companyId,
                 sourceStoreId: profile.store_id,
                 destinationStoreId,
-                createdBy: profile.id,
+                createdBy: profileId,
                 items,
                 notes,
             });
@@ -88,7 +94,7 @@ export function useShowcase() {
 
     // AGREGAR MÚLTIPLES PRODUCTOS A LA TIENDA
     async function addProducts(items) {
-        if (!profile?.company_id) {
+        if (!companyId) {
             throw new Error('No se encontró la empresa.');
         }
 
@@ -104,7 +110,7 @@ export function useShowcase() {
             setAddingProducts(true);
 
             const result = await addProductsToStore({
-                companyId: profile.company_id,
+                companyId: companyId,
                 storeId: profile.store_id,
                 items,
             });

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
     IconCreditCard,
@@ -23,6 +23,7 @@ import {
 
 export default function PaymentsSettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [paymentMethods, setPaymentMethods] = useState([]);
 
@@ -41,19 +42,13 @@ export default function PaymentsSettings() {
         isActive: true,
     });
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadPaymentMethods();
-        }
-    }, [profile?.company_id]);
-
-    async function loadPaymentMethods() {
+    const loadPaymentMethods = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
 
             const data = await getCompanyPaymentMethods(
-                profile.company_id
+                companyId
             );
 
             setPaymentMethods(data);
@@ -65,7 +60,15 @@ export default function PaymentsSettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [companyId]);
+
+    useEffect(() => {
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadPaymentMethods();
+        });
+        return () => { active = false; };
+    }, [companyId, loadPaymentMethods]);
 
     function resetForm() {
         setForm({
@@ -111,7 +114,7 @@ export default function PaymentsSettings() {
             setSuccess('');
 
             const newPaymentMethod = await createPaymentMethod({
-                companyId: profile.company_id,
+                companyId: companyId,
                 name: form.name,
                 type: form.type,
                 description: form.description,

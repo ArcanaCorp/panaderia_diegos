@@ -19,6 +19,7 @@ import {
 export function useWarehouseSuppliers() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
 
     const [suppliers, setSuppliers] =
         useState([])
@@ -68,7 +69,7 @@ export function useWarehouseSuppliers() {
     const loadSuppliers = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 setLoading(false)
                 return
             }
@@ -80,7 +81,7 @@ export function useWarehouseSuppliers() {
 
                 const data =
                     await getWarehouseSuppliers({
-                        userId: profile.id,
+                        userId: profileId,
                         page,
                         pageSize,
                         search,
@@ -128,7 +129,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             page,
             search,
             status,
@@ -143,8 +144,12 @@ export function useWarehouseSuppliers() {
      */
 
     useEffect(() => {
-        loadSuppliers()
-    }, [loadSuppliers])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadSuppliers();
+        });
+        return () => { active = false; };
+    }, [loadSuppliers]);
 
 
     /*
@@ -193,7 +198,7 @@ export function useWarehouseSuppliers() {
     const addSupplier = useCallback(
         async (form) => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 throw new Error(
                     'No se encontrÃ³ el usuario.'
                 )
@@ -206,7 +211,7 @@ export function useWarehouseSuppliers() {
 
                 const result =
                     await createSupplier({
-                        userId: profile.id,
+                        userId: profileId,
                         ...form,
                     })
 
@@ -236,7 +241,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             loadSuppliers,
         ]
     )
@@ -251,7 +256,7 @@ export function useWarehouseSuppliers() {
     const editSupplier = useCallback(
         async (supplierId, form) => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 throw new Error(
                     'No se encontrÃ³ el usuario.'
                 )
@@ -264,7 +269,7 @@ export function useWarehouseSuppliers() {
 
                 const result =
                     await updateSupplier({
-                        userId: profile.id,
+                        userId: profileId,
                         supplierId,
                         ...form,
                     })
@@ -295,7 +300,7 @@ export function useWarehouseSuppliers() {
 
         },
         [
-            profile?.id,
+            profileId,
             loadSuppliers,
         ]
     )
@@ -314,7 +319,7 @@ export function useWarehouseSuppliers() {
                 isActive
             ) => {
 
-                if (!profile?.id) {
+                if (!profileId) {
                     throw new Error(
                         'No se encontrÃ³ el usuario.'
                     )
@@ -328,7 +333,7 @@ export function useWarehouseSuppliers() {
                     const result =
                         await toggleSupplierStatus({
                             userId:
-                                profile.id,
+                                profileId,
                             supplierId,
                             isActive,
                         })
@@ -359,7 +364,7 @@ export function useWarehouseSuppliers() {
 
             },
             [
-                profile?.id,
+                profileId,
                 loadSuppliers,
             ]
         )

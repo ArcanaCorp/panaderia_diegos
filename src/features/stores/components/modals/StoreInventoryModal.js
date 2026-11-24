@@ -7,7 +7,8 @@ import {
     IconRefresh,
     IconX,
 } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 
 import { getStores, getStoreInventory } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
@@ -20,6 +21,7 @@ const formatNumber = (value) => {
 
 export default function StoreInventoryModal({ onClose }) {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [stores, setStores] = useState([]);
     const [selectedStoreId, setSelectedStoreId] = useState('');
@@ -32,26 +34,14 @@ export default function StoreInventoryModal({ onClose }) {
     const [search, setSearch] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadStores();
-    }, [profile?.company_id]);
-
-    useEffect(() => {
-        if (selectedStoreId) {
-            loadInventory(selectedStoreId);
-        } else {
-            setInventory([]);
-        }
-    }, [selectedStoreId]);
-
-    async function loadStores() {
-        if (!profile?.company_id) return;
+    const loadStores = useCallback(async () => {
+        if (!companyId) return;
 
         try {
             setLoading(true);
             setError('');
 
-            const data = await getStores(profile.company_id);
+            const data = await getStores(companyId);
 
             setStores(data);
 
@@ -66,9 +56,13 @@ export default function StoreInventoryModal({ onClose }) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [companyId]);
 
-    async function loadInventory(storeId) {
+    useEffect(() => {
+        Promise.resolve().then(loadStores);
+    }, [loadStores]);
+
+    const loadInventory = useCallback(async (storeId) => {
         try {
             setLoadingInventory(true);
             setError('');
@@ -85,7 +79,13 @@ export default function StoreInventoryModal({ onClose }) {
         } finally {
             setLoadingInventory(false);
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        if (selectedStoreId) {
+            Promise.resolve().then(() => loadInventory(selectedStoreId));
+        }
+    }, [selectedStoreId, loadInventory]);
 
     function handleRefresh() {
         if (selectedStoreId) {
@@ -95,10 +95,11 @@ export default function StoreInventoryModal({ onClose }) {
 
     const filteredInventory = useMemo(() => {
         const term = search.trim().toLowerCase();
+        const source = selectedStoreId ? inventory : [];
 
-        if (!term) return inventory;
+        if (!term) return source;
 
-        return inventory.filter((item) => {
+        return source.filter((item) => {
             const product = item.products;
 
             return (
@@ -106,20 +107,20 @@ export default function StoreInventoryModal({ onClose }) {
                 product?.sku?.toLowerCase().includes(term)
             );
         });
-    }, [inventory, search]);
+    }, [inventory, search, selectedStoreId]);
 
     const selectedStore = stores.find(
         (store) => store.id === selectedStoreId
     );
 
-    const totalProducts = inventory.length;
+    const totalProducts = selectedStoreId ? inventory.length : 0;
 
-    const totalUnits = inventory.reduce(
+    const totalUnits = (selectedStoreId ? inventory : []).reduce(
         (total, item) => total + Number(item.stock || 0),
         0
     );
 
-    const lowStockProducts = inventory.filter(
+    const lowStockProducts = (selectedStoreId ? inventory : []).filter(
         (item) =>
             Number(item.stock || 0) <=
             Number(item.minimum_stock || 0)
@@ -324,9 +325,12 @@ export default function StoreInventoryModal({ onClose }) {
                                                     <td>
                                                         <div className="store-inventory__product">
                                                             {product?.image_url ? (
-                                                                <img
+                                                                <Image
                                                                     src={product.image_url}
                                                                     alt=""
+                                                                    width={40}
+                                                                    height={40}
+                                                                    unoptimized
                                                                 />
                                                             ) : (
                                                                 <div className="store-inventory__product-icon">

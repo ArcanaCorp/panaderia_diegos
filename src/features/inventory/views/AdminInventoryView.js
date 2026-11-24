@@ -1,5 +1,6 @@
 'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { useMemo, useState } from 'react';
 import {
     IconPackage,
@@ -188,31 +189,7 @@ export default function InventoryAdmin() {
     };
 
     if (loading) {
-
-        return (
-            <main className="inventory">
-
-                <div className="inventory__header">
-
-                    <div>
-                        <p className="inventory__eyebrow">
-                            Almacén
-                        </p>
-
-                        <h1 className="inventory__title">
-                            Inventario
-                        </h1>
-
-                        <p className="inventory__description">
-                            Cargando ingredientes...
-                        </p>
-                    </div>
-
-                </div>
-
-            </main>
-        );
-
+        return <FeatureSkeleton variant="inventory" />;
     }
 
     return (

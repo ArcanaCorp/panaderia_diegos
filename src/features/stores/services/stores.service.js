@@ -1,4 +1,5 @@
 import { db } from '@/libs/supabase';
+import { getActiveFinishedProducts } from '@/features/products/services/product.service';
 
 /**
  * Obtener tiendas activas de una empresa
@@ -36,33 +37,7 @@ export async function getStores(companyId) {
  * Obtener productos terminados activos
  */
 export async function getStoreTransferProducts(companyId) {
-    if (!companyId) {
-        throw new Error('La empresa es obligatoria.');
-    }
-
-    const { data, error } = await db
-        .from('products')
-        .select(`
-            id,
-            sku,
-            name,
-            description,
-            unit_type,
-            price_unit,
-            price_dozen,
-            cost_price,
-            image_url,
-            is_active,
-            product_type
-        `)
-        .eq('company_id', companyId)
-        .eq('is_active', true)
-        .eq('product_type', 'finished_product')
-        .order('name');
-
-    if (error) throw error;
-
-    return data || [];
+    return getActiveFinishedProducts(companyId);
 }
 
 /**

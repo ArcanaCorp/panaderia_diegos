@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
     IconBuildingStore,
@@ -25,6 +25,7 @@ import {
 
 export default function StoresSettings() {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [stores, setStores] = useState([]);
     const [managers, setManagers] = useState([]);
@@ -49,20 +50,14 @@ export default function StoresSettings() {
         closingTime: '',
     });
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadData();
-        }
-    }, [profile?.company_id]);
-
-    async function loadData() {
+    const loadData = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
 
             const [storesData, managersData] = await Promise.all([
-                getCompanyStores(profile.company_id),
-                getStoreManagers(profile.company_id),
+                getCompanyStores(companyId),
+                getStoreManagers(companyId),
             ]);
 
             setStores(storesData);
@@ -74,7 +69,15 @@ export default function StoresSettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [companyId]);
+
+    useEffect(() => {
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadData();
+        });
+        return () => { active = false; };
+    }, [companyId, loadData]);
 
     function resetForm() {
         setForm({
@@ -125,7 +128,7 @@ export default function StoresSettings() {
             setSuccess('');
 
             const newStore = await createStore({
-                companyId: profile.company_id,
+                companyId: companyId,
                 name: form.name,
                 code: form.code,
                 address: form.address,

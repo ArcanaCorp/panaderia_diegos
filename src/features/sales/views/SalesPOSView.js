@@ -1,5 +1,6 @@
 'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { useMemo, useState } from 'react';
 import { IconSearch, IconAlertTriangle, IconRefresh, IconPackage } from '@tabler/icons-react';
 
@@ -96,24 +97,7 @@ export default function POSVentas() {
     // =====================================================
 
     if (loading) {
-        return (
-            <div className="pos">
-                <div className="pos__state">
-                    <IconRefresh
-                        size={24}
-                        className="pos__state-icon"
-                    />
-
-                    <strong>
-                        Cargando punto de venta...
-                    </strong>
-
-                    <span>
-                        Estamos preparando los productos de tu tienda.
-                    </span>
-                </div>
-            </div>
-        );
+        return <FeatureSkeleton variant="pos" />;
     }
 
     // =====================================================
