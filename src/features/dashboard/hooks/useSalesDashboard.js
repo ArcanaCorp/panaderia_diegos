@@ -19,7 +19,7 @@ export function useSalesDashboard() {
             setLoading(true);
             setError(null);
 
-            const data = await getSalesDashboard(profile.id);
+            const data = await getSalesDashboard(profileId);
 
             setDashboard(data);
         } catch (err) {
