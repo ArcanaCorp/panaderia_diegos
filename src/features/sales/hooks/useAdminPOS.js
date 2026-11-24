@@ -118,7 +118,7 @@ export function usePOS() {
     }, [fetchStores]);
 
     useEffect(() => {
-        fetchStoreData(selectedStore?.id);
+        Promise.resolve().then(() => fetchStoreData(selectedStore?.id));
 
         return () => {
             storeRequestRef.current += 1;
