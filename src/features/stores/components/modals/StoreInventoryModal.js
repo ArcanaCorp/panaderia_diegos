@@ -33,10 +33,6 @@ export default function StoreInventoryModal({ onClose }) {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        loadStores();
-    }, [profile?.company_id]);
-
-    useEffect(() => {
         if (selectedStoreId) {
             loadInventory(selectedStoreId);
         } else {
@@ -44,7 +40,7 @@ export default function StoreInventoryModal({ onClose }) {
         }
     }, [selectedStoreId]);
 
-    async function loadStores() {
+    const loadStores() {useCallback(async () => {
         if (!profile?.company_id) return;
 
         try {
@@ -66,9 +62,13 @@ export default function StoreInventoryModal({ onClose }) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [profile?.company_id]);
 
-    async function loadInventory(storeId) {
+    useEffect(() => {
+        if (profile?.company_id) loadStores();
+    }, [loadStores]);
+
+    const loadInventory = useCallback(async (storeId) => {
         try {
             setLoadingInventory(true);
             setError('');
@@ -87,6 +87,14 @@ export default function StoreInventoryModal({ onClose }) {
         }
     }
 
+    }, []);
+
+    useEffect(() => {
+        if (selectedStoreId) {
+            Promise.resolve().then(() => loadInventory(selectedStoreId));
+        }
+    }, [selectedStoreId, loadInventory]);
+
     function handleRefresh() {
         if (selectedStoreId) {
             loadInventory(selectedStoreId);
@@ -95,10 +103,11 @@ export default function StoreInventoryModal({ onClose }) {
 
     const filteredInventory = useMemo(() => {
         const term = search.trim().toLowerCase();
+        const source = selectedStoreId ? inventory : [];
 
-        if (!term) return inventory;
+        if (!term) return source;
 
-        return inventory.filter((item) => {
+        return source.filter((item) => {
             const product = item.products;
 
             return (
@@ -112,14 +121,14 @@ export default function StoreInventoryModal({ onClose }) {
         (store) => store.id === selectedStoreId
     );
 
-    const totalProducts = inventory.length;
+    const totalProducts = selectedStoreId ? inventory.length : 0;
 
-    const totalUnits = inventory.reduce(
+    const totalUnits = (selectedStoreId ? inventory : []).reduce(
         (total, item) => total + Number(item.stock || 0),
         0
     );
 
-    const lowStockProducts = inventory.filter(
+    const lowStockProducts = (selectedStoreId ? inventory : []).filter(
         (item) =>
             Number(item.stock || 0) <=
             Number(item.minimum_stock || 0)
