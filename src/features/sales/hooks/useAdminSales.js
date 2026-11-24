@@ -41,6 +41,7 @@ export function useAdminSales() {
             const matchesSearch = !term || [
                 sale.code,
                 sale.sale_number,
+                sale.id,
                 sale.customer_name,
                 sale.customer_dni,
                 sale.customer_whatsapp,
