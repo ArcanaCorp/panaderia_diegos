@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { IconBuildingStore, IconCircleCheck, IconClock, IconCurrency, IconPackage, IconTruckDelivery, IconArrowUpRight, IconChevronRight } from '@tabler/icons-react';
 
 import { useState } from 'react';
@@ -108,15 +109,7 @@ export default function StoresAdmin() {
         openModal('store-detail', store);
     }
 
-    if (loading) {
-        return (
-            <main className="stores">
-                <div className="card">
-                    Cargando tiendas...
-                </div>
-            </main>
-        );
-    }
+    if (loading) return <FeatureSkeleton variant="stores" />;
 
     if (error) {
         return (
