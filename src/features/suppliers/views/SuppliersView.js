@@ -1,5 +1,6 @@
 ﻿'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     useState,
 } from 'react'
@@ -274,6 +275,8 @@ export default function SuppliersAlmacen() {
 
     }
 
+
+    if (loading) return <FeatureSkeleton variant="suppliers" />;
 
     return (
         <main className="suppliers">
