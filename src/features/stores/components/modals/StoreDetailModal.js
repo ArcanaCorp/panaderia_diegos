@@ -32,7 +32,7 @@ export default function StoreDetailModal({ store, onClose }) {
     const [loadingUsers, setLoadingUsers] = useState(true);
     const [error, setError] = useState('');
 
-    const loadSalesUsers() {useCallback(async () => {
+    const loadSalesUsers = useCallback(async () => {
         if (!store?.id) return;
 
         try {
