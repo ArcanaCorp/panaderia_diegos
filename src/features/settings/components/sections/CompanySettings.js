@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
     IconCheck,
     IconLoader2,
@@ -31,13 +31,7 @@ export default function CompanySettings() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    useEffect(() => {
-        if (profile?.company_id) {
-            loadCompany();
-        }
-    }, [profile?.company_id]);
-
-    async function loadCompany() {
+    const loadCompany() {useCallback(async () => {
         try {
             setLoading(true);
             setError('');
@@ -65,7 +59,11 @@ export default function CompanySettings() {
         } finally {
             setLoading(false);
         }
-    }
+    }, [profile?.company_id]);
+
+    useEffect(() => {
+        if (profile?.company_id) loadCompany();
+    }, [loadCompany]);
 
     function handleChange(event) {
         const { name, value } = event.target;
