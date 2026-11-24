@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import {
     IconAlertTriangle,
     IconCalendar,
@@ -64,14 +64,20 @@ const statusLabel = (value) => ({
     canceled: 'Anulada',
     partial: 'Pago parcial',
 })[String(value).toLowerCase()] || value;
-const paymentLabel = (value) => ({
-    full: 'Pago completo',
-    partial: 'Pago dividido',
-    cash: 'Efectivo',
-    card: 'Tarjeta',
-    transfer: 'Transferencia',
-    digital_wallet: 'Billetera digital',
-})[String(value || '').toLowerCase()] || value || '—';
+const paymentLabel = (value) => {
+    const normalized = typeof value === 'object' && value !== null
+        ? value.name || value.label || value.type || ''
+        : value;
+
+    return ({
+        full: 'Pago completo',
+        partial: 'Pago dividido',
+        cash: 'Efectivo',
+        card: 'Tarjeta',
+        transfer: 'Transferencia',
+        digital_wallet: 'Billetera digital',
+    })[String(normalized || '').toLowerCase()] || normalized || '—';
+};
 
 function SaleDetails({ sale }) {
     const details = [
@@ -270,8 +276,8 @@ export default function PosAdmin() {
                                 const isExpanded = expandedSaleId === sale.id;
 
                                 return (
-                                    <>
-                                        <tr key={sale.id}>
+                                    <Fragment key={sale.id}>
+                                        <tr>
                                             <td>
                                                 <strong>{saleCode(sale)}</strong>
                                                 <small>{sale.id ? String(sale.id).slice(0, 8) : '—'}</small>
@@ -312,7 +318,7 @@ export default function PosAdmin() {
                                                 <td colSpan={8}><SaleDetails sale={sale} /></td>
                                             </tr>
                                         )}
-                                    </>
+                                    </Fragment>
                                 );
                             })}
                         </tbody>
