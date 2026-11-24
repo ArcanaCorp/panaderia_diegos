@@ -18,7 +18,7 @@ export const NAVIGATION = {
         { path: "/dashboard/inventary", label: "Almacén", icon: IconPackages },
         { path: "/dashboard/produccion", label: "Producción", icon: IconToolsKitchen2 },
         { path: "/dashboard/store", label: "Tiendas", icon: IconBuildingStore },
-        { path: "/dashboard/alerts", label: "Alertas", icon: IconBell },
+        { path: "/dashboard/suppliers", label: "Proveedores", icon: IconUsers },
         { path: "/dashboard/settings", label: "Configuración", icon: IconSettings },
     ],
 

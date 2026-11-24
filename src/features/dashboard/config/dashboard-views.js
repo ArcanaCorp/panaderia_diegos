@@ -1,12 +1,8 @@
 import dynamic from "next/dynamic";
 import DashboardSkeleton from "@/features/dashboard/components/DashboardSkeleton";
 
-const loadView = (loader) =>
-    dynamic(loader, {
-        loading: () => <DashboardSkeleton />,
-    });
+const loadView = (loader) => dynamic(loader, { loading: () => <DashboardSkeleton /> });
 
-const AlertsAdmin = loadView(() => import("@/features/alerts/views/AlertsView"));
 const DashboardAdmin = loadView(() => import("@/features/dashboard/views/admin/AdminDashboardView"));
 const InventaryAdmin = loadView(() => import("@/features/inventory/views/AdminInventoryView"));
 const PosAdmin = loadView(() => import("@/features/sales/views/AdminPOSView"));
@@ -35,7 +31,7 @@ export const DASHBOARD_VIEWS = {
         "/dashboard/inventary": InventaryAdmin,
         "/dashboard/produccion": ProduccionAdmin,
         "/dashboard/store": StoresAdmin,
-        "/dashboard/alerts": AlertsAdmin,
+        "/dashboard/suppliers": SuppliersAlmacen,
         "/dashboard/settings": SettingsAdmin,
     },
 

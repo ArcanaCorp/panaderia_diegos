@@ -24,7 +24,7 @@ export default function RootLayout ({ children }) {
                 <Providers>
                     {children}
                 </Providers>
-                <Toaster position="top-center" duration={5000} closeButton />
+                <Toaster position="top-center" duration={5000} richColors closeButton />
             </body>
         </html>
     )

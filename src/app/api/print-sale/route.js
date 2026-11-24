@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 const escapeHtml = (value) =>
     String(value ?? "")
@@ -25,15 +27,14 @@ export async function POST(request) {
         const currency = sale.currency || "S/";
         const taxLabel = sale.taxLabel || "IGV";
 
-        const money = (value) =>
-            `${currency} ${Number(value || 0).toFixed(2)}`;
+        const money = (value) => `${currency} ${Number(value || 0).toFixed(2)}`;
 
-        const number = (value) => Number(value || 0);
+        const number = (value) => {
+            const parsed = Number(value ?? 0);
+            return Number.isFinite(parsed) ? parsed : 0;
+        };
 
-        const quantity = (value) =>
-            Number(value || 0).toLocaleString("es-PE", {
-                maximumFractionDigits: 3,
-            });
+        const quantity = (value) => Number(value || 0).toLocaleString("es-PE", {maximumFractionDigits: 3});
 
         const company = {
             name: sale.companyName || "MI EMPRESA",
@@ -72,14 +73,9 @@ export async function POST(request) {
 
         const discounts = number(sale.discounts);
         const tax = number(sale.tax);
-        const total = number(
-            sale.total ?? subtotal - discounts + tax
-        );
+        const total = number(sale.total ?? subtotal - discounts + tax);
 
-        const totalArticles = items.reduce(
-            (sum, item) => sum + item.quantity,
-            0
-        );
+        const totalArticles = items.reduce((sum, item) => sum + item.quantity, 0);
 
         // ==========================================
         // PRODUCTOS
@@ -123,6 +119,22 @@ export async function POST(request) {
                 minute: "2-digit",
             }
         );
+
+        // ==========================================
+        // LOGO EMPRESARIAL
+        // ==========================================
+
+        let companyLogo = "";
+
+        try {
+            const logoPath = join(process.cwd(), "public", "logo.png");
+            const logoBuffer = await readFile(logoPath);
+
+            companyLogo = `data:image/png;base64,${logoBuffer.toString("base64")}`;
+
+        } catch (error) {
+            console.error("[PRINT] No se pudo cargar el logo:", error.message);
+        }
 
         // ==========================================
         // HTML DEL TICKET
@@ -173,6 +185,26 @@ export async function POST(request) {
 
                 .bold {
                     font-weight: bold;
+                }
+
+                .company-logo-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    margin: 0 auto 8px;
+                    overflow: hidden;
+                }
+
+                .company-logo {
+                    display: block;
+                    width: auto;
+                    height: auto;
+                    max-width: 45mm;
+                    max-height: 22mm;
+                    object-fit: contain;
+                    object-position: center;
+                    image-rendering: auto;
                 }
 
                 .company-name {
@@ -334,6 +366,13 @@ export async function POST(request) {
                         page-break-inside: avoid;
                     }
                 }
+                @media print {
+                    .company-logo-container,
+                    .company-logo {
+                        break-inside: avoid;
+                        page-break-inside: avoid;
+                    }
+                }
             </style>
         </head>
 
@@ -342,6 +381,16 @@ export async function POST(request) {
             <!-- ENCABEZADO EMPRESARIAL -->
 
             <header class="center">
+
+                ${companyLogo ? `
+                    <div class="company-logo-container">
+                        <img
+                            src="${companyLogo}"
+                            class="company-logo"
+                            alt="Logo empresarial"
+                        />
+                    </div>
+                ` : ""}
 
                 <h1 class="company-name">
                     ${escapeHtml(company.name)}

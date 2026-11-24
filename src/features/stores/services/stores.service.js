@@ -204,6 +204,7 @@ export async function getCompanyStores(companyId) {
             )
         `)
         .eq('company_id', companyId)
+        .eq('is_active', true)
         .order('is_main', { ascending: false })
         .order('name', { ascending: true });
 
