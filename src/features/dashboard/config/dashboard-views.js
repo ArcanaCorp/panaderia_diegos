@@ -1,23 +1,34 @@
-﻿import AlertsAdmin from "@/features/alerts/views/AlertsView";
-import DashboardAdmin from "@/features/dashboard/views/admin/AdminDashboardView";
-import InventaryAdmin from "@/features/inventory/views/AdminInventoryView";
-import PosAdmin from "@/features/sales/views/AdminPOSView";
-import ProduccionAdmin from "@/features/production/views/AdminProductionView";
-import ProductsAdmin from "@/features/products/views/ProductsView";
-import SettingsAdmin from "@/features/settings/views/SettingsView";
-import StoresAdmin from "@/features/stores/views/StoresView";
+import dynamic from "next/dynamic";
 
-import DashboardAlmacen from "@/features/dashboard/views/warehouse/WarehouseDashboardView";
-import InventaryAlmacen from "@/features/inventory/views/WarehouseInventoryView";
-import SuppliersAlmacen from "@/features/suppliers/views/SuppliersView";
+const loadView = (loader) =>
+    dynamic(loader, {
+        loading: () => (
+            <div className="screen center" role="status">
+                Cargando módulo...
+            </div>
+        ),
+    });
 
-import DashboardProduccion from "@/features/dashboard/views/production/ProductionDashboardView";
-import InventoryProduccion from "@/features/production/views/ProductionInventoryView";
-import ProduccionView from "@/features/production/views/ProductionView";
+const AlertsAdmin = loadView(() => import("@/features/alerts/views/AlertsView"));
+const DashboardAdmin = loadView(() => import("@/features/dashboard/views/admin/AdminDashboardView"));
+const InventaryAdmin = loadView(() => import("@/features/inventory/views/AdminInventoryView"));
+const PosAdmin = loadView(() => import("@/features/sales/views/AdminPOSView"));
+const ProduccionAdmin = loadView(() => import("@/features/production/views/AdminProductionView"));
+const ProductsAdmin = loadView(() => import("@/features/products/views/ProductsView"));
+const SettingsAdmin = loadView(() => import("@/features/settings/views/SettingsView"));
+const StoresAdmin = loadView(() => import("@/features/stores/views/StoresView"));
 
-import DashboardVentas from "@/features/dashboard/views/sales/SalesDashboardView";
-import POSVentas from "@/features/sales/views/SalesPOSView";
-import ShowcasesView from "@/features/sales/views/ShowcasesView";
+const DashboardAlmacen = loadView(() => import("@/features/dashboard/views/warehouse/WarehouseDashboardView"));
+const InventaryAlmacen = loadView(() => import("@/features/inventory/views/WarehouseInventoryView"));
+const SuppliersAlmacen = loadView(() => import("@/features/suppliers/views/SuppliersView"));
+
+const DashboardProduccion = loadView(() => import("@/features/dashboard/views/production/ProductionDashboardView"));
+const InventoryProduccion = loadView(() => import("@/features/production/views/ProductionInventoryView"));
+const ProduccionView = loadView(() => import("@/features/production/views/ProductionView"));
+
+const DashboardVentas = loadView(() => import("@/features/dashboard/views/sales/SalesDashboardView"));
+const POSVentas = loadView(() => import("@/features/sales/views/SalesPOSView"));
+const ShowcasesView = loadView(() => import("@/features/sales/views/ShowcasesView"));
 
 export const DASHBOARD_VIEWS = {
     admin: {
@@ -49,9 +60,3 @@ export const DASHBOARD_VIEWS = {
         "/dashboard/inventary": InventoryProduccion,
     },
 };
-
-
-
-
-
-
