@@ -447,11 +447,45 @@
     color: var(--color-neutral-700);
     font-family: inherit;
     text-align: left;
-    cursor: pointer;
 }
 
-.pos__customer:hover {
-    border-color: var(--color-neutral-400);
+.pos__customer-selector {
+    display: block;
+    cursor: default;
+}
+
+.pos__customer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+}
+
+.pos__customer-selector:hover {
+    border-color: var(--color-neutral-300);
+}
+
+.pos__customer-dni {
+    margin-top: var(--space-sm);
+}
+
+.pos__customer-dni-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.pos__customer-dni-control .input {
+    min-width: 0;
+    flex: 1;
+}
+
+.pos__customer-confirmed {
+    margin: var(--space-xs) 0 0;
+    color: var(--color-success-700, #15803d);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
 }
 
 .pos__customer-label,
