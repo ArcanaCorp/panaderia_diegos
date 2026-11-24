@@ -8,6 +8,7 @@ export function useAdminSales() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const [selectedDay, setSelectedDay] = useState('today');
     const [search, setSearch] = useState('');
     const [storeId, setStoreId] = useState('all');
     const [status, setStatus] = useState('all');
@@ -16,22 +17,18 @@ export function useAdminSales() {
         try {
             setLoading(true);
             setError(null);
-            const result = await getAdminSales();
+            const result = await getAdminSales({ day: selectedDay });
             setData(result);
         } catch (err) {
             console.error('useAdminSales:', err);
-            setError(err?.message || 'No se pudieron cargar las ventas de hoy.');
+            setError(err?.message || 'No se pudieron cargar las ventas.');
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [selectedDay]);
 
     useEffect(() => {
-        let active = true;
-        Promise.resolve().then(() => {
-            if (active) loadSales();
-        });
-        return () => { active = false; };
+        loadSales();
     }, [loadSales]);
 
     const filteredSales = useMemo(() => {
@@ -55,17 +52,17 @@ export function useAdminSales() {
         });
     }, [data.sales, search, storeId, status]);
 
-    const stats = useMemo(() => ({
-        count: filteredSales.length,
-        total: filteredSales.reduce((sum, sale) => (
+    const stats = useMemo(() => {
+        const total = filteredSales.reduce((sum, sale) => (
             sum + Number(sale.total ?? sale.total_amount ?? sale.grand_total ?? 0)
-        ), 0),
-        average: filteredSales.length
-            ? filteredSales.reduce((sum, sale) => (
-                sum + Number(sale.total ?? sale.total_amount ?? sale.grand_total ?? 0)
-            ), 0) / filteredSales.length
-            : 0,
-    }), [filteredSales]);
+        ), 0);
+
+        return {
+            count: filteredSales.length,
+            total,
+            average: filteredSales.length ? total / filteredSales.length : 0,
+        };
+    }, [filteredSales]);
 
     const statuses = useMemo(() => (
         [...new Set(data.sales.map((sale) => (
@@ -75,6 +72,8 @@ export function useAdminSales() {
 
     return {
         day: data.day,
+        selectedDay,
+        setSelectedDay,
         sales: filteredSales,
         stores: data.stores,
         statuses,
