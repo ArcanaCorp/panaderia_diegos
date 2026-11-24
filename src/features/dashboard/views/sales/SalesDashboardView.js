@@ -1,5 +1,6 @@
 ﻿'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconShoppingCart,
     IconPackage,
@@ -30,16 +31,7 @@ export default function DashboardView() {
     const userName = profile?.full_name || 'Usuario';
     const storeName = profile?.store?.name || 'Mi tienda';
 
-    if (loading) {
-        return (
-            <div className="dashboard">
-                <div className="dashboard__loading">
-                    <IconRefresh size={24} className="dashboard__loading-icon" />
-                    <span>Cargando dashboard...</span>
-                </div>
-            </div>
-        );
-    }
+    if (loading) return <FeatureSkeleton variant="dashboard" />;
 
     if (error) {
         return (
