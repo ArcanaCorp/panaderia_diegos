@@ -1,5 +1,6 @@
 'use client';
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import { useMemo, useState } from 'react';
 
 import { IconPackage, IconSearch, IconFilter, IconEye, IconTransfer, IconX, IconPlus, IconMinus, IconAlertTriangle, IconRefresh } from '@tabler/icons-react';
@@ -96,23 +97,7 @@ export default function ShowcasesView() {
         setShowTransferModal(false);
     }
 
-    if (loading) {
-        return (
-            <div className="products">
-                <div className="products__state">
-                    <IconRefresh size={24} />
-
-                    <strong>
-                        Cargando productos...
-                    </strong>
-
-                    <span>
-                        Estamos cargando la vitrina de tu tienda.
-                    </span>
-                </div>
-            </div>
-        );
-    }
+    if (loading) return <FeatureSkeleton variant="showcase" />;
 
     if (error) {
         return (
