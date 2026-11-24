@@ -1,5 +1,6 @@
 'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     useMemo,
     useState,
@@ -310,7 +311,9 @@ export default function InventoryProduccion() {
 
                     const Icon = stat.icon
 
-                    return (
+                    if (loading) return <FeatureSkeleton variant="inventory" />;
+
+    return (
 
                         <article
                             className="card inventory__stat"
