@@ -2,7 +2,7 @@
 
 import { IconEdit, IconX } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { db } from '@/libs/supabase';
+import { getActiveProductCategories } from '@/features/products/services/categories.service';
 import { updateProduct } from '@/features/products/services/product.service';
 
 const INITIAL_FORM = {
@@ -50,30 +50,23 @@ export default function ProductEditModal({ product, onClose, onSuccess }) {
     }, [product]);
 
     useEffect(() => {
-        async function loadCategories() {
-            try {
-                const { data, error } = await db
-                    .from('product_categories')
-                    .select('id, name')
-                    .eq('is_active', true)
-                    .order('name');
+        let active = true;
 
-                if (error) {
-                    throw error;
-                }
+        getActiveProductCategories()
+            .then((data) => {
+                if (active) setCategories(data);
+            })
+            .catch((err) => {
+                console.error('Error cargando categorías:', err);
+                if (active) setCategories([]);
+            })
+            .finally(() => {
+                if (active) setLoadingCategories(false);
+            });
 
-                setCategories(data || []);
-            } catch (err) {
-                console.error(
-                    'Error cargando categorÃ­as:',
-                    err
-                );
-            } finally {
-                setLoadingCategories(false);
-            }
-        }
-
-        loadCategories();
+        return () => {
+            active = false;
+        };
     }, []);
 
     function handleChange(event) {
