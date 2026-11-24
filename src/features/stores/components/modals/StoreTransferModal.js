@@ -55,8 +55,12 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
     }, [companyId]);
 
     useEffect(() => {
-        if (companyId) loadData();
-    }, [loadData]);
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadData();
+        });
+        return () => { active = false; };
+    }, [companyId, loadData]);
 
     const availableProducts = useMemo(() => {
         const search = productSearch.trim().toLowerCase();
