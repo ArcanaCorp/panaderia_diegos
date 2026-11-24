@@ -116,7 +116,14 @@ export function AuthProvider({ children }) {
 
                 return profileData;
             } catch (error) {
-                console.error("Error cargando perfil:", error);
+                console.error("Error cargando perfil:", {
+                    message: error?.message || String(error || "Error desconocido"),
+                    code: error?.code || null,
+                    details: error?.details || null,
+                    hint: error?.hint || null,
+                    status: error?.status || null,
+                    name: error?.name || null,
+                });
 
                 if (profileRequestRef.current.requestId === requestId) {
                     loadedProfileUserRef.current = null;
@@ -165,7 +172,27 @@ export function AuthProvider({ children }) {
                 if (!mountedRef.current) return;
 
                 if (event === "SIGNED_OUT" || !session?.user) {
-                    clearUser();
+                    // Evita que un SIGNED_OUT atrasado limpie una sesión nueva
+                    // cuando el usuario cambia de cuenta rápidamente.
+                    db.auth.getSession().then(({ data, error }) => {
+                        if (!mountedRef.current) return;
+
+                        if (error) {
+                            console.error("Error verificando sesión después del cierre:", {
+                                message: error.message || "Error desconocido",
+                                code: error.code || null,
+                                status: error.status || null,
+                            });
+                            clearUser();
+                            return;
+                        }
+
+                        if (data?.session?.user) {
+                            return loadUser(data.session);
+                        }
+
+                        clearUser();
+                    });
                     return;
                 }
 
