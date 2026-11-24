@@ -20,6 +20,7 @@ const formatNumber = (value) => {
 
 export default function StoreInventoryModal({ onClose }) {
     const { profile } = useAuth();
+    const companyId = profile?.company_id;
 
     const [stores, setStores] = useState([]);
     const [selectedStoreId, setSelectedStoreId] = useState('');
@@ -34,20 +35,18 @@ export default function StoreInventoryModal({ onClose }) {
 
     useEffect(() => {
         if (selectedStoreId) {
-            loadInventory(selectedStoreId);
-        } else {
-            setInventory([]);
+            Promise.resolve().then(() => loadInventory(selectedStoreId));
         }
-    }, [selectedStoreId]);
+    }, [selectedStoreId, loadInventory]);
 
     const loadStores = useCallback(async () => {
-        if (!profile?.company_id) return;
+        if (!companyId) return;
 
         try {
             setLoading(true);
             setError('');
 
-            const data = await getStores(profile.company_id);
+            const data = await getStores(companyId);
 
             setStores(data);
 
@@ -62,10 +61,10 @@ export default function StoreInventoryModal({ onClose }) {
         } finally {
             setLoading(false);
         }
-    }, [profile?.company_id]);
+    }, [companyId]);
 
     useEffect(() => {
-        if (profile?.company_id) loadStores();
+        if (companyId) Promise.resolve().then(loadStores);
     }, [loadStores]);
 
     const loadInventory = useCallback(async (storeId) => {
