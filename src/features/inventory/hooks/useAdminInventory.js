@@ -80,7 +80,11 @@ export function useAdminInventory() {
     }, []);
 
     useEffect(() => {
-        fetchInventory();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchInventory();
+        });
+        return () => { active = false; };
     }, [fetchInventory]);
 
     return {
