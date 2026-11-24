@@ -33,12 +33,6 @@ export default function StoreInventoryModal({ onClose }) {
     const [search, setSearch] = useState('');
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (selectedStoreId) {
-            Promise.resolve().then(() => loadInventory(selectedStoreId));
-        }
-    }, [selectedStoreId, loadInventory]);
-
     const loadStores = useCallback(async () => {
         if (!companyId) return;
 
@@ -64,7 +58,7 @@ export default function StoreInventoryModal({ onClose }) {
     }, [companyId]);
 
     useEffect(() => {
-        if (companyId) Promise.resolve().then(loadStores);
+        Promise.resolve().then(loadStores);
     }, [loadStores]);
 
     const loadInventory = useCallback(async (storeId) => {
@@ -112,7 +106,7 @@ export default function StoreInventoryModal({ onClose }) {
                 product?.sku?.toLowerCase().includes(term)
             );
         });
-    }, [inventory, search]);
+    }, [inventory, search, selectedStoreId]);
 
     const selectedStore = stores.find(
         (store) => store.id === selectedStoreId
