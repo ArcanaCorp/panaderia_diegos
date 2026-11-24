@@ -41,7 +41,7 @@ export default function PaymentsSettings() {
         isActive: true,
     });
 
-    const loadPaymentMethods() {useCallback(async () => {
+    const loadPaymentMethods = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
