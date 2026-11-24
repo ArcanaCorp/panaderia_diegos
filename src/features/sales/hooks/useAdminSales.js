@@ -28,7 +28,15 @@ export function useAdminSales() {
     }, [selectedDay]);
 
     useEffect(() => {
-        loadSales();
+        let active = true;
+
+        queueMicrotask(() => {
+            if (active) loadSales();
+        });
+
+        return () => {
+            active = false;
+        };
     }, [loadSales]);
 
     const filteredSales = useMemo(() => {
