@@ -4,137 +4,190 @@ Sistema de gestión para la operación de Panadería y Pastelería Diegos.
 
 ## Stack
 
-- **Framework:** Next.js 16 (App Router).
-- **UI:** React 19 y JavaScript/JSX.
-- **Backend y persistencia:** Supabase (Auth, PostgreSQL, Storage/Functions según el módulo).
-- **Estilos:** CSS organizado por tokens, base, layout, componentes, utilidades y páginas.
-- **Iconografía:** Tabler Icons.
-- **Notificaciones:** Sonner.
+- Next.js 16 con App Router.
+- React 19 y JavaScript/JSX.
+- Supabase: autenticación, PostgreSQL y Edge Functions.
+- CSS propio con design tokens.
+- Tabler Icons y Sonner.
 
-## Objetivo de arquitectura
+## Arquitectura
 
-El proyecto sigue una **Clean Architecture pragmática orientada a funcionalidades (feature-oriented)**. No se busca crear capas ceremoniales ni abstraer todo; se busca que cada archivo tenga una ubicación predecible, que los módulos mantengan su lógica cerca y que las piezas realmente compartidas no dependan de un módulo de negocio.
+El proyecto utiliza una **Clean Architecture pragmática orientada a features**. La regla central es que cada módulo de negocio es dueño de su interfaz, hooks, servicios y lógica. Las carpetas globales contienen únicamente infraestructura o piezas reutilizables y agnósticas del negocio.
 
-### Regla principal
-
-- Si pertenece a un único proceso o dominio (productos, ventas, producción, inventario, tiendas, etc.), vive dentro de `src/features/<dominio>/`.
-- Si es una pieza visual o técnica reutilizable por varios módulos, vive en una carpeta global de `src/components/`, `src/hooks/` (cuando exista), `src/context/`, `src/services/` o `src/utils/`, según su responsabilidad.
-- Si define una URL o composición de layouts de Next.js, vive en `src/app/`. Las páginas deben delegar la lógica y la interfaz de negocio a `features/`.
-- No crear una carpeta global para un archivo que solo utiliza una feature.
-
-## Mapa de carpetas
+### Estructura actual
 
 ```text
 src/
-├── app/                         # Rutas, layouts y Route Handlers de Next.js.
+├── app/                         # Rutas, layouts y endpoints de Next.js.
 ├── components/
-│   ├── layout/                  # Shell, sidebar y guards globales.
-│   └── ui/                      # Componentes visuales globales y agnósticos del negocio.
-│       └── button/              # Botón base reutilizable.
-├── config/                      # Configuración transversal (navegación, permisos UI).
-├── context/                     # Estado global React (auth, app y modal).
+│   ├── layout/                  # Shell, sidebar y guards de rutas.
+│   └── ui/                      # Componentes visuales base globales.
+│       └── button/              # Botón reutilizable.
+├── config/                      # Configuración transversal, como navegación.
+├── context/                     # Estado global React: app, auth y modal.
 ├── features/
 │   ├── alerts/                  # Alertas operativas.
-│   ├── auth/                    # Servicios de autenticación y sesión.
-│   ├── dashboard/               # Dashboards, métricas y agregación de vistas por rol.
-│   ├── inventory/               # Inventario central y almacén.
-│   ├── production/              # Producción, órdenes y consumo de insumos.
-│   ├── products/                # Catálogo y gestión de productos.
-│   ├── sales/                   # POS, vitrina, transferencias comerciales e impresión de ventas.
-│   ├── settings/                # Empresa, perfil, usuarios, pagos y preferencias.
-│   ├── stores/                  # Tiendas, inventario por tienda y transferencias.
-│   └── suppliers/               # Proveedores y abastecimiento.
-├── libs/                        # Clientes de SDK externos (Supabase).
-├── providers/                   # Composición global de providers y montaje de overlays.
+│   ├── auth/
+│   │   └── services/            # Operaciones de autenticación y perfil de sesión.
+│   ├── dashboard/
+│   │   ├── components/          # Componentes exclusivos de dashboards.
+│   │   ├── config/              # Vistas por rol y configuración del dashboard.
+│   │   ├── helpers/             # Formateadores y adaptadores visuales del dashboard.
+│   │   ├── hooks/               # Estado y carga de datos del dashboard.
+│   │   ├── services/            # Consultas agregadas de paneles por rol.
+│   │   └── views/               # Dashboards completos por rol.
+│   ├── inventory/
+│   │   ├── hooks/               # Estado y operaciones de inventario.
+│   │   ├── services/            # Consultas del almacén e inventario.
+│   │   └── views/               # Vistas de inventario.
+│   ├── production/
+│   │   ├── components/          # Componentes y modales de producción.
+│   │   ├── hooks/               # Estado y operaciones de producción.
+│   │   ├── services/            # Consultas y operaciones de producción.
+│   │   ├── utils/               # Funciones puras de producción.
+│   │   └── views/               # Vistas de producción.
+│   ├── products/
+│   │   ├── components/          # Componentes y modales de productos.
+│   │   ├── hooks/               # Estado y operaciones de productos.
+│   │   ├── services/            # Catálogo y categorías.
+│   │   └── views/               # Vistas de productos.
+│   ├── sales/
+│   │   ├── components/          # Componentes del POS y ventas.
+│   │   ├── hooks/               # Estado del POS y vitrina.
+│   │   ├── services/            # POS, vitrina e impresión de ventas.
+│   │   └── views/               # POS y vitrina.
+│   ├── settings/
+│   │   ├── components/          # Configuración y secciones de ajustes.
+│   │   ├── services/            # Empresa, perfil, usuarios y medios de pago.
+│   │   └── views/               # Pantallas de configuración.
+│   ├── stores/
+│   │   ├── components/          # Tiendas, ajustes y modales de tienda.
+│   │   ├── hooks/               # Estado de tiendas.
+│   │   ├── services/            # Tiendas, stock y transferencias.
+│   │   └── views/               # Vistas de tiendas.
+│   └── suppliers/
+│       ├── hooks/               # Estado de proveedores.
+│       ├── services/            # Consultas de proveedores.
+│       └── views/               # Vistas de proveedores.
+├── libs/                        # Clientes e inicialización de SDK externos.
+├── providers/                   # Composición de providers y overlays globales.
 ├── styles/
-│   ├── base/                    # Reset y estilos base.
-│   ├── components/              # CSS compartido de componentes globales.
-│   ├── layout/                  # Layout, display y spacing.
-│   ├── pages/                   # CSS de páginas heredadas, agrupado por módulo.
-│   ├── token/                   # Design tokens.
-│   └── utilities/               # Clases CSS utilitarias.
-└── utils/                       # Funciones puras realmente transversales.
+│   ├── base/                    # Reset y estilos base del navegador.
+│   ├── components/              # CSS global de componentes reutilizables.
+│   ├── layout/                  # Estructura, display y espaciado.
+│   ├── pages/                   # Estilos de páginas existentes, agrupados por módulo.
+│   ├── token/                   # Variables y design tokens.
+│   └── utilities/               # Clases utilitarias CSS.
+└── utils/                       # Funciones puras y genéricas transversales.
 ```
 
-## Responsabilidad de cada área
+Las subcarpetas se crean cuando hay contenido real. No es obligatorio que todas las features tengan todas las capas.
 
-### `src/app/`
-Solo convenciones de Next.js: rutas, layouts, páginas, metadata y endpoints. Las páginas delegan la interfaz y lógica de negocio a la feature correspondiente.
+## Responsabilidad de cada carpeta
 
-### `src/features/<dominio>/`
-Cada módulo es dueño de sus componentes, hooks, servicios, utilidades y vistas. Crear subcarpetas solo cuando haya archivos reales. No crear servicios globales para operaciones que pertenecen a un dominio.
+### `src/app/` — routing
 
-### `src/components/ui/`
-Contiene componentes visuales base, reutilizables y sin conocimiento del negocio: botones, inputs, badges, tablas, diálogos y tarjetas genéricas cuando existan. Reciben datos y callbacks por props; nunca importan features ni consultan tablas de negocio. Una pieza usada por una sola feature permanece en esa feature.
+Contiene exclusivamente las convenciones del App Router: `page.js`, `layout.js`, `loading.js`, `error.js`, `route.js`, metadata y composición de rutas. Las páginas delegan la lógica y la UI a las features.
 
-### `src/components/layout/`
-Estructura transversal de la aplicación: sidebar, shell y protección de rutas. No colocar aquí componentes de negocio.
+### `src/components/ui/` — UI global
 
-### `src/context/`
-Estado global compartido por varias áreas. Los contextos no deben convertirse en repositorios de lógica de un módulo específico.
+Contiene componentes visuales base reutilizables en toda la aplicación: botones, inputs, badges, tablas, diálogos y tarjetas genéricas cuando se implementen. Deben ser agnósticos del negocio, recibir datos y callbacks por props, y no importar módulos de `features/`.
 
-### `src/providers/`
-Compone los providers en el orden requerido y monta componentes de infraestructura global, como el coordinador de modales. No contiene vistas ni lógica de negocio.
+Un componente utilizado por una sola feature permanece dentro de esa feature. No trasladar modales de productos, ventas o tiendas a la UI global por el solo hecho de ser modales.
 
-### `src/features/*/services/`
-Acceso a datos e integraciones del dominio. Cada servicio vive junto a la feature propietaria:
-- `auth`: autenticación y perfil asociado a la sesión.
-- `dashboard`: consultas agregadas de paneles por rol.
-- `inventory`: consultas de inventario de almacén.
-- `production`: órdenes y operaciones de producción.
-- `products`: catálogo y categorías.
-- `sales`: POS, vitrina e impresión de ventas.
-- `settings`: empresa, perfil, usuarios y medios de pago.
-- `stores`: tiendas, stock y transferencias.
-- `suppliers`: proveedores.
+### `src/components/layout/` — estructura global
 
-### `src/libs/`
-Inicialización de SDK externos. No contiene consultas de negocio ni funciones específicas de módulos.
+Contiene shell, sidebar, guards y componentes que estructuran la navegación. No contiene componentes específicos de negocio.
 
-### `src/styles/`
-Fuente central de CSS global: tokens, reset, layout, utilidades y estilos compartidos. Los estilos de negocio se mantienen identificados por módulo mientras se completa su migración a estilos locales.
+### `src/features/<dominio>/` — módulos de negocio
 
-### `src/utils/`
-Solo funciones puras y genéricas que pueden utilizar varias features sin depender de React, JSX, Supabase ni del negocio.
+Cada feature es propietaria de sus componentes, hooks, servicios, vistas, configuración y utilidades específicas.
 
-## Reglas de dependencias
+- `components/`: piezas visuales internas del módulo; los modales de negocio viven aquí.
+- `hooks/`: estado, efectos y coordinación de interacción del módulo.
+- `services/`: consultas a Supabase, RPC y operaciones externas del dominio.
+- `views/`: pantallas completas que consumen las rutas de Next.js.
+- `config/`: configuración exclusiva del módulo.
+- `utils/`: funciones puras específicas del módulo.
+- `helpers/`: adaptadores o helpers específicos del módulo que no encajan como utilidades puras (por ejemplo, helpers que devuelven iconos React).
 
-Dirección preferida:
+No crear carpetas vacías ni servicios globales para operaciones que pertenecen a un dominio.
+
+### `src/context/` — estado global
+
+Contiene contextos compartidos entre varias áreas, como autenticación, estado de aplicación y coordinación del modal. No debe convertirse en una carpeta de lógica de negocio.
+
+### `src/providers/` — composición de la aplicación
+
+Define el orden de los providers globales y monta coordinadores de infraestructura como `GlobalModals`. El coordinador puede conectar identificadores globales de modal con los modales que pertenecen a cada feature; la implementación de cada modal sigue siendo propiedad de su feature.
+
+### `src/libs/` — infraestructura externa
+
+Inicialización y configuración de SDK externos (actualmente Supabase). No colocar aquí consultas de negocio.
+
+### `src/config/` — configuración transversal
+
+Configuración estática compartida por toda la aplicación, como navegación. La configuración de un solo módulo pertenece a `features/<dominio>/config/`.
+
+### `src/styles/` — sistema visual global
+
+- `token/`: colores, tipografía, espacios, radios y demás variables de diseño.
+- `base/`: reset y reglas base.
+- `layout/`: reglas de estructura y distribución.
+- `components/`: estilos compartidos de componentes globales.
+- `utilities/`: clases de utilidad.
+- `pages/`: estilos de pantallas existentes. Los estilos nuevos exclusivos de una feature deben mantenerse identificados con su módulo.
+
+`global.css` es el punto de entrada de los estilos globales. No duplicar reglas de componentes en CSS locales y globales.
+
+### `src/utils/` — utilidades transversales
+
+Solo funciones genéricas y puras que puedan ser usadas por distintas features. No deben importar React, JSX, contextos, componentes ni servicios de negocio.
+
+## Dirección de dependencias
 
 ```text
-app ─────► features ─────► libs
-  │            │
-  └────────────┴────────► components/ui
-providers ──────────────► context
-providers ──────────────► features (solo composición de overlays)
+app ─────────────► features ─────────► libs
+ │                    │
+ └────────────────────┴─────────────► components/ui
+
+providers ───────────► context
+providers ───────────► features (solo composición de overlays)
+features ────────────► context (solo contratos globales necesarios)
 ```
 
-- `components/ui` nunca importa desde `features`.
-- Una feature no depende de `app`.
-- Las utilidades globales no importan React, JSX, contextos ni servicios.
-- Los servicios de una feature no deben ubicarse en `src/services`.
-- No crear dependencias circulares entre features.
-- Los servicios encapsulan acceso a datos; hooks coordinan estado de interfaz; vistas presentan información.
+Reglas:
 
-## Convenciones de nombres
+1. `components/ui` nunca importa desde `features/`.
+2. Una feature nunca depende de `app/`.
+3. Los servicios viven dentro de la feature propietaria; no existe una carpeta global `src/services/`.
+4. Los helpers específicos viven dentro de su feature; no existe una carpeta global `src/helpers/`.
+5. `libs/` no conoce reglas de negocio.
+6. `utils/` no importa React ni infraestructura.
+7. Evitar dependencias circulares entre features.
+8. Los hooks coordinan estado; los servicios acceden a datos; las vistas presentan información.
 
-- Carpetas: minúsculas y `kebab-case`.
-- Componentes React: `PascalCase.jsx` o `PascalCase.js`.
-- Hooks: `useNombre.js`.
-- Servicios: `nombre.service.js`.
-- Utilidades: `nombre.utils.js`.
-- CSS: `kebab-case.css`.
-- Imports internos: alias `@/` y rutas con capitalización exacta.
+## Convenciones
 
-## Proceso para cambios
+- Carpetas en minúsculas y `kebab-case`.
+- Componentes React en `PascalCase.jsx` o `PascalCase.js`.
+- Hooks con prefijo `use`, por ejemplo `useProducts.js`.
+- Servicios con sufijo `.service.js`.
+- Utilidades con sufijo `.utils.js`.
+- CSS en `kebab-case.css`.
+- Imports internos mediante el alias `@/`.
+- Evitar archivos genéricos llamados `common.js`, `misc.js` o `helpers.js`.
 
-1. Identificar la feature propietaria.
-2. Buscar consumidores e imports antes de mover.
-3. Mantener contratos, nombres exportados y comportamiento.
-4. Actualizar imports estáticos, dinámicos y CSS.
-5. Confirmar que no queden referencias a rutas antiguas.
-6. Revisar diff y ejecutar `npm run lint` y `npm run build`.
-7. No borrar código sin comprobar que no tenga consumidores.
+## Procedimiento para mover o crear archivos
+
+1. Determinar el propietario funcional del código.
+2. Buscar todos los imports y consumidores, incluidos imports dinámicos y CSS.
+3. Mover el archivo sin alterar contratos ni comportamiento.
+4. Actualizar todas las referencias.
+5. Confirmar que no quedan imports hacia rutas eliminadas.
+6. Revisar el diff.
+7. Ejecutar `npm run lint` y `npm run build` localmente.
+8. No eliminar archivos hasta verificar que no tengan consumidores.
 
 ## Desarrollo local
 
@@ -145,71 +198,6 @@ npm run lint
 npm run build
 ```
 
-No subir secretos ni credenciales. Configurar las variables de Supabase en el entorno local.
+Configurar las variables de entorno requeridas por Supabase en el entorno local. Nunca subir secretos, tokens ni credenciales.
 
-**Principio rector:** cada archivo tiene un propietario claro. Lo global es agnóstico; lo específico permanece dentro de su feature. No crear abstracciones ceremoniales ni mover archivos solo por estética.
-
-
-
-Dirección preferida:
-
-```text
-app ───────► features ───────► services/libs
-  │              │
-  └──────────────┴───────────► components (global UI)
-
-providers ─► context
-features ──► components/ui
-```
-
-- `components/` no importa desde `features/`.
-- `utils/` no importa desde componentes, features, context ni servicios.
-- `libs/` no conoce el negocio.
-- `features/` no debe depender de `app/`.
-- `app/` puede importar features y componentes globales.
-- Los servicios acceden a la infraestructura (por ejemplo Supabase); las vistas no deben duplicar consultas de datos.
-- Evitar barrel files (`index.js`) que oculten dependencias o generen ciclos. Usarlos solo cuando simplifiquen una API estable.
-
-## Convenciones de nombres
-
-- Carpetas: `kebab-case` o minúsculas; nunca mezclar mayúsculas y minúsculas en rutas.
-- Componentes React: `PascalCase.jsx` o `PascalCase.js`.
-- Hooks: prefijo `use`, por ejemplo `useProducts.js`.
-- Servicios: `<dominio>.service.js` o nombre consistente ya adoptado dentro de la feature.
-- Utilidades: nombres descriptivos en `camelCase.js`.
-- CSS: `kebab-case.css`.
-- Imports internos: preferir alias `@/` y respetar exactamente mayúsculas/minúsculas del path.
-- No crear archivos genéricos llamados `helpers.js`, `common.js` o `misc.js`; nombrar según su responsabilidad.
-
-## Reglas para crear o mover archivos
-
-1. Identificar quién es el propietario funcional del código.
-2. Buscar todos los imports y usos antes de mover o renombrar.
-3. Mantener la API pública y el comportamiento; un cambio de ubicación no justifica refactorizar lógica.
-4. Actualizar todos los imports, CSS imports, alias y referencias dinámicas.
-5. Verificar que no queden referencias al path anterior.
-6. Revisar el diff y ejecutar `npm run build` y `npm run lint` cuando corresponda.
-7. No borrar código solo porque parezca antiguo: confirmar primero que no tiene consumidores.
-8. Hacer movimientos pequeños y coherentes, con commits fáciles de revisar.
-
-## Desarrollo local
-
-```bash
-npm install
-npm run dev
-```
-
-Validación:
-
-```bash
-npm run lint
-npm run build
-```
-
-Configurar las variables de entorno requeridas por Supabase en el archivo local correspondiente. Nunca publicar claves privadas, tokens ni credenciales.
-
-## Estado de normalización
-
-La estructura por features ya existe y es la ubicación preferida para el nuevo desarrollo. Se están identificando y retirando gradualmente las ubicaciones heredadas (`helpers/` y servicios de dominio ubicados fuera de `features/`), además de normalizar los nombres históricos de carpetas de componentes. Cada migración debe incluir la actualización completa de sus imports y verificación local.
-
-**Principio rector:** primero claridad de responsabilidades, después optimización. No mover por mover y no romper producción para conseguir una estructura visualmente bonita.
+**Principio rector:** cada archivo tiene un propietario claro. Lo global es agnóstico; lo específico permanece dentro de su feature. Priorizar claridad y estabilidad antes que abstracciones innecesarias.
