@@ -17,18 +17,28 @@ const INITIAL_DATA = {
 };
 
 export const useAdminDashboard = () => {
-
     const [data, setData] = useState(INITIAL_DATA);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const [error, setError] = useState(null);
 
     const fetchDashboard = useCallback(async () => {
-        try {
-            setLoading(true)
-            setError(null)
+        const isInitialLoad = !hasLoaded;
 
-            const { data: result, error: rpcError } = await db.rpc('get_admin_dashboard')
-            
+        if (isInitialLoad) {
+            setLoading(true);
+        } else {
+            setRefreshing(true);
+        }
+
+        setError(null);
+
+        try {
+            const { data: result, error: rpcError } = await db.rpc(
+                "get_admin_dashboard"
+            );
+
             if (rpcError) throw rpcError;
 
             setData({
@@ -39,14 +49,15 @@ export const useAdminDashboard = () => {
                     ...(result?.kpis || {}),
                 },
             });
-
+            setHasLoaded(true);
         } catch (err) {
-            console.error('Error cargando dashboard:', err);
-            setError(err?.message || 'No se pudo cargar el dashboard');    
+            console.error("Error cargando dashboard:", err);
+            setError(err?.message || "No se pudo cargar el dashboard");
         } finally {
-            setLoading(false)
+            setLoading(false);
+            setRefreshing(false);
         }
-    }, [])
+    }, [hasLoaded]);
 
     useEffect(() => {
         fetchDashboard();
@@ -55,8 +66,9 @@ export const useAdminDashboard = () => {
     return {
         data,
         loading,
+        refreshing,
+        hasLoaded,
         error,
         refresh: fetchDashboard,
     };
-
-}
+};
