@@ -1,4 +1,3 @@
-
 import { db } from "@/libs/supabase";
 
 const getId = (value) => {
@@ -22,6 +21,7 @@ export const createdSale = async ({
     total,
     items,
     customerName = "Público general",
+    customerDni = null,
 }) => {
     try {
         if (!companyId || !profile?.id || !selectedStore) {
@@ -71,14 +71,20 @@ export const createdSale = async ({
             throw new Error("Agrega productos a la venta.");
         }
 
+        const normalizedDni = customerDni ? String(customerDni).trim() : null;
+
+        if (normalizedDni && !/^\d{8}$/.test(normalizedDni)) {
+            throw new Error("El DNI del cliente debe tener 8 dígitos.");
+        }
+
         const { data: sale, error } = await db.rpc("register_sale", {
             p_company_id: companyId,
             p_store_id: getId(selectedStore),
             p_user_id: profile.id,
 
-            p_customer_name: customerName,
+            p_customer_name: customerName.trim() || "Público general",
             p_customer_whatsapp: null,
-            p_customer_dni: null,
+            p_customer_dni: normalizedDni,
 
             p_payment_type: paymentType,
             p_payments: normalizedPayments,
