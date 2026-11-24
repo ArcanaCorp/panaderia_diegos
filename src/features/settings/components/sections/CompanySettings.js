@@ -31,7 +31,7 @@ export default function CompanySettings() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    const loadCompany() {useCallback(async () => {
+    const loadCompany = useCallback(async () => {
         try {
             setLoading(true);
             setError('');
