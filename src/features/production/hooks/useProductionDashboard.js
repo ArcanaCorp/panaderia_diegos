@@ -8,6 +8,8 @@ import { getProductionDashboard, updateProductionOrderStatus } from '@/features/
 export function useProductionDashboard() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
+    const companyId = profile?.company_id
 
     const [dashboard, setDashboard] = useState(null)
 
@@ -20,7 +22,7 @@ export function useProductionDashboard() {
 
     const loadDashboard = useCallback(async () => {
 
-        if (!profile?.id) {
+        if (!profileId) {
             setLoading(false)
             return
         }
@@ -55,12 +57,12 @@ export function useProductionDashboard() {
 
         }
 
-    }, [profile?.id])
+    }, [profileId])
 
 
     const changeOrderStatus = useCallback( async (orderId, status) => {
 
-        if (!profile?.id) throw new Error('No se encontró el usuario.')
+        if (!profileId) throw new Error('No se encontró el usuario.')
 
         try {
 
@@ -78,7 +80,7 @@ export function useProductionDashboard() {
             setUpdating(false)
         }
 
-    }, [profile?.id, loadDashboard])
+    }, [profileId, loadDashboard])
 
 
     useEffect(() => {
