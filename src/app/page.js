@@ -40,7 +40,7 @@ export default function Page() {
                     <div className="login__brand">
                         <div className="login__logo">D</div>
                         <div>
-                            <p className="login__brand-name">Diego's</p>
+                            <p className="login__brand-name">Diego&apos;s</p>
                             <p className="login__brand-subtitle">GestiÃ³n empresarial</p>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ export default function Page() {
                         <button type="submit" className={`btn btn-primary login__submit ${loading && 'btn-loading'}`} disabled={loading}>Iniciar sesiÃ³n</button>
 
                     </form>
-                    <p className="login__footer">Sistema de gestiÃ³n Â· Diego's</p>
+                    <p className="login__footer">Sistema de gestiÃ³n Â· Diego&apos;s</p>
 
                 </section>
             </main>
