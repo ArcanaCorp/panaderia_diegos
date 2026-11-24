@@ -8,6 +8,8 @@ import { getWarehouseInventory } from '@/features/inventory/services/warehouse-i
 export function useWarehouseInventory() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
+    const companyId = profile?.company_id
 
 
     const [inventory, setInventory] =
@@ -39,7 +41,7 @@ export function useWarehouseInventory() {
     const loadInventory = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
 
                 setLoading(false)
 
@@ -94,7 +96,7 @@ export function useWarehouseInventory() {
 
         },
         [
-            profile?.id,
+            profileId,
             page,
             search,
             categoryId,
