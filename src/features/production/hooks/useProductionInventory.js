@@ -17,6 +17,8 @@ import {
 export function useProductionInventory() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
+    const companyId = profile?.company_id
 
     const [inventory, setInventory] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -26,7 +28,7 @@ export function useProductionInventory() {
 
     const loadInventory = useCallback(async () => {
 
-        if (!profile?.id) {
+        if (!profileId) {
             setLoading(false)
             return
         }
@@ -61,7 +63,7 @@ export function useProductionInventory() {
 
         }
 
-    }, [profile?.id])
+    }, [profileId])
 
 
     const registerExit = useCallback(
@@ -72,13 +74,13 @@ export function useProductionInventory() {
             notes,
         }) => {
 
-            if (!profile?.id) {
+            if (!profileId) {
                 throw new Error(
                     'No se encontró el usuario.'
                 )
             }
 
-            if (!profile?.company_id) {
+            if (!companyId) {
                 throw new Error(
                     'No se encontró la empresa.'
                 )
@@ -92,7 +94,7 @@ export function useProductionInventory() {
                 const result =
                     await registerInventoryExit({
                         companyId:
-                            profile.company_id,
+                            companyId,
 
                         productId,
 
@@ -132,8 +134,8 @@ export function useProductionInventory() {
 
         },
         [
-            profile?.id,
-            profile?.company_id,
+            profileId,
+            companyId,
             loadInventory,
         ]
     )
