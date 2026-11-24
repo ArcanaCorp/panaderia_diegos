@@ -6,7 +6,7 @@ import {
 } from '@tabler/icons-react';
 
 import { useEffect, useState } from 'react';
-import { db } from '@/libs/supabase';
+import { getActiveProductCategories } from '@/features/products/services/categories.service';
 import { createProduct } from '@/features/products/services/product.service';
 
 const INITIAL_FORM = {
@@ -35,37 +35,23 @@ export default function ProductModal({ onClose, onSuccess }) {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function loadCategories() {
-            try {
-                setLoadingCategories(true);
+        let active = true;
 
-                const {
-                    data,
-                    error,
-                } = await db
-                    .from('product_categories')
-                    .select('id, name')
-                    .eq('is_active', true)
-                    .order('name');
+        getActiveProductCategories()
+            .then((data) => {
+                if (active) setCategories(data);
+            })
+            .catch((err) => {
+                console.error('Error cargando categorías:', err);
+                if (active) setCategories([]);
+            })
+            .finally(() => {
+                if (active) setLoadingCategories(false);
+            });
 
-                if (error) {
-                    throw error;
-                }
-
-                setCategories(data || []);
-            } catch (err) {
-                console.error(
-                    'Error cargando categorÃ­as:',
-                    err
-                );
-
-                setCategories([]);
-            } finally {
-                setLoadingCategories(false);
-            }
-        }
-
-        loadCategories();
+        return () => {
+            active = false;
+        };
     }, []);
 
     function handleChange(event) {
