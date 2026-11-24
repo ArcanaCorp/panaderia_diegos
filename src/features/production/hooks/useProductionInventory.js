@@ -140,8 +140,12 @@ export function useProductionInventory() {
 
 
     useEffect(() => {
-        loadInventory()
-    }, [loadInventory])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadInventory();
+        });
+        return () => { active = false; };
+    }, [loadInventory]);
 
 
     return {
