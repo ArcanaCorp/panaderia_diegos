@@ -33,7 +33,7 @@ export function useProductionDashboard() {
 
             const data =
                 await getProductionDashboard(
-                    profile.id
+                    profileId
                 )
 
             setDashboard(data)
@@ -67,7 +67,7 @@ export function useProductionDashboard() {
 
             setUpdating(true)
             setError(null)
-            await updateProductionOrderStatus(orderId, profile.id, status)
+            await updateProductionOrderStatus(orderId, profileId, status)
             await loadDashboard()
 
         } catch (err) {
