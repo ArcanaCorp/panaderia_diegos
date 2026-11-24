@@ -12,6 +12,10 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
     const [paymentType, setPaymentType] = useState('full');
     const [payments, setPayments] = useState([]);
     const [loadingSale, setLoadingSale] = useState(false);
+    const [customerType, setCustomerType] = useState('public');
+    const [customerDni, setCustomerDni] = useState('');
+    const [customer, setCustomer] = useState(null);
+    const [loadingCustomer, setLoadingCustomer] = useState(false);
 
     const subtotal = roundMoney(cart.reduce((sum, item) => sum + Number(item.price) * Number(item.quantity), 0));
     const discount = 0;
@@ -60,8 +64,63 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
 
     function clearCart() {
         setCart([]);
-        setPaymentType('full')
+        setPaymentType('full');
         setPayments([]);
+        setCustomerType('public');
+        setCustomerDni('');
+        setCustomer(null);
+    }
+
+    async function lookupCustomer() {
+        const dni = customerDni.trim();
+
+        if (!/^\\d{8}$/.test(dni)) {
+            return toast.error('Ingresa un DNI válido de 8 dígitos.');
+        }
+
+        try {
+            setLoadingCustomer(true);
+            setCustomer(null);
+
+            const response = await fetch(`https://utilities.arcanacorp.dev/api/dni/${dni}`);
+            if (!response.ok) {
+                throw new Error('No se pudo consultar el DNI. Intenta nuevamente.');
+            }
+
+            const result = await response.json();
+            const data = result?.data;
+
+            if (!result?.success || !data?.success || data.dni !== dni) {
+                throw new Error('No se encontró información para ese DNI.');
+            }
+
+            const fullName = [
+                data.nombres,
+                data.apellidoPaterno,
+                data.apellidoMaterno,
+            ].filter(Boolean).join(' ').trim();
+
+            if (!fullName) {
+                throw new Error('La consulta no devolvió un nombre válido.');
+            }
+
+            setCustomer({ dni, fullName });
+            toast.success('Cliente identificado', { description: fullName });
+        } catch (error) {
+            toast.error('No se pudo identificar al cliente', {
+                description: error?.message || 'Ocurrió un error al consultar el DNI.',
+            });
+        } finally {
+            setLoadingCustomer(false);
+        }
+    }
+
+    function changeCustomerType(nextType) {
+        if (!['public', 'identified'].includes(nextType)) return;
+
+        setCustomerType(nextType);
+        setCustomerDni('');
+        setCustomer(null);
     }
 
     // =====================================================
@@ -138,6 +197,10 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
 
         if (!profile?.company_id || !profile?.id || !profile?.store_id) return toast.error('No se encontró la información de empresa, usuario o tienda.');
 
+        if (customerType === 'identified' && !customer) {
+            return toast.error('Consulta y confirma el DNI del cliente antes de cobrar.');
+        }
+
         // FULL: exactamente un método.
         if (paymentType === 'full' && payments.length !== 1) return toast.error('Para pago FULL selecciona exactamente un método.');
 
@@ -174,7 +237,8 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
                 payments: effectivePayments,
                 total,
                 items,
-                customerName: 'Público general',
+                customerName: customer?.fullName || 'Público general',
+                customerDni: customer?.dni || null,
             });
 
             toast.success('Venta registrada', {description: `Venta ${sale.sale_code} por S/ ${Number(sale.total).toFixed(2)}`});
@@ -203,7 +267,8 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
                 expeditionPlace: 'Jauja',
                 saleNumber: sale.sale_code || '',
                 date: new Date().toLocaleString('es-PE'),
-                customerName: 'Público en General',
+                customerName: customer?.fullName || 'Público en General',
+                customerDni: customer?.dni || '',
                 cashier: profile?.full_name || profile?.name || 'Administrador',
                 items,
                 subtotal: sale.subtotal,
@@ -233,6 +298,9 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
             setCart([]);
             setPayments([]);
             setPaymentType('full');
+            setCustomerType('public');
+            setCustomerDni('');
+            setCustomer(null);
 
         } catch (saleError) {
             console.error('Error registrando venta:', saleError);
@@ -258,13 +326,64 @@ export default function CartCard ({ cart, setCart, paymentMethods, profile }) {
                 )}
             </div>
 
-            <button type="button" className="pos__customer">
-                <div>
-                    <span className="pos__customer-label">Cliente</span>
-                    <span className="pos__customer-name">Público general</span>
+            <section className="pos__customer pos__customer-selector">
+                <div className="pos__customer-heading">
+                    <div>
+                        <span className="pos__customer-label">Cliente</span>
+                        <span className="pos__customer-name">
+                            {customerType === 'identified' && customer ? customer.fullName : 'Público general'}
+                        </span>
+                    </div>
+                    <IconUser size={16} />
                 </div>
-                <IconUser size={16} />
-            </button>
+
+                <select
+                    className="input"
+                    value={customerType}
+                    onChange={(event) => changeCustomerType(event.target.value)}
+                    disabled={loadingSale || loadingCustomer}
+                    aria-label="Tipo de cliente"
+                >
+                    <option value="public">Público general</option>
+                    <option value="identified">Cliente identificado por DNI</option>
+                </select>
+
+                {customerType === 'identified' && (
+                    <div className="pos__customer-dni">
+                        <label className="pos__payment-label" htmlFor="pos-customer-dni">DNI del cliente</label>
+                        <div className="pos__customer-dni-control">
+                            <input
+                                id="pos-customer-dni"
+                                className="input"
+                                type="text"
+                                inputMode="numeric"
+                                autoComplete="off"
+                                maxLength={8}
+                                placeholder="Ingresa 8 dígitos"
+                                value={customerDni}
+                                onChange={(event) => {
+                                    setCustomerDni(event.target.value.replace(/\\D/g, '').slice(0, 8));
+                                    setCustomer(null);
+                                }}
+                                disabled={loadingSale || loadingCustomer}
+                            />
+                            <button
+                                type="button"
+                                className="btn btn--outline"
+                                onClick={lookupCustomer}
+                                disabled={loadingSale || loadingCustomer || customerDni.length !== 8}
+                            >
+                                {loadingCustomer ? 'Consultando...' : 'Consultar'}
+                            </button>
+                        </div>
+                        {customer && (
+                            <p className="pos__customer-confirmed" role="status">
+                                {customer.fullName} · DNI {customer.dni}
+                            </p>
+                        )}
+                    </div>
+                )}
+            </section>
 
             {/* PRODUCTOS DEL CARRITO */}
 
