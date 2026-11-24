@@ -1,7 +1,7 @@
 'use client';
 
 import { IconBuildingStore, IconClock, IconMail, IconMapPin, IconPhone, IconUser, IconUsers, IconX } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { getStoreSalesUsers } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
@@ -32,11 +32,7 @@ export default function StoreDetailModal({ store, onClose }) {
     const [loadingUsers, setLoadingUsers] = useState(true);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadSalesUsers();
-    }, [store?.id]);
-
-    async function loadSalesUsers() {
+    const loadSalesUsers() {useCallback(async () => {
         if (!store?.id) return;
 
         try {
@@ -59,7 +55,11 @@ export default function StoreDetailModal({ store, onClose }) {
         } finally {
             setLoadingUsers(false);
         }
-    }
+    }, [store?.id, profile?.company_id]);
+
+    useEffect(() => {
+        if (store?.id) loadSalesUsers();
+    }, [loadSalesUsers]);
 
     if (!store) {
         return null;
