@@ -36,7 +36,7 @@ export function useShowcase() {
             setError(null);
 
             const data = await getStoreShowcase(profile.id);
-            const prod = await getCatalogProducts(profile.company_id);
+            const prod = await getCatalogProducts(companyId);
 
             setShowcase(data);
             setCatalog(prod || []);
@@ -51,7 +51,7 @@ export function useShowcase() {
         } finally {
             setLoading(false);
         }
-    }, [profileId]);
+    }, [profileId, companyId]);
 
     useEffect(() => {
         let active = true;
@@ -75,7 +75,7 @@ export function useShowcase() {
             setTransferring(true);
 
             const result = await transferProductsBetweenStores({
-                companyId: profile.company_id,
+                companyId: companyId,
                 sourceStoreId: profile.store_id,
                 destinationStoreId,
                 createdBy: profile.id,
@@ -110,7 +110,7 @@ export function useShowcase() {
             setAddingProducts(true);
 
             const result = await addProductsToStore({
-                companyId: profile.company_id,
+                companyId: companyId,
                 storeId: profile.store_id,
                 items,
             });
