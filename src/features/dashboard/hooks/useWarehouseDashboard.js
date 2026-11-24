@@ -58,10 +58,12 @@ export function useWarehouseDashboard() {
 
 
     useEffect(() => {
-
-        loadDashboard()
-
-    }, [loadDashboard])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadDashboard();
+        });
+        return () => { active = false; };
+    }, [loadDashboard]);
 
 
     return {
