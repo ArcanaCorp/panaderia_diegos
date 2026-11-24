@@ -7,7 +7,7 @@ import {
     IconRefresh,
     IconX,
 } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getStores, getStoreInventory } from '@/features/stores/services/stores.service';
 import { useAuth } from '@/context/AuthContext';
@@ -40,7 +40,7 @@ export default function StoreInventoryModal({ onClose }) {
         }
     }, [selectedStoreId]);
 
-    const loadStores() {useCallback(async () => {
+    const loadStores = useCallback(async () => {
         if (!profile?.company_id) return;
 
         try {
@@ -85,8 +85,6 @@ export default function StoreInventoryModal({ onClose }) {
         } finally {
             setLoadingInventory(false);
         }
-    }
-
     }, []);
 
     useEffect(() => {
