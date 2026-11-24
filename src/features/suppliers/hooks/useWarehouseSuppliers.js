@@ -143,8 +143,12 @@ export function useWarehouseSuppliers() {
      */
 
     useEffect(() => {
-        loadSuppliers()
-    }, [loadSuppliers])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadSuppliers();
+        });
+        return () => { active = false; };
+    }, [loadSuppliers]);
 
 
     /*
