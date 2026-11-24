@@ -1,5 +1,6 @@
 ﻿'use client'
 
+import FeatureSkeleton from "@/features/dashboard/components/FeatureSkeleton";
 import {
     IconPackages,
     IconArrowDown,
@@ -42,70 +43,7 @@ export default function DashboardAlmace() {
      * =========================================================
      */
 
-    if (loading) {
-
-        return (
-            <main className="dashboard">
-
-                <header className="dashboard__header">
-
-                    <div>
-
-                        <p className="dashboard__eyebrow">
-                            AlmacÃ©n Â· {storeName}
-                        </p>
-
-                        <h1 className="dashboard__title">
-                            Hola, {userName}
-                        </h1>
-
-                        <p className="dashboard__description">
-                            Cargando informaciÃ³n del almacÃ©n...
-                        </p>
-
-                    </div>
-
-                </header>
-
-
-                <section className="dashboard__stats">
-
-                    {[1, 2, 3, 4].map((item) => (
-
-                        <article
-                            className="card card--stat"
-                            key={item}
-                        >
-
-                            <div className="card__content">
-
-                                <div className="card__icon">
-                                    <IconPackages size={18} />
-                                </div>
-
-                                <div>
-
-                                    <p className="card__label">
-                                        Cargando
-                                    </p>
-
-                                    <strong className="card__value">
-                                        â€”
-                                    </strong>
-
-                                </div>
-
-                            </div>
-
-                        </article>
-
-                    ))}
-
-                </section>
-
-            </main>
-        )
-    }
+    if (loading) return <FeatureSkeleton variant="dashboard" />;
 
 
     /*
