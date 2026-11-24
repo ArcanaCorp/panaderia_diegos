@@ -1,5 +1,5 @@
 import { db } from "@/libs/supabase";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const INITIAL_DATA = {
     kpis: {
@@ -23,8 +23,15 @@ export const useAdminDashboard = () => {
     const [hasLoaded, setHasLoaded] = useState(false);
     const [error, setError] = useState(null);
 
+    const hasLoadedRef = useRef(false);
+    const requestRef = useRef(null);
+
     const fetchDashboard = useCallback(async () => {
-        const isInitialLoad = !hasLoaded;
+        if (requestRef.current) {
+            return requestRef.current;
+        }
+
+        const isInitialLoad = !hasLoadedRef.current;
 
         if (isInitialLoad) {
             setLoading(true);
@@ -34,30 +41,38 @@ export const useAdminDashboard = () => {
 
         setError(null);
 
-        try {
-            const { data: result, error: rpcError } = await db.rpc(
-                "get_admin_dashboard"
-            );
+        const request = (async () => {
+            try {
+                const { data: result, error: rpcError } = await db.rpc(
+                    "get_admin_dashboard"
+                );
 
-            if (rpcError) throw rpcError;
+                if (rpcError) throw rpcError;
 
-            setData({
-                ...INITIAL_DATA,
-                ...result,
-                kpis: {
-                    ...INITIAL_DATA.kpis,
-                    ...(result?.kpis || {}),
-                },
-            });
-            setHasLoaded(true);
-        } catch (err) {
-            console.error("Error cargando dashboard:", err);
-            setError(err?.message || "No se pudo cargar el dashboard");
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    }, [hasLoaded]);
+                setData({
+                    ...INITIAL_DATA,
+                    ...result,
+                    kpis: {
+                        ...INITIAL_DATA.kpis,
+                        ...(result?.kpis || {}),
+                    },
+                });
+
+                hasLoadedRef.current = true;
+                setHasLoaded(true);
+            } catch (err) {
+                console.error("Error cargando dashboard:", err);
+                setError(err?.message || "No se pudo cargar el dashboard");
+            } finally {
+                setLoading(false);
+                setRefreshing(false);
+                requestRef.current = null;
+            }
+        })();
+
+        requestRef.current = request;
+        return request;
+    }, []);
 
     useEffect(() => {
         fetchDashboard();
