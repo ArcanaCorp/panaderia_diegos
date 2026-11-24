@@ -75,9 +75,6 @@ export async function createCompanyUser({
         }
     );
 
-    console.log('Edge Function data:', data);
-    console.log('Edge Function error:', error);
-
     if (error) {
         let message = error.message;
 
