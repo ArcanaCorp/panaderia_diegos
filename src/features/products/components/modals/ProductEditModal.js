@@ -24,14 +24,7 @@ const INITIAL_FORM = {
 
 export default function ProductEditModal({ product, onClose, onSuccess }) {
 
-    const [form, setForm] = useState(INITIAL_FORM);
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingCategories, setLoadingCategories] = useState(true);
-    const [error, setError] = useState(null);
-
-    useEffect(() => {
-        setForm({
+    const [form, setForm] = useState(() => ({
             name: product.name || '',
             description: product.description || '',
             category_id: product.category_id || '',
@@ -46,8 +39,13 @@ export default function ProductEditModal({ product, onClose, onSuccess }) {
             is_perishable: product.is_perishable || false,
             requires_expiration_date: product.requires_expiration_date || false,
             image_url: product.image_url || '',
-        });
-    }, [product]);
+        }));
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [loadingCategories, setLoadingCategories] = useState(true);
+    const [error, setError] = useState(null);
+
+
 
     useEffect(() => {
         let active = true;
