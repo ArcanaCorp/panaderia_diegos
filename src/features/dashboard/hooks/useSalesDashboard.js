@@ -7,7 +7,6 @@ import { getSalesDashboard } from '@/features/dashboard/services/sales-dashboard
 export function useSalesDashboard() {
     const { profile } = useAuth();
     const profileId = profile?.id;
-    const companyId = profile?.company_id;
 
     const [dashboard, setDashboard] = useState(null);
     const [loading, setLoading] = useState(true);
