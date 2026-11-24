@@ -20,7 +20,6 @@ export function useWarehouseSuppliers() {
 
     const { profile } = useAuth()
     const profileId = profile?.id
-    const companyId = profile?.company_id
 
     const [suppliers, setSuppliers] =
         useState([])
