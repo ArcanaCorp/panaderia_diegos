@@ -104,10 +104,12 @@ export function useWarehouseInventory() {
 
 
     useEffect(() => {
-
-        loadInventory()
-
-    }, [loadInventory])
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadInventory();
+        });
+        return () => { active = false; };
+    }, [loadInventory]);
 
 
     /*
