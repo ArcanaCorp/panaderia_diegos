@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
     createContext,
@@ -26,43 +26,52 @@ export function AuthProvider({ children }) {
 
     const mountedRef = useRef(false);
 
+    // Solo conserva solicitudes en curso; no reutiliza promesas ya resueltas.
     const profileRequestRef = useRef({
         userId: null,
         promise: null,
         requestId: 0,
     });
+    const loadedProfileUserRef = useRef(null);
 
-    const loadUser = useCallback((session) => {
+    const clearUser = useCallback(() => {
+        const requestId = profileRequestRef.current.requestId + 1;
+
+        profileRequestRef.current = {
+            userId: null,
+            promise: null,
+            requestId,
+        };
+        loadedProfileUserRef.current = null;
+
+        if (mountedRef.current) {
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+        }
+    }, []);
+
+    const loadUser = useCallback(async (session, { force = false } = {}) => {
         const sessionUser = session?.user;
 
         if (!sessionUser) {
-            const requestId =
-                profileRequestRef.current.requestId + 1;
-
-            profileRequestRef.current = {
-                userId: null,
-                promise: null,
-                requestId,
-            };
-
-            if (mountedRef.current) {
-                setUser(null);
-                setProfile(null);
-                setLoading(false);
-            }
-
-            return Promise.resolve(null);
+            clearUser();
+            return null;
         }
 
         const userId = sessionUser.id;
         const currentRequest = profileRequestRef.current;
 
-        // Evitar cargar dos veces el perfil del mismo usuario.
-        if (
-            currentRequest.userId === userId &&
-            currentRequest.promise
-        ) {
+        if (currentRequest.userId === userId && currentRequest.promise) {
             return currentRequest.promise;
+        }
+
+        // Los refresh de token no requieren volver a consultar el perfil.
+        if (!force && loadedProfileUserRef.current === userId) {
+            if (mountedRef.current) {
+                setUser(sessionUser);
+            }
+            return null;
         }
 
         const requestId = currentRequest.requestId + 1;
@@ -76,25 +85,18 @@ export function AuthProvider({ children }) {
             try {
                 const profileData = await getProfile(userId);
 
-                if (
-                    profileRequestRef.current.requestId !== requestId
-                ) {
+                if (profileRequestRef.current.requestId !== requestId) {
                     return null;
                 }
 
-                if (!profileData.is_active) {
+                if (!profileData?.is_active) {
+                    loadedProfileUserRef.current = null;
                     await logoutService();
-
-                    if (
-                        profileRequestRef.current.requestId === requestId &&
-                        mountedRef.current
-                    ) {
-                        setUser(null);
-                        setProfile(null);
-                    }
-
+                    clearUser();
                     return null;
                 }
+
+                loadedProfileUserRef.current = userId;
 
                 if (mountedRef.current) {
                     setProfile(profileData);
@@ -104,11 +106,12 @@ export function AuthProvider({ children }) {
             } catch (error) {
                 console.error("Error cargando perfil:", error);
 
-                if (
-                    profileRequestRef.current.requestId === requestId &&
-                    mountedRef.current
-                ) {
-                    setProfile(null);
+                if (profileRequestRef.current.requestId === requestId) {
+                    loadedProfileUserRef.current = null;
+
+                    if (mountedRef.current) {
+                        setProfile(null);
+                    }
                 }
 
                 return null;
@@ -118,6 +121,14 @@ export function AuthProvider({ children }) {
                     mountedRef.current
                 ) {
                     setLoading(false);
+                }
+
+                if (profileRequestRef.current.requestId === requestId) {
+                    profileRequestRef.current = {
+                        userId,
+                        promise: null,
+                        requestId,
+                    };
                 }
             }
         })();
@@ -129,7 +140,7 @@ export function AuthProvider({ children }) {
         };
 
         return promise;
-    }, []);
+    }, [clearUser]);
 
     useEffect(() => {
         mountedRef.current = true;
@@ -137,10 +148,21 @@ export function AuthProvider({ children }) {
         const {
             data: { subscription },
         } = db.auth.onAuthStateChange((event, session) => {
-            // No ejecutar consultas Supabase dentro del callback.
+            // Las operaciones de datos se ejecutan fuera del callback de Supabase.
             Promise.resolve().then(() => {
                 if (!mountedRef.current) return;
 
+                if (event === "SIGNED_OUT" || !session?.user) {
+                    clearUser();
+                    return;
+                }
+
+                if (event === "USER_UPDATED") {
+                    return loadUser(session, { force: true });
+                }
+
+                // SIGNED_IN e INITIAL_SESSION se deduplican con la solicitud activa.
+                // TOKEN_REFRESHED actualiza el usuario sin volver a consultar el perfil.
                 return loadUser(session);
             });
         });
@@ -152,23 +174,21 @@ export function AuthProvider({ children }) {
             profileRequestRef.current = {
                 userId: null,
                 promise: null,
-                requestId:
-                    profileRequestRef.current.requestId + 1,
+                requestId: profileRequestRef.current.requestId + 1,
             };
+            loadedProfileUserRef.current = null;
         };
-    }, [loadUser]);
+    }, [clearUser, loadUser]);
 
     async function signIn(email, password) {
         const data = await loginService(email, password);
-
         await loadUser(data.session);
-
         return data;
     }
 
     async function signOut() {
+        // SIGNED_OUT dispara clearUser desde el listener; no duplicar la limpieza.
         await logoutService();
-        await loadUser(null);
     }
 
     const role = profile?.role || null;
