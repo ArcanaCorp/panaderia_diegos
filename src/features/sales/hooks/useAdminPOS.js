@@ -124,7 +124,7 @@ export function usePOS() {
         return () => {
             storeRequestRef.current += 1;
         };
-    }, [selectedStore?.id, fetchStoreData]);
+    }, [selectedStoreId, fetchStoreData]);
 
     const refresh = useCallback(() => {
         if (selectedStoreId) {
