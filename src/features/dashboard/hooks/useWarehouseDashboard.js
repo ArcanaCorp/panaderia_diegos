@@ -7,6 +7,8 @@ import { getWarehouseDashboard } from '@/features/dashboard/services/warehouse-d
 export function useWarehouseDashboard() {
 
     const { profile } = useAuth()
+    const profileId = profile?.id
+    const companyId = profile?.company_id
     const [dashboard, setDashboard] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -15,7 +17,7 @@ export function useWarehouseDashboard() {
     const loadDashboard = useCallback(
         async () => {
 
-            if (!profile?.id) {
+            if (!profileId) {
 
                 setLoading(false)
 
@@ -53,7 +55,7 @@ export function useWarehouseDashboard() {
             }
 
         },
-        [profile?.id]
+        [profileId]
     )
 
 
