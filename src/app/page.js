@@ -1,5 +1,5 @@
-'use client';
-import PublicRoute from "@/components/auth/PublicRoute";
+﻿'use client';
+import PublicRoute from "@/components/layout/PublicRoute";
 import { useAuth } from "@/context/AuthContext";
 import { IconLock, IconMail } from "@tabler/icons-react";
 import { useState } from "react";
@@ -21,11 +21,11 @@ export default function Page() {
             setError('')
             setLoading(true);
             await signIn(email, password);
-            toast.success('Inicio de sesión exitoso')
+            toast.success('Inicio de sesiÃ³n exitoso')
         } catch (error) {
             console.error(error);
             setError(error.message)
-            toast.error('Hubo un error. Inténtalo más tarde')
+            toast.error('Hubo un error. IntÃ©ntalo mÃ¡s tarde')
         } finally {
             setEmail('')
             setPassword('')
@@ -41,7 +41,7 @@ export default function Page() {
                         <div className="login__logo">D</div>
                         <div>
                             <p className="login__brand-name">Diego's</p>
-                            <p className="login__brand-subtitle">Gestión empresarial</p>
+                            <p className="login__brand-subtitle">GestiÃ³n empresarial</p>
                         </div>
                     </div>
                     <div className="login__header">
@@ -54,7 +54,7 @@ export default function Page() {
                         <div className="login__fields">
 
                             <div className="input-field">
-                                <label className="input-label" htmlFor="email">Correo electrónico</label>
+                                <label className="input-label" htmlFor="email">Correo electrÃ³nico</label>
 
                                 <div className="input-group input-group--left">
                                     <span className="input-group__icon--left">
@@ -66,23 +66,23 @@ export default function Page() {
 
                             <div className="input-field">
                                 <div className="input-label-row">
-                                    <label className="input-label" htmlFor="password">Contraseña</label>
-                                    <button type="button" className="login__forgot">¿Olvidaste tu contraseña?</button>
+                                    <label className="input-label" htmlFor="password">ContraseÃ±a</label>
+                                    <button type="button" className="login__forgot">Â¿Olvidaste tu contraseÃ±a?</button>
                                 </div>
 
                                 <div className="input-group input-group--left input-group--right">
                                     <span className="input-group__icon--left">
                                         <IconLock size={16} />
                                     </span>
-                                    <input id="password" name="password" type="password" className="input" placeholder="••••••••" autoComplete="current-password" onChange={(e) => setPassword(e.target.value)}/>
+                                    <input id="password" name="password" type="password" className="input" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autoComplete="current-password" onChange={(e) => setPassword(e.target.value)}/>
                                 </div>
                             </div>
 
                         </div>
-                        <button type="submit" className={`btn btn-primary login__submit ${loading && 'btn-loading'}`} disabled={loading}>Iniciar sesión</button>
+                        <button type="submit" className={`btn btn-primary login__submit ${loading && 'btn-loading'}`} disabled={loading}>Iniciar sesiÃ³n</button>
 
                     </form>
-                    <p className="login__footer">Sistema de gestión · Diego's</p>
+                    <p className="login__footer">Sistema de gestiÃ³n Â· Diego's</p>
 
                 </section>
             </main>

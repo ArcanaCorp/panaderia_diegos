@@ -1,94 +1,164 @@
-"use client";
+﻿"use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 
-import { login as loginService, logout as logoutService, getSession, getProfile } from "@/services/auth.service";
+import {
+    login as loginService,
+    logout as logoutService,
+    getProfile,
+} from "@/services/auth.service";
+
 import { db } from "@/libs/supabase";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-
     const [user, setUser] = useState(null);
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    async function loadUser(session) {
+    const mountedRef = useRef(false);
 
-        if (!session?.user) {
-            setUser(null);
-            setProfile(null);
-            return;
-        }
+    const profileRequestRef = useRef({
+        userId: null,
+        promise: null,
+        requestId: 0,
+    });
 
-        setUser(session.user);
+    const loadUser = useCallback((session) => {
+        const sessionUser = session?.user;
 
-        try {
-            const profileData = await getProfile(session.user.id);
+        if (!sessionUser) {
+            const requestId =
+                profileRequestRef.current.requestId + 1;
 
-            if (!profileData.is_active) {
-                await logoutService();
+            profileRequestRef.current = {
+                userId: null,
+                promise: null,
+                requestId,
+            };
 
+            if (mountedRef.current) {
                 setUser(null);
                 setProfile(null);
-
-                return;
+                setLoading(false);
             }
 
-            setProfile(profileData);
-
-        } catch (error) {
-            console.error("Error cargando perfil:", error);
-
-            setProfile(null);
+            return Promise.resolve(null);
         }
-    }
 
-    useEffect(() => {
+        const userId = sessionUser.id;
+        const currentRequest = profileRequestRef.current;
 
-        let mounted = true;
+        // Evitar cargar dos veces el perfil del mismo usuario.
+        if (
+            currentRequest.userId === userId &&
+            currentRequest.promise
+        ) {
+            return currentRequest.promise;
+        }
 
-        async function initialize() {
+        const requestId = currentRequest.requestId + 1;
 
+        if (mountedRef.current) {
+            setUser(sessionUser);
+            setLoading(true);
+        }
+
+        const promise = (async () => {
             try {
+                const profileData = await getProfile(userId);
 
-                const session = await getSession();
-
-                if (mounted) {
-                    await loadUser(session);
+                if (
+                    profileRequestRef.current.requestId !== requestId
+                ) {
+                    return null;
                 }
 
+                if (!profileData.is_active) {
+                    await logoutService();
+
+                    if (
+                        profileRequestRef.current.requestId === requestId &&
+                        mountedRef.current
+                    ) {
+                        setUser(null);
+                        setProfile(null);
+                    }
+
+                    return null;
+                }
+
+                if (mountedRef.current) {
+                    setProfile(profileData);
+                }
+
+                return profileData;
             } catch (error) {
+                console.error("Error cargando perfil:", error);
 
-                console.error("Error inicializando sesión:", error);
+                if (
+                    profileRequestRef.current.requestId === requestId &&
+                    mountedRef.current
+                ) {
+                    setProfile(null);
+                }
 
+                return null;
             } finally {
-
-                if (mounted) {
+                if (
+                    profileRequestRef.current.requestId === requestId &&
+                    mountedRef.current
+                ) {
                     setLoading(false);
                 }
-
             }
-        }
+        })();
 
-        initialize();
-
-        const { data: { subscription }} = db.auth.onAuthStateChange(
-            async (event, session) => {
-                if (!mounted) return;
-                await loadUser(session);
-            }
-        );
-
-        return () => {
-            mounted = false;
-            subscription.unsubscribe();
+        profileRequestRef.current = {
+            userId,
+            promise,
+            requestId,
         };
 
+        return promise;
     }, []);
 
-    async function signIn(email, password) {
+    useEffect(() => {
+        mountedRef.current = true;
 
+        const {
+            data: { subscription },
+        } = db.auth.onAuthStateChange((event, session) => {
+            // No ejecutar consultas Supabase dentro del callback.
+            Promise.resolve().then(() => {
+                if (!mountedRef.current) return;
+
+                return loadUser(session);
+            });
+        });
+
+        return () => {
+            mountedRef.current = false;
+            subscription.unsubscribe();
+
+            profileRequestRef.current = {
+                userId: null,
+                promise: null,
+                requestId:
+                    profileRequestRef.current.requestId + 1,
+            };
+        };
+    }, [loadUser]);
+
+    async function signIn(email, password) {
         const data = await loginService(email, password);
 
         await loadUser(data.session);
@@ -97,11 +167,8 @@ export function AuthProvider({ children }) {
     }
 
     async function signOut() {
-
         await logoutService();
-
-        setUser(null);
-        setProfile(null);
+        await loadUser(null);
     }
 
     const role = profile?.role || null;
@@ -114,7 +181,7 @@ export function AuthProvider({ children }) {
                 role,
                 loading,
                 signIn,
-                signOut
+                signOut,
             }}
         >
             {children}

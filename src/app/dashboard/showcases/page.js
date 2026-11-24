@@ -1,20 +1,7 @@
-'use client';
+﻿"use client";
 
-import { SIDEBAR } from "@/config/sidebar";
-import { useAuth } from "@/context/AuthContext"
+import RoleBasedView from "@/features/dashboard/components/RoleBasedView";
 
-export default function Page () {
-
-    const { role } = useAuth();
-    
-    const tabs = SIDEBAR[role] || [];
-
-    const currentTab = tabs.find(tab => tab.path === '/dashboard/showcases');
-    
-    
-    return (
-        <>
-            {currentTab?.view}
-        </>
-    )
+export default function Page() {
+    return <RoleBasedView path="/dashboard/showcases" />;
 }

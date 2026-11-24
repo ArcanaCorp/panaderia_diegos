@@ -1,16 +1,16 @@
-'use client';
+﻿'use client';
 
 import { useModal } from '@/context/ModalContext';
 
-import ProductModal from './Products/ProductModal';
-import ProductEditModal from './Products/ProductEditModal';
-import ProductStockModal from './Products/ProductStockModal';
-import ProductDetailModal from './Products/ProductDetailModal';
-import ProductionModal from './Production/ProductionModal';
-import ProductionDetailModal from './Production/ProductionDetailModal';
-import StoreTransferModal from './Stores/StoreTransferModal';
-import StoreInventoryModal from './Stores/StoreInventoryModal';
-import StoreDetailModal from './Stores/StoreDetailModal';
+import ProductModal from '@/features/products/components/modals/ProductModal';
+import ProductEditModal from '@/features/products/components/modals/ProductEditModal';
+import ProductStockModal from '@/features/products/components/modals/ProductStockModal';
+import ProductDetailModal from '@/features/products/components/modals/ProductDetailModal';
+import ProductionModal from '@/features/production/components/ProductionModal';
+import ProductionDetailModal from '@/features/production/components/ProductionDetailModal';
+import StoreTransferModal from '@/features/stores/components/modals/StoreTransferModal';
+import StoreInventoryModal from '@/features/stores/components/modals/StoreInventoryModal';
+import StoreDetailModal from '@/features/stores/components/modals/StoreDetailModal';
 
 export default function GlobalModals() {
     const { modal, data, options, closeModal } = useModal();
@@ -75,3 +75,4 @@ export default function GlobalModals() {
             return null;
     }
 }
+

@@ -1,0 +1,280 @@
+﻿'use client';
+
+import { IconBuildingStore, IconCircleCheck, IconClock, IconCurrency, IconPackage, IconTruckDelivery, IconArrowUpRight, IconChevronRight } from '@tabler/icons-react';
+
+import { useState } from 'react';
+import { useAdminStores } from '@/features/stores/hooks/useAdminStores';
+import { useModal } from '@/context/ModalContext';
+import StoreCard from '@/features/stores/components/StoreCard';
+
+function formatCurrency(value) {
+    return Number(value || 0).toLocaleString('es-PE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+}
+
+function formatNumber(value) {
+    return Number(value || 0).toLocaleString('es-PE');
+}
+
+function formatLastSale(date) {
+    if (!date) return 'Sin ventas';
+
+    const diff =
+        Date.now() - new Date(date).getTime();
+
+    const minutes = Math.floor(diff / 60000);
+
+    if (minutes < 1) return 'Hace un momento';
+    if (minutes < 60) return `Hace ${minutes} min`;
+
+    const hours = Math.floor(minutes / 60);
+
+    if (hours < 24) return `Hace ${hours} h`;
+
+    const days = Math.floor(hours / 24);
+
+    return `Hace ${days} dÃ­a${days > 1 ? 's' : ''}`;
+}
+
+function isStoreOpen(store) {
+    if (!store.is_active) return false;
+
+    if (!store.opening_time || !store.closing_time) {
+        return true;
+    }
+
+    const now = new Date();
+
+    const current =
+        now.getHours() * 60 +
+        now.getMinutes();
+
+    const [openHour, openMinute] =
+        store.opening_time.split(':').map(Number);
+
+    const [closeHour, closeMinute] =
+        store.closing_time.split(':').map(Number);
+
+    const opening =
+        openHour * 60 + openMinute;
+
+    const closing =
+        closeHour * 60 + closeMinute;
+
+    return current >= opening && current <= closing;
+}
+
+export default function StoresAdmin() {
+
+    const { openModal } = useModal();
+
+    const { stores, recentSales, loading, error, refresh } = useAdminStores();
+
+    const activeStores = stores.filter(
+        (store) => store.is_active
+    ).length;
+
+    const openStores = stores.filter(
+        (store) => isStoreOpen(store)
+    ).length;
+
+    const totalSales = stores.reduce(
+        (total, store) =>
+            total + Number(store.sales || 0),
+        0
+    );
+
+    const totalStock = stores.reduce(
+        (total, store) =>
+            total + Number(store.stock || 0),
+        0
+    );
+
+    function handleTransfer() {
+        openModal('store-transfer', null,{
+            onSuccess: () => {
+                refresh();
+            },
+        });
+    }
+
+    function handleViewInventory() {
+        openModal('store-inventory');
+    }
+
+    function handleViewStore(store) {
+        openModal('store-detail', store);
+    }
+
+    if (loading) {
+        return (
+            <main className="stores">
+                <div className="card">
+                    Cargando tiendas...
+                </div>
+            </main>
+        );
+    }
+
+    if (error) {
+        return (
+            <main className="stores">
+                <div className="card">
+                    <strong>No se pudieron cargar las tiendas</strong>
+                    <p>{error}</p>
+
+                    <button
+                        className="btn btn--primary"
+                        onClick={refresh}
+                    >
+                        Reintentar
+                    </button>
+                </div>
+            </main>
+        );
+    }
+
+    return (
+        <main className="stores">
+
+            {/* HEADER */}
+            <header className="stores__header">
+                <div>
+                    <div className="stores__title-row">
+                        <div className="stores__title-icon">
+                            <IconBuildingStore size={18} />
+                        </div>
+
+                        <div>
+                            <h1 className="stores__title">
+                                Tiendas
+                            </h1>
+
+                            <p className="stores__description">
+                                Controla tus tiendas, ventas y distribuciÃ³n de stock.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    className="btn btn--primary"
+                    onClick={handleTransfer}
+                >
+                    <IconTruckDelivery size={16} />
+                    Enviar productos
+                </button>
+            </header>
+
+            {/* STATS */}
+            <section className="stores__stats">
+
+                <div className="card stores__stat">
+                    <div className="stores__stat-icon">
+                        <IconBuildingStore size={17} />
+                    </div>
+
+                    <div>
+                        <span className="stores__stat-label">
+                            Total tiendas
+                        </span>
+
+                        <strong className="stores__stat-value">
+                            {stores.length}
+                        </strong>
+                    </div>
+                </div>
+
+                <div className="card stores__stat">
+                    <div className="stores__stat-icon stores__stat-icon--success">
+                        <IconCircleCheck size={17} />
+                    </div>
+
+                    <div>
+                        <span className="stores__stat-label">
+                            Tiendas activas
+                        </span>
+
+                        <strong className="stores__stat-value">
+                            {activeStores}
+                        </strong>
+                    </div>
+                </div>
+
+                <div className="card stores__stat">
+                    <div className="stores__stat-icon stores__stat-icon--info">
+                        <IconClock size={17} />
+                    </div>
+
+                    <div>
+                        <span className="stores__stat-label">
+                            Abiertas ahora
+                        </span>
+
+                        <strong className="stores__stat-value">
+                            {openStores}
+                        </strong>
+                    </div>
+                </div>
+
+                <div className="card stores__stat">
+                    <div className="stores__stat-icon">
+                        <IconCurrency size={17} />
+                    </div>
+
+                    <div>
+                        <span className="stores__stat-label">
+                            Ventas de hoy
+                        </span>
+
+                        <strong className="stores__stat-value">
+                            S/ {formatCurrency(totalSales)}
+                        </strong>
+                    </div>
+                </div>
+
+                <div className="card stores__stat">
+                    <div className="stores__stat-icon">
+                        <IconPackage size={17} />
+                    </div>
+
+                    <div>
+                        <span className="stores__stat-label">
+                            Stock total
+                        </span>
+
+                        <strong className="stores__stat-value">
+                            {formatNumber(totalStock)}
+                        </strong>
+                    </div>
+                </div>
+
+            </section>
+
+            {/* STORES */}
+            <section className="stores__section">
+
+                <div className="stores__section-header">
+                    <div>
+                        <h2>Resumen por tienda</h2>
+                        <p>
+                            Estado y rendimiento de cada sucursal.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="stores__grid">
+
+                    {stores.map((store) => (
+                        <StoreCard key={store.id} store={store} handleViewStore={(store) => openModal('store-detail', store)} />
+                    ))}
+
+                </div>
+            </section>
+
+        </main>
+    );
+}
+

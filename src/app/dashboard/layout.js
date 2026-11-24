@@ -1,4 +1,4 @@
-import ProtectedRoute from "@/components/auth/ProtectedRoute"
+﻿import ProtectedRoute from "@/components/layout/ProtectedRoute"
 import DashboardShell from "@/components/layout/DashboardShell"
 
 export const metadata = {
@@ -13,3 +13,4 @@ export default function DashboardLayout ({ children }) {
         </ProtectedRoute>
     )
 }
+

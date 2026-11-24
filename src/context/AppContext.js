@@ -5,7 +5,7 @@ const AppContext = createContext(null);
 
 export const AppProvider = ({ children }) => {
 
-    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+    const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
     const toggleSidebar = useCallback(() => {
         setIsSidebarCollapsed(collapsed => !collapsed);
