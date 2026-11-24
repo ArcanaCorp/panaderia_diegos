@@ -30,7 +30,7 @@ export function useWarehouseDashboard() {
 
                 const data =
                     await getWarehouseDashboard(
-                        profile.id
+                        profileId
                     )
 
                 setDashboard(data)
