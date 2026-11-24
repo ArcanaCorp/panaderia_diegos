@@ -13,6 +13,8 @@ import {
 
 export function useShowcase() {
     const { profile } = useAuth();
+    const profileId = profile?.id;
+    const companyId = profile?.company_id;
 
     const [showcase, setShowcase] = useState(null);
     const [catalog, setCatalog] = useState([]);
@@ -24,7 +26,7 @@ export function useShowcase() {
     const [error, setError] = useState(null);
 
     const loadShowcase = useCallback(async () => {
-        if (!profile?.id) {
+        if (!profileId) {
             setLoading(false);
             return;
         }
@@ -49,15 +51,19 @@ export function useShowcase() {
         } finally {
             setLoading(false);
         }
-    }, [profile?.id]);
+    }, [profileId]);
 
     useEffect(() => {
-        loadShowcase();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) loadShowcase();
+        });
+        return () => { active = false; };
     }, [loadShowcase]);
 
     // TRANSFERIR PRODUCTOS
     async function transfer({ destinationStoreId, items, notes }) {
-        if (!profile?.company_id) {
+        if (!companyId) {
             throw new Error('No se encontró la empresa.');
         }
 
@@ -88,7 +94,7 @@ export function useShowcase() {
 
     // AGREGAR MÚLTIPLES PRODUCTOS A LA TIENDA
     async function addProducts(items) {
-        if (!profile?.company_id) {
+        if (!companyId) {
             throw new Error('No se encontró la empresa.');
         }
 
