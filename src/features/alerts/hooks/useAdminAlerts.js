@@ -62,7 +62,11 @@ export function useAdminAlerts() {
     }, []);
 
     useEffect(() => {
-        fetchAlerts();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchAlerts();
+        });
+        return () => { active = false; };
     }, [fetchAlerts]);
 
     return {
