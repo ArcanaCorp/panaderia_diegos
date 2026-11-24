@@ -63,8 +63,12 @@ export default function PaymentsSettings() {
     }, [companyId]);
 
     useEffect(() => {
-        if (companyId) loadPaymentMethods();
-    }, [loadPaymentMethods]);
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active && companyId) loadPaymentMethods();
+        });
+        return () => { active = false; };
+    }, [companyId, loadPaymentMethods]);
 
     function resetForm() {
         setForm({
