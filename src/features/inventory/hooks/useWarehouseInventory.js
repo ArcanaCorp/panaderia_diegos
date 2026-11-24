@@ -9,7 +9,6 @@ export function useWarehouseInventory() {
 
     const { profile } = useAuth()
     const profileId = profile?.id
-    const companyId = profile?.company_id
 
 
     const [inventory, setInventory] =
