@@ -28,11 +28,7 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
 
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        loadData();
-    }, [profile?.company_id]);
-
-    async function loadData() {
+    const loadData() {useCallback(async () => {
         if (!profile?.company_id) return;
 
         try {
@@ -55,7 +51,11 @@ export default function StoreTransferModal({ onClose, onSuccess }) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [profile?.company_id]);
+
+    useEffect(() => {
+        if (profile?.company_id) loadData();
+    }, [loadData]);
 
     const availableProducts = useMemo(() => {
         const search = productSearch.trim().toLowerCase();
