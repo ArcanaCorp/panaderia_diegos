@@ -311,7 +311,7 @@ export default function InventoryProduccion() {
 
                     const Icon = stat.icon
 
-                    if (loading) return <FeatureSkeleton variant="inventory" />;
+                    if (loading) return <FeatureSkeleton variant="inventory" key={stat.label} />;
 
     return (
 
