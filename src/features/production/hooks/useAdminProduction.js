@@ -57,7 +57,11 @@ export function useAdminProduction() {
     }, []);
 
     useEffect(() => {
-        fetchProduction();
+        let active = true;
+        Promise.resolve().then(() => {
+            if (active) fetchProduction();
+        });
+        return () => { active = false; };
     }, [fetchProduction]);
 
     return {
